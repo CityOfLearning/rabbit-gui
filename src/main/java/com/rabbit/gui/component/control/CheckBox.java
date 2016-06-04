@@ -11,193 +11,202 @@ import com.rabbit.gui.render.Renderer;
 import com.rabbit.gui.render.TextAlignment;
 import com.rabbit.gui.render.TextRenderer;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 @LayoutComponent
-public class CheckBox extends GuiWidget implements Shiftable{
+public class CheckBox extends GuiWidget implements Shiftable {
 
-    //width and height of checkbox are hardcoded and can't be changed
-    //if you need to change it use glScalef
-    
-    private static final Color DISABLED_COLOR = new Color(127, 127, 127);
-    private static final Color HOVER_COLOR = new Color(255, 255, 160);
-    private static final Color COMMON_COLOR = Color.white;
-    
-    protected static final int WIDTH = 11;
-    protected static final int HEIGHT = 11;
+	// width and height of checkbox are hardcoded and can't be changed
+	// if you need to change it use glScalef
 
-    protected ResourceLocation buttonTexture = new ResourceLocation("textures/gui/widgets.png");
-    
-    @LayoutComponent
-    protected boolean isChecked;
-    
-    @LayoutComponent
-    protected String text;
-    
-    protected int width = WIDTH;
-    protected int height = HEIGHT;
+	@FunctionalInterface
+	public interface CheckBoxStatusChangedListener {
+		void onStatusChanged(CheckBox box);
+	}
 
-    @LayoutComponent
-    protected boolean isVisible = true;
-    
-    @LayoutComponent
-    protected boolean isEnabled = true;
-    
-    protected CheckBoxStatusChangedListener onStatusChangedListener;
-    
-    private CheckBox(){}
-    
-    public CheckBox(int xPos, int yPos, String title, boolean checked) {
-        super(xPos, yPos, WIDTH, HEIGHT);
-        this.text = title;
-        this.isChecked = checked;
-    }
-    
-    void b(ResourceLocation loc){
-        Minecraft.getMinecraft().getTextureManager().getTexture(loc);
-    }
+	private static final Color DISABLED_COLOR = new Color(127, 127, 127);
+	private static final Color HOVER_COLOR = new Color(255, 255, 160);
+	private static final Color COMMON_COLOR = Color.white;
 
-    @Override
-    public void onDraw(int mouseX, int mouseY, float partialTicks) {
-        if (isVisible()) {
-            prepareRender();
-            drawButton();
-            Color color;
-            if (!isEnabled()) {
-                color = DISABLED_COLOR;
-            } else if (isButtonUnderMouse(mouseX, mouseY)) {
-                color = HOVER_COLOR;
-            } else {
-                color = COMMON_COLOR;
-            }
-            if(isChecked()){
-                TextRenderer.renderString(getX() + getWidth() / 2 + 1, getY() + 1,  "x", color, TextAlignment.CENTER);
-            }
-            TextRenderer.renderString(getX() + getWidth() + 2, getY() + getHeight() / 2 - 3, getText());
-        }
-    }
-    
-    protected void prepareRender(){
-        Minecraft.getMinecraft().getTextureManager().bindTexture(getButtonTexture());
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        GL11.glEnable(GL11.GL_BLEND);
-        OpenGlHelper.glBlendFunc(770, 771, 1, 0);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-    }
-    
-    protected void drawButton() {
-        Renderer.drawContinuousTexturedBox(getX(), getY(), 0, 46, getWidth(), getHeight(), 200, 20, 2, 3, 2, 2); 
-    }
+	// hard coded sizes? why
+	protected static final int WIDTH = 11;
+	protected static final int HEIGHT = 11;
 
-    @Override
-    public boolean onMouseClicked(int posX, int posY, int mouseButtonIndex, boolean overlap) {
-        boolean clicked = isButtonUnderMouse(posX, posY) && isEnabled() && !overlap;
-        if (clicked) {
-            setIsCheckedWithNotify(!isChecked());
-            playClickSound();
-        }
-        return clicked;
-    }
+	protected ResourceLocation buttonTexture = new ResourceLocation("textures/gui/widgets.png");
 
-    public boolean isChecked(){
-        return isChecked;
-    }
-    
-    public CheckBox setIsChecked(boolean state){
-        this.isChecked = state;
-        return this;
-    }
+	@LayoutComponent
+	protected boolean isChecked;
 
-    public CheckBox setIsCheckedWithNotify(boolean state){
-        setIsChecked(state);
-        if(getStatusChangedListener() != null) getStatusChangedListener().onStatusChanged(this);
-        return this;
-    }
-    
-    public CheckBox setStatusChangedListener(CheckBoxStatusChangedListener listener){
-        this.onStatusChangedListener = listener;
-        return this;
-    }
-    
-    public boolean isButtonUnderMouse(int mouseX, int mouseY) {
-        return mouseX >= getX() && mouseX <= getX() + getWidth() && mouseY >= getY() && mouseY <= getY() + getHeight();
-    }
+	@LayoutComponent
+	protected String text;
+	// protected int width = WIDTH;
+	protected int width = 0;
 
-    /**
-     * @return <code> true </code> if button would be rendered
-     */
-    public boolean isVisible() {
-        return isVisible;
-    }
+	protected int height = 0;
+	// protected int height = HEIGHT;
 
-    /**
-     * @return <code> true</code> if button can be clicked
-     */
-    public boolean isEnabled() {
-        return isEnabled;
-    }
+	@LayoutComponent
+	protected boolean isVisible = true;
 
-    public CheckBox setIsVisible(boolean isVisible) {
-        this.isVisible = isVisible;
-        return this;
-    }
+	@LayoutComponent
+	protected boolean isEnabled = true;
 
-    public CheckBox setIsEnabled(boolean isEnabled) {
-        this.isEnabled = isEnabled;
-        return this;
-    }
+	protected CheckBoxStatusChangedListener onStatusChangedListener;
 
-    public ResourceLocation getButtonTexture() {
-        return buttonTexture;
-    }
+	public CheckBox(int xPos, int yPos, int width, int height, String title, boolean checked) {
+		super(xPos, yPos, width, height);
+		text = title;
+		isChecked = checked;
+	}
 
-    public CheckBox setCustomTexture(ResourceLocation res) {
-        this.buttonTexture = res;
-        return this;
-    }
-    
-    public CheckBox setText(String text){
-        this.text = text;
-        return this;
-    }
-    
-    public String getText(){
-        return text;
-    }
+	public CheckBox(int xPos, int yPos, String title, boolean checked) {
+		this(xPos, yPos, WIDTH, HEIGHT, title, checked);
+	}
 
-    protected void playClickSound() {
-        Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
-    }
-    
-    public CheckBoxStatusChangedListener getStatusChangedListener(){
-        return onStatusChangedListener;
-    }
-    
-    @Override
-    public CheckBox setId(String id) {
-        assignId(id);
-        return this;
-    }
-    
-    @FunctionalInterface
-    public interface CheckBoxStatusChangedListener{
-        void onStatusChanged(CheckBox box);
-    }
+	void b(ResourceLocation loc) {
+		Minecraft.getMinecraft().getTextureManager().getTexture(loc);
+	}
 
-    @Override
-    public void shiftX(int x) {
-        this.setX(getX() + x);
-    }
+	protected void drawButton() {
+		Renderer.drawContinuousTexturedBox(getX(), getY(), 0, 46, getWidth(), getHeight(), 200, 20, 2, 3, 2, 2);
+	}
 
-    @Override
-    public void shiftY(int y) {
-        this.setY(getY() + y);
-    }
-    
+	public ResourceLocation getButtonTexture() {
+		return buttonTexture;
+	}
+
+	public CheckBoxStatusChangedListener getStatusChangedListener() {
+		return onStatusChangedListener;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public boolean isButtonUnderMouse(int mouseX, int mouseY) {
+		return (mouseX >= getX()) && (mouseX <= (getX() + getWidth())) && (mouseY >= getY())
+				&& (mouseY <= (getY() + getHeight()));
+	}
+
+	public boolean isChecked() {
+		return isChecked;
+	}
+
+	/**
+	 * @return <code> true</code> if button can be clicked
+	 */
+	public boolean isEnabled() {
+		return isEnabled;
+	}
+
+	/**
+	 * @return <code> true </code> if button would be rendered
+	 */
+	public boolean isVisible() {
+		return isVisible;
+	}
+
+	@Override
+	public void onDraw(int mouseX, int mouseY, float partialTicks) {
+		if (isVisible()) {
+			prepareRender();
+			drawButton();
+			Color color;
+			if (!isEnabled()) {
+				color = DISABLED_COLOR;
+			} else if (isButtonUnderMouse(mouseX, mouseY)) {
+				color = HOVER_COLOR;
+			} else {
+				color = COMMON_COLOR;
+			}
+			if (isChecked()) {
+				TextRenderer.renderString(getX() + (getWidth() / 2) + 1, getY() + 1, "x", color, TextAlignment.CENTER);
+			}
+			TextRenderer.renderString(getX() + getWidth() + 2, (getY() + (getHeight() / 2)) - 3, getText());
+		}
+	}
+
+	@Override
+	public boolean onMouseClicked(int posX, int posY, int mouseButtonIndex, boolean overlap) {
+		boolean clicked = isButtonUnderMouse(posX, posY) && isEnabled() && !overlap;
+		if (clicked) {
+			setIsCheckedWithNotify(!isChecked());
+			playClickSound();
+		}
+		return clicked;
+	}
+
+	protected void playClickSound() {
+		Minecraft.getMinecraft().getSoundHandler()
+				.playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
+	}
+
+	protected void prepareRender() {
+		Minecraft.getMinecraft().getTextureManager().bindTexture(getButtonTexture());
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GL11.glEnable(GL11.GL_BLEND);
+		OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+	}
+
+	public CheckBox setCustomTexture(ResourceLocation res) {
+		buttonTexture = res;
+		return this;
+	}
+
+	@Override
+	public CheckBox setId(String id) {
+		assignId(id);
+		return this;
+	}
+
+	public CheckBox setIsChecked(boolean state) {
+		isChecked = state;
+		return this;
+	}
+
+	public CheckBox setIsCheckedWithNotify(boolean state) {
+		setIsChecked(state);
+		if (getStatusChangedListener() != null) {
+			getStatusChangedListener().onStatusChanged(this);
+		}
+		return this;
+	}
+
+	public CheckBox setIsEnabled(boolean isEnabled) {
+		this.isEnabled = isEnabled;
+		return this;
+	}
+
+	public CheckBox setIsVisible(boolean isVisible) {
+		this.isVisible = isVisible;
+		return this;
+	}
+
+	public CheckBox setStatusChangedListener(CheckBoxStatusChangedListener listener) {
+		onStatusChangedListener = listener;
+		return this;
+	}
+
+	public CheckBox setText(String text) {
+		this.text = text;
+		return this;
+	}
+
+	@Override
+	public void shiftX(int x) {
+		setX(getX() + x);
+	}
+
+	@Override
+	public void shiftY(int y) {
+		setY(getY() + y);
+	}
+
 }

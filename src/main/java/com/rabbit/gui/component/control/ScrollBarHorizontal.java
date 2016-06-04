@@ -12,16 +12,11 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class Slider extends GuiWidget {
+public class ScrollBarHorizontal extends GuiWidget {
 
 	public static interface OnProgressChanged {
-		void onProgressChanged(Slider bar, float modifier);
+		void onProgressChanged(ScrollBarHorizontal bar, float modifier);
 	}
-
-	protected float sliderValue = 1.0F;
-	protected float sliderMaxValue = 1.0F;
-
-	protected float sliderMinValue = 0.0F;
 
 	protected float scrolled = 0;
 
@@ -36,19 +31,19 @@ public class Slider extends GuiWidget {
 
 	protected boolean handleMouseWheel;
 
-	public Slider(int xPos, int yPos, int width, int height, int scrollerSize) {
+	public ScrollBarHorizontal(int xPos, int yPos, int width, int height, int scrollerSize) {
 		super(xPos, yPos, width, height);
 		this.scrollerSize = scrollerSize;
 	}
 
 	/**
-	 * Calculates scroller progress based on mouse pos
+	 * Calculates scroller progress based on mouse x pos
 	 *
-	 * @param mouseY
+	 * @param mouseX
 	 */
-	private void calculateScroller(int pos) {
+	private void calculateScroller(int mouseX) {
 		if (isScrolling) {
-			float magic = (((pos - getX()) + 2) - 10F) / ((getX() + width) - (getX() + 2) - 15.0F);
+			float magic = (((mouseX - getX()) + 2) - 10F) / ((getX() + width) - (getX() + 2) - 15.0F);
 			updateProgress(magic - scrolled);
 		}
 	}
@@ -87,16 +82,15 @@ public class Slider extends GuiWidget {
 					.bindTexture(new ResourceLocation("textures/gui/container/creative_inventory/tab_items.png"));
 			Renderer.drawContinuousTexturedBox(getX(), getY(), 174 - 1, 17 - 1, width, height, 14 + 2, 112 + 2, 2, 2, 2,
 					2);
-			int scrollerPos = (int) (getX() + 2 + (scrolled * (width - 4 - scrollerSize)));
-			drawScroller(scrollerPos, getY() + 2, scrollerSize, height - 4);
+			int scrollerWidth = (int) (getX() + 2 + (scrolled * (width - 4 - scrollerSize)));
+			drawScroller(scrollerWidth, getY() + 2, scrollerSize, height - 4);
 		}
 	}
 
 	@Override
 	public boolean onMouseClicked(int posX, int posY, int mouseButtonIndex, boolean overlap) {
 		super.onMouseClicked(posX, posY, mouseButtonIndex, overlap);
-		isScrolling = !overlap && Geometry.isDotInArea(getX() + 2,
-				(int) (getY() + 2 + (scrolled * (height - scrollerSize))), width - 4, scrollerSize, posX, posY);
+		isScrolling = !overlap && Geometry.isDotInArea((int) (getX() + 2 + (scrolled * (width - scrollerSize))), getY() + 2, scrollerSize, height - 4, posX, posY);
 		return isScrolling;
 	}
 
@@ -106,10 +100,10 @@ public class Slider extends GuiWidget {
 		if (shouldHandleMouseWheel()) {
 			double delta = Mouse.getDWheel();
 			if (delta < 0) {
-				updateProgress(0.20F);
+				updateProgress(0.10F);
 			}
 			if (delta > 0) {
-				updateProgress(-0.20F);
+				updateProgress(-0.10F);
 			}
 		}
 	}
@@ -117,12 +111,7 @@ public class Slider extends GuiWidget {
 	@Override
 	public void onMouseRelease(int mouseX, int mouseY) {
 		super.onMouseRelease(mouseX, mouseY);
-		if (isScrolling) {
-			isScrolling = false;
-			float magic = (((mouseX - getX()) + 2) - 10F) / ((getX() + width) - (getX() + 2) - 15.0F);
-			updateProgress(magic - scrolled);
-		}
-
+		isScrolling = false;
 	}
 
 	private void revalidateScroller() {
@@ -134,28 +123,28 @@ public class Slider extends GuiWidget {
 		}
 	}
 
-	public Slider setHandleMouseWheel(boolean status) {
+	public ScrollBarHorizontal setHandleMouseWheel(boolean status) {
 		handleMouseWheel = status;
 		return this;
 	}
 
-	public Slider setProgress(float scroll) {
+	public ScrollBarHorizontal setProgress(float scroll) {
 		scrolled = scroll;
 		revalidateScroller();
 		return this;
 	}
 
-	public Slider setProgressChangedListener(OnProgressChanged progressChangedListener) {
+	public ScrollBarHorizontal setProgressChangedListener(OnProgressChanged progressChangedListener) {
 		this.progressChangedListener = progressChangedListener;
 		return this;
 	}
 
-	public Slider setScrollerSize(int size) {
+	public ScrollBarHorizontal setScrollerSize(int size) {
 		scrollerSize = size;
 		return this;
 	}
 
-	public Slider setVisiblie(boolean visible) {
+	public ScrollBarHorizontal setVisiblie(boolean visible) {
 		this.visible = visible;
 		return this;
 	}
@@ -166,7 +155,7 @@ public class Slider extends GuiWidget {
 
 	public void updateProgress(float modifier) {
 		setProgress(scrolled + modifier);
-		getProgressChangedListener().onProgressChanged(this, scrolled);
+		getProgressChangedListener().onProgressChanged(this, modifier);
 	}
 
 }

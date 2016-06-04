@@ -1,27 +1,29 @@
-package com.rabbit.gui.component.grid;
+package com.rabbit.gui.component.list;
 
 import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
 import com.rabbit.gui.component.control.ScrollBar;
-import com.rabbit.gui.component.grid.entries.GridEntry;
+import com.rabbit.gui.component.control.ScrollBarHorizontal;
+import com.rabbit.gui.component.list.entries.ListEntry;
 import com.rabbit.gui.layout.LayoutComponent;
 import com.rabbit.gui.utils.Geometry;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 @LayoutComponent
-public class ScrollableGrid extends Grid {
+public class ScrollableDisplayList2 extends DisplayList {
 
 	protected ScrollBar scrollBar;
+	protected ScrollBarHorizontal scrollBarH;
 
-	public ScrollableGrid(int xPos, int yPos, int width, int height, int slotWidth, int slotHeight,
-			List<GridEntry> content) {
-		super(xPos, yPos, width, height, slotWidth, slotHeight, content);
+	public ScrollableDisplayList2(int xPos, int yPos, int width, int height, int slotHeight, List<ListEntry> content) {
+		super(xPos, yPos, width, height, slotHeight, content);
 	}
 
 	/**
@@ -29,21 +31,21 @@ public class ScrollableGrid extends Grid {
 	 * height
 	 */
 	private boolean canFit() {
-		return ((content.size() / xSlots) * slotHeight) < height;
+		return (content.size() * slotHeight) < height;
 	}
 
 	@Override
-	protected void drawGridContent(int mouseX, int mouseY) {
+	protected void drawListContent(int mouseX, int mouseY) {
 		scrollBar.setVisiblie(!canFit());
 		scrollBar.setHandleMouseWheel(!canFit());
 		scrollBar.setScrollerSize(getScrollerSize());
 		int scale = Geometry.computeScaleFactor();
 		for (int i = 0; i < content.size(); i++) {
-			GridEntry entry = content.get(i);
-			int slotPosX = getX() + ((i % xSlots) * slotWidth);
-			int slotPosY = ((getY() + ((i / xSlots) * slotHeight))
-					- (int) (((slotHeight * scrollBar.getProgress() * content.size()) / xSlots) * 0.925F));
-			int slotWidth = this.slotWidth;
+			ListEntry entry = content.get(i);
+			int slotPosX = ((getX() + (i * (width/6))) - (int) (((width/6) * scrollBarH.getProgress())));
+			int slotPosY = ((getY() + (i * slotHeight)) - (int) ((slotHeight * scrollBar.getProgress() * content.size())
+					- (((height - slotHeight) * (scrollBar.getProgress())) / 1)));
+			int slotWidth = width + (width/6);
 			int slotHeight = this.slotHeight;
 			if ((slotPosY < (getY() + height)) && ((slotPosY + slotHeight) > getY())) {
 				GL11.glPushMatrix();
@@ -51,9 +53,8 @@ public class ScrollableGrid extends Grid {
 				Minecraft mc = Minecraft.getMinecraft();
 				GL11.glScissor(getX() * scale, mc.displayHeight - ((getY() + getHeight()) * scale), getWidth() * scale,
 						getHeight() * scale);
-				entry.onDraw(this, slotPosX + 1, slotPosY + 1, slotWidth - 2, slotHeight - 2, mouseX, mouseY);
-				// entry.onDraw(this, slotPosX, slotPosY, slotWidth, slotHeight,
-				// mouseX, mouseY);
+				GlStateManager.resetColor();
+				entry.onDraw(this, slotPosX, slotPosY, slotWidth, slotHeight, mouseX, mouseY);
 				GL11.glDisable(GL11.GL_SCISSOR_TEST);
 				GL11.glPopMatrix();
 			}
@@ -61,17 +62,19 @@ public class ScrollableGrid extends Grid {
 	}
 
 	private int getScrollerSize() {
-		return (int) (((1F * height) / ((content.size() / xSlots) * slotHeight)) * (height - 4)) / 2;
+		return (int) Math.min(Math.max((int) (((1F * height) / (content.size() * slotHeight)) * (height - 4)) * 2, 15),
+				height * .8);
 	}
 
 	@Override
-	protected void handleMouseClickGrid(int mouseX, int mouseY) {
+	protected void handleMouseClickList(int mouseX, int mouseY) {
 		for (int i = 0; i < content.size(); i++) {
-			GridEntry entry = content.get(i);
-			int slotPosX = getX() + ((i % xSlots) * slotWidth);
-			int slotPosY = ((getY() + ((i / xSlots) * slotHeight))
-					- (int) (((slotHeight * scrollBar.getProgress() * content.size()) / xSlots) * 0.925F));
-			int slotWidth = this.slotWidth;
+			ListEntry entry = content.get(i);
+			entry.setSelected(false);
+			int slotPosX = ((getX() + (i * (width/6))) - (int) (((width/6) * scrollBarH.getProgress())));
+			int slotPosY = ((getY() + (i * slotHeight)) - (int) ((slotHeight * scrollBar.getProgress() * content.size())
+					- (((height - slotHeight) * (scrollBar.getProgress())) / 1)));
+			int slotWidth = width + (width/6);
 			int slotHeight = this.slotHeight;
 			boolean scrollbarActive = scrollBar.isScrolling() && scrollBar.isVisible();
 			if (((slotPosY + slotHeight) <= (getY() + height)) && (slotPosY >= getY()) && !scrollbarActive) {
@@ -102,6 +105,9 @@ public class ScrollableGrid extends Grid {
 		}
 		scrollBar = new ScrollBar((getX() + width) - 10, getY(), 10, height, scrollerSize);
 		registerComponent(scrollBar);
+		
+		scrollBarH = new ScrollBarHorizontal(getX(), (getY() + height) - 10, width, 10, 10);
+		registerComponent(scrollBarH);
 	}
 
 }

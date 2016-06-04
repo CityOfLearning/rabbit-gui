@@ -1,10 +1,10 @@
 package com.rabbit.gui.layout.argument;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public interface ILayoutArgument {
-    
-    String fieldName();
+
+	String fieldName();
 }

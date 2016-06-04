@@ -2,14 +2,14 @@ package com.rabbit.gui.background;
 
 import java.awt.Color;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class DefaultBackground extends ColorBackground {
 
-    public DefaultBackground() {
-        super(new Color(16, 16, 16, 192));
-    }
-    
+	public DefaultBackground() {
+		super(new Color(16, 16, 16, 192));
+	}
+
 }

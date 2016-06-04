@@ -1,7 +1,7 @@
 package com.rabbit.gui.component;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Represents element which position can be changed after show setup
@@ -9,7 +9,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public interface Shiftable {
-    public void shiftX(int x);
-    
-    public void shiftY(int y);
+	public void shiftX(int x);
+
+	public void shiftY(int y);
 }
