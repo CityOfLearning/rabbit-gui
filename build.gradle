@@ -56,12 +56,6 @@ task sourceJar(type: Jar) {
     classifier = 'sources'
 }
 
-def action = new Action<net.minecraftforge.gradle.tasks.user.reobf.ArtifactSpec>(){
-    void execute(net.minecraftforge.gradle.tasks.user.reobf.ArtifactSpec artifactSpec) {
-        artifactSpec.classpath = sourceSets.main.compileClasspath
-    }
-}
-
 reobf.reobf(shadedJar, action)
 
 tasks.jar.dependsOn('sourceJar', 'shadedJar')
