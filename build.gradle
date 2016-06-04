@@ -13,7 +13,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "v1.4.0"
+version = "v1.3.1"
 group= "com.rabbit"
 archivesBaseName = "rabbit-gui"
 
@@ -36,42 +36,38 @@ configurations {
 }
 
 dependencies {
+    compile 'net.objecthunter:exp4j:0.4.5'
     shade 'net.objecthunter:exp4j:0.4.5'
 }
 
-task shadedJar(type: Jar){
+jar {	
+	from ('src/main/java/assets'){
+    	into 'assets'
+    }
+	
     from (sourceSets.main.output) {
         setDuplicatesStrategy(DuplicatesStrategy.EXCLUDE)
     }
+    
     configurations.shade.each{ dep ->
         from(project.zipTree(dep)){
-            exclude 'META-ING', 'META-INF/**'
+            exclude 'META-ING', 'META-INF/**', '**/LICENSE.txt'
         }
     }
-    classifier = 'shaded'
 }
-
-task sourceJar(type: Jar) { 
-    from sourceSets.main.allSource
-    classifier = 'sources'
-}
-
-reobf.reobf(shadedJar, action)
-
-tasks.jar.dependsOn('sourceJar', 'shadedJar')
 
 artifacts {
     archives jar
-    archives sourceJar
-    archives shadedJar
 }
-
 
 compileJava {
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 }
 
+task wrapper(type: Wrapper) {
+	gradleVersion = "2.7"
+}
 
 processResources
 {
