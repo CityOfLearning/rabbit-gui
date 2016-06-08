@@ -1,4 +1,4 @@
-# rabbit-gui [![Build Status](https://travis-ci.org/FRedEnergy/rabbit-gui.svg?branch=master)](https://travis-ci.org/FRedEnergy/rabbit-gui)
+# rabbit-gui [![Build Status](https://travis-ci.org/CityOfLearning/rabbit-gui.svg?branch=DYN-CityServer)](https://travis-ci.org/CityOFLearning/rabbit-gui)
 Graphical framework built on top of Forge Mod Loader and designed to facilitate the creation of graphical user interfaces
 
 ##Getting started
