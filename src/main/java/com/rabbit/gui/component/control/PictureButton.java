@@ -90,7 +90,7 @@ public class PictureButton extends Button {
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		Minecraft.getMinecraft().renderEngine.bindTexture(pictureTexture);
-		Renderer.drawTexturedModalRect(getX() + 1, getY(), 0, 0, getWidth() - 2, getHeight() - 2, getWidth() - 2,
+		Renderer.drawTexturedModalRect(getX() + 1, getY()+1, 0, 0, getWidth() - 2, getHeight() - 2, getWidth() - 2,
 				getHeight() - 2, 0);
 		GL11.glPopMatrix();
 	}

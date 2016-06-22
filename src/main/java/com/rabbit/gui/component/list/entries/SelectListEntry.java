@@ -27,7 +27,7 @@ public abstract class SelectListEntry implements ListEntry {
 		}
 	}
 
-	public void setIsSelected(boolean selected) {
+	public void setSelected(boolean selected) {
 		this.selected = selected;
 	}
 }
