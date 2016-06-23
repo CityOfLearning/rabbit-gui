@@ -1,29 +1,33 @@
+// For those who want the bleeding edge
 buildscript {
     repositories {
-        mavenCentral()
+        jcenter()
         maven {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
         }
-        maven {
-            name = "sonatype"
-            url = "https://oss.sonatype.org/content/repositories/snapshots/"
-        }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
     }
 }
+apply plugin: 'net.minecraftforge.gradle.forge'
 
-apply plugin: 'forge'
-
-version = "v1.3.0"
+version = "v1.3.1"
 group= "com.rabbit"
 archivesBaseName = "rabbit-gui"
 
 minecraft {
-    version = "1.7.10-10.13.3.1408-1.7.10"
-    runDir = "eclipse"
+    version = "1.8.9-11.15.1.1855"
+    runDir = "run"
+    
+    // the mappings can be changed at any time, and must be in the following format.
+    // snapshot_YYYYMMDD   snapshot are built nightly.
+    // stable_#            stables are built at the discretion of the MCP team.
+    // Use non-default mappings at your own risk. they may not allways work.
+    // simply re-run your setup task after changing the mappings to update your workspace.
+    mappings = "stable_20"
+    makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 
 configurations {
@@ -32,48 +36,38 @@ configurations {
 }
 
 dependencies {
+    compile 'net.objecthunter:exp4j:0.4.5'
     shade 'net.objecthunter:exp4j:0.4.5'
 }
 
-task shadedJar(type: Jar){
+jar {	
+	from ('src/main/java/assets'){
+    	into 'assets'
+    }
+	
     from (sourceSets.main.output) {
         setDuplicatesStrategy(DuplicatesStrategy.EXCLUDE)
     }
+    
     configurations.shade.each{ dep ->
         from(project.zipTree(dep)){
-            exclude 'META-ING', 'META-INF/**'
+            exclude 'META-ING', 'META-INF/**', '**/LICENSE.txt'
         }
     }
-    classifier = 'shaded'
 }
-
-task sourceJar(type: Jar) { 
-    from sourceSets.main.allSource
-    classifier = 'sources'
-}
-
-def action = new Action<net.minecraftforge.gradle.tasks.user.reobf.ArtifactSpec>(){
-    void execute(net.minecraftforge.gradle.tasks.user.reobf.ArtifactSpec artifactSpec) {
-        artifactSpec.classpath = sourceSets.main.compileClasspath
-    }
-}
-
-reobf.reobf(shadedJar, action)
-
-tasks.jar.dependsOn('sourceJar', 'shadedJar')
 
 artifacts {
     archives jar
-    archives sourceJar
-    archives shadedJar
 }
-
 
 compileJava {
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 }
 
+task wrapper(type: Wrapper) {
+	gradleVersion = "2.7"
+}
 
 processResources
 {
