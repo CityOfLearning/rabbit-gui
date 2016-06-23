@@ -48,8 +48,8 @@ public class PictureButtonGridEntry extends Button implements GridEntry {
 		try {
 			BufferedImage image = ImageIO
 					.read(Minecraft.getMinecraft().getResourceManager().getResource(texture).getInputStream());
-			imageWidth = image.getWidth();
-			imageHeight = image.getHeight();
+			setImageWidth(image.getWidth());
+			setImageHeight(image.getHeight());
 		} catch (IOException ioex) {
 			throw new RuntimeException("Can't get resource", ioex);
 		}
@@ -71,6 +71,14 @@ public class PictureButtonGridEntry extends Button implements GridEntry {
 	@Override
 	public List<String> getHoverText() {
 		return originalHoverText;
+	}
+
+	public int getImageHeight() {
+		return imageHeight;
+	}
+
+	public int getImageWidth() {
+		return imageWidth;
 	}
 
 	public ResourceLocation getPictureTexture() {
@@ -133,8 +141,7 @@ public class PictureButtonGridEntry extends Button implements GridEntry {
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		Minecraft.getMinecraft().renderEngine.bindTexture(pictureTexture);
-		Renderer.drawTexturedModalRect(getX(), getY(), 0, 0, getWidth() - 2, getHeight() - 2, getWidth() - 2,
-				getHeight() - 2, 0);
+		Renderer.drawScaledTexturedRect(getX() + 1, getY() + 1, getWidth()-2, getHeight()-2);
 		GL11.glPopMatrix();
 	}
 
@@ -147,6 +154,14 @@ public class PictureButtonGridEntry extends Button implements GridEntry {
 	public PictureButtonGridEntry setHoverText(List<String> text) {
 		originalHoverText = text;
 		return this;
+	}
+
+	public void setImageHeight(int imageHeight) {
+		this.imageHeight = imageHeight;
+	}
+
+	public void setImageWidth(int imageWidth) {
+		this.imageWidth = imageWidth;
 	}
 
 	public PictureButtonGridEntry setPictureTexture(ResourceLocation res) {

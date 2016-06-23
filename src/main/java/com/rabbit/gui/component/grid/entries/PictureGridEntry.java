@@ -44,12 +44,20 @@ public class PictureGridEntry implements GridEntry {
 		try {
 			BufferedImage image = ImageIO
 					.read(Minecraft.getMinecraft().getResourceManager().getResource(texture).getInputStream());
-			imageWidth = image.getWidth();
-			imageHeight = image.getHeight();
+			setImageWidth(image.getWidth());
+			setImageHeight(image.getHeight());
 		} catch (IOException ioex) {
 			throw new RuntimeException("Can't get resource", ioex);
 		}
 		this.listener = listener;
+	}
+
+	public int getImageHeight() {
+		return imageHeight;
+	}
+
+	public int getImageWidth() {
+		return imageWidth;
 	}
 
 	@Override
@@ -67,7 +75,15 @@ public class PictureGridEntry implements GridEntry {
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		Minecraft.getMinecraft().renderEngine.bindTexture(texture);
-		Renderer.drawTexturedModalRect(posX, posY, 0, 0, width, height, width, height, 0);
+		Renderer.drawScaledTexturedRect(posX, posY, width, height);
 		GL11.glPopMatrix();
+	}
+
+	public void setImageHeight(int imageHeight) {
+		this.imageHeight = imageHeight;
+	}
+
+	public void setImageWidth(int imageWidth) {
+		this.imageWidth = imageWidth;
 	}
 }

@@ -29,11 +29,14 @@ public class CheckBox extends GuiWidget implements Shiftable {
 	public interface CheckBoxStatusChangedListener {
 		void onStatusChanged(CheckBox box);
 	}
+	
+	@LayoutComponent
+	protected Color checkColor;
+	
+	@LayoutComponent
+	protected Color textColor;
 
-	private static final Color DISABLED_COLOR = new Color(127, 127, 127);
-	private static final Color HOVER_COLOR = new Color(255, 255, 160);
-	private static final Color COMMON_COLOR = Color.white;
-
+	// hard coded sizes? why
 	protected static final int WIDTH = 11;
 	protected static final int HEIGHT = 11;
 
@@ -44,9 +47,6 @@ public class CheckBox extends GuiWidget implements Shiftable {
 
 	@LayoutComponent
 	protected String text;
-	protected int width = WIDTH;
-
-	protected int height = HEIGHT;
 
 	@LayoutComponent
 	protected boolean isVisible = true;
@@ -56,10 +56,28 @@ public class CheckBox extends GuiWidget implements Shiftable {
 
 	protected CheckBoxStatusChangedListener onStatusChangedListener;
 
-	public CheckBox(int xPos, int yPos, String title, boolean checked) {
-		super(xPos, yPos, WIDTH, HEIGHT);
+	public CheckBox(int xPos, int yPos, int width, int height, Color checkColor, Color textColor, String title, boolean checked) {
+		super(xPos, yPos, width, height);
+		this.textColor = textColor;
+		this.checkColor = checkColor;
 		text = title;
 		isChecked = checked;
+	}
+
+	public CheckBox(int xPos, int yPos, String title, Color checkColor, Color textColor, boolean checked) {
+		this(xPos, yPos, WIDTH, HEIGHT, checkColor, textColor, title, checked);
+	}
+	
+	public CheckBox(int xPos, int yPos, String title, Color textColor, boolean checked) {
+		this(xPos, yPos, WIDTH, HEIGHT, Color.GREEN, textColor, title, checked);
+	}
+	
+	public CheckBox(int xPos, int yPos, String title, boolean checked) {
+		this(xPos, yPos, WIDTH, HEIGHT, Color.GREEN, Color.white, title, checked);
+	}
+	
+	public CheckBox(int xPos, int yPos, int width, int height, String title, boolean checked) {
+		this(xPos, yPos, width, height, Color.GREEN, Color.white, title, checked);
 	}
 
 	void b(ResourceLocation loc) {
@@ -110,18 +128,12 @@ public class CheckBox extends GuiWidget implements Shiftable {
 		if (isVisible()) {
 			prepareRender();
 			drawButton();
-			Color color;
-			if (!isEnabled()) {
-				color = DISABLED_COLOR;
-			} else if (isButtonUnderMouse(mouseX, mouseY)) {
-				color = HOVER_COLOR;
-			} else {
-				color = COMMON_COLOR;
-			}
 			if (isChecked()) {
-				TextRenderer.renderString(getX() + (getWidth() / 2) + 1, getY() + 1, "x", color, TextAlignment.CENTER);
+				Renderer.drawLine(getX() + 2, (int) (getY() + (getHeight() * .66)), getX() + (getWidth()/2), getY() + getHeight()-2, this.checkColor, getWidth()/3);
+				Renderer.drawLine(getX() + (getWidth()/2), getY() + getHeight()-2, getX() + getWidth() + 1, getY()-1, this.checkColor, getWidth()/3);
+				//TextRenderer.renderString(getX() + (getWidth() / 2) + 1, getY() + 1, "x", color, TextAlignment.CENTER);
 			}
-			TextRenderer.renderString(getX() + getWidth() + 2, (getY() + (getHeight() / 2)) - 3, getText());
+			TextRenderer.renderString(getX() + getWidth() + 2, (getY() + (getHeight() / 2)) - 3, getText(), this.textColor);
 		}
 	}
 

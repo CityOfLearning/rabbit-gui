@@ -11,7 +11,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class SelectStringEntry extends SelectListEntry {
 
 	public static interface OnClickListener {
-		void onClick(DisplayList list, int mouseX, int mouseY);
+		void onClick(SelectStringEntry entry, DisplayList list, int mouseX, int mouseY);
 	}
 
 	/**
@@ -42,7 +42,7 @@ public class SelectStringEntry extends SelectListEntry {
 	public void onClick(DisplayList list, int mouseX, int mouseY) {
 		super.onClick(list, mouseX, mouseY);
 		if (listener != null) {
-			listener.onClick(list, mouseX, mouseY);
+			listener.onClick(this, list, mouseX, mouseY);
 		}
 	}
 

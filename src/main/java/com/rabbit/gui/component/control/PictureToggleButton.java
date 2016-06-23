@@ -18,28 +18,31 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 @LayoutComponent
-public class PictureButton extends Button {
+public class PictureToggleButton extends Button {
+	
+	private boolean toggle;
 
-	private ResourceLocation pictureTexture;
+	private ResourceLocation onPictureTexture;
+	private ResourceLocation offPictureTexture;
 
-	public PictureButton(int xPos, int yPos, int width, int height, ResourceLocation texture) {
+	public PictureToggleButton(int xPos, int yPos, int width, int height, ResourceLocation ontexture, ResourceLocation offtexture, boolean toggled) {
 		super(xPos, yPos, width, height, "");
-		pictureTexture = texture;
+		this.toggle = toggled;
 		try {
 			BufferedImage image = ImageIO
-					.read(Minecraft.getMinecraft().getResourceManager().getResource(texture).getInputStream());
+					.read(Minecraft.getMinecraft().getResourceManager().getResource(ontexture).getInputStream());
+			image = ImageIO
+					.read(Minecraft.getMinecraft().getResourceManager().getResource(offtexture).getInputStream());
 		} catch (IOException ioex) {
 			throw new RuntimeException("Can't get resource", ioex);
 		}
+		setOnPictureTexture(ontexture);
+		setOffPictureTexture(offtexture);
 	}
 
 	/** Dummy constructor. Used in layout */
-	public PictureButton() {
+	public PictureToggleButton() {
 		super();
-	}
-
-	public ResourceLocation getPictureTexture() {
-		return pictureTexture;
 	}
 
 	@Override
@@ -81,14 +84,50 @@ public class PictureButton extends Button {
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		Minecraft.getMinecraft().renderEngine.bindTexture(pictureTexture);
+		if(toggle){
+			Minecraft.getMinecraft().renderEngine.bindTexture(onPictureTexture);
+		} else {
+			Minecraft.getMinecraft().renderEngine.bindTexture(offPictureTexture);
+		}
 		Renderer.drawScaledTexturedRect(getX() + 1, getY() + 1, getWidth()-2, getHeight()-2);
 		GL11.glPopMatrix();
 	}
 
-	public PictureButton setPictureTexture(ResourceLocation res) {
-		pictureTexture = res;
-		return this;
+	public boolean isToggled() {
+		return toggle;
+	}
+
+	public void setToggle(boolean toggle) {
+		this.toggle = toggle;
+	}
+	
+	@Override
+	public boolean onMouseClicked(int posX, int posY, int mouseButtonIndex, boolean overlap) {
+		boolean clicked = isButtonUnderMouse(posX, posY) && isEnabled() && !overlap;
+		if (clicked) {
+			if (getClickListener() != null) {
+				getClickListener().onClick(this);
+			}
+			toggle = !toggle;
+			playClickSound();
+		}
+		return clicked;
+	}
+
+	public ResourceLocation getOnPictureTexture() {
+		return onPictureTexture;
+	}
+
+	public void setOnPictureTexture(ResourceLocation onPictureTexture) {
+		this.onPictureTexture = onPictureTexture;
+	}
+
+	public ResourceLocation getOffPictureTexture() {
+		return offPictureTexture;
+	}
+
+	public void setOffPictureTexture(ResourceLocation offPictureTexture) {
+		this.offPictureTexture = offPictureTexture;
 	}
 
 }

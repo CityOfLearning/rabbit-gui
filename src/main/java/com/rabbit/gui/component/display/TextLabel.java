@@ -1,5 +1,6 @@
 package com.rabbit.gui.component.display;
 
+import java.awt.Color;
 import java.util.List;
 
 import com.rabbit.gui.component.GuiWidget;
@@ -17,6 +18,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class TextLabel extends GuiWidget implements Shiftable {
 
 	@LayoutComponent
+	protected Color color;
+	
+	@LayoutComponent
 	protected String text;
 
 	@LayoutComponent
@@ -32,12 +36,21 @@ public class TextLabel extends GuiWidget implements Shiftable {
 	protected TextAlignment alignment = TextAlignment.LEFT;
 
 	public TextLabel(int xPos, int yPos, int width, int height, String text) {
-		this(xPos, yPos, width, height, text, TextAlignment.LEFT);
+		this(xPos, yPos, width, height, null, text, TextAlignment.LEFT);
+	}
+	
+	public TextLabel(int xPos, int yPos, int width, int height, Color color, String text) {
+		this(xPos, yPos, width, height, color, text, TextAlignment.LEFT);
 	}
 
 	public TextLabel(int xPos, int yPos, int width, int height, String text, TextAlignment align) {
+		this(xPos, yPos, width, height, null, text, align);
+	}
+	
+	public TextLabel(int xPos, int yPos, int width, int height, Color color, String text, TextAlignment align) {
 		super(xPos, yPos, width, height);
 		this.text = text;
+		this.color = color;
 		alignment = align;
 	}
 
@@ -51,7 +64,11 @@ public class TextLabel extends GuiWidget implements Shiftable {
 		} else if (alignment == TextAlignment.RIGHT) {
 			x = x + getWidth();
 		}
-		TextRenderer.renderString(x, y, text, alignment);
+		if(color != null){
+			TextRenderer.renderString(x, y, text, color, alignment);
+		} else {
+			TextRenderer.renderString(x, y, text, alignment);
+		}
 	}
 
 	private void drawBackground() {
