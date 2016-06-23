@@ -56,7 +56,7 @@ public class Picture extends GuiWidget {
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		Minecraft.getMinecraft().renderEngine.bindTexture(texture);
-		Renderer.drawTexturedModalRect(getX(), getY(), 0, 0, getWidth(), getHeight(), getWidth(), getHeight(), 0);
+		Renderer.drawScaledTexturedRect(getX(), getY(), getWidth(), getHeight());
 		GL11.glPopMatrix();
 	}
 

@@ -75,7 +75,7 @@ public class PictureGridEntry implements GridEntry {
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		Minecraft.getMinecraft().renderEngine.bindTexture(texture);
-		Renderer.drawTexturedModalRect(posX, posY, 0, 0, width, height, width, height, 0);
+		Renderer.drawScaledTexturedRect(posX, posY, width, height);
 		GL11.glPopMatrix();
 	}
 

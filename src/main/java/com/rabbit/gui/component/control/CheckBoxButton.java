@@ -1,128 +1,53 @@
 package com.rabbit.gui.component.control;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 
 import org.lwjgl.opengl.GL11;
 
-import com.rabbit.gui.GuiFoundation;
-import com.rabbit.gui.component.GuiWidget;
-import com.rabbit.gui.component.Shiftable;
 import com.rabbit.gui.layout.LayoutComponent;
 import com.rabbit.gui.render.Renderer;
 import com.rabbit.gui.render.TextRenderer;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-/**
- * Simple button component <br>
- * Supported width: <b> 0 - 400 </b> (due to texture length it can't be larger)
- * <br>
- * Supported height: <b> 5 - INFINITY </b> <br>
- *
- * Use {@link #setClickListener(ButtonClickListener)} to define action on button
- * pressed
- */
 
 @SideOnly(Side.CLIENT)
 @LayoutComponent
-public class CheckBoxButton extends GuiWidget implements Shiftable {
+public class CheckBoxButton extends Button {
 
 	@FunctionalInterface
 	public static interface ButtonClickListener {
 		void onClick(CheckBoxButton button);
 	}
 
-	protected final static int DISABLED_STATE = 0;
-	protected final static int IDLE_STATE = 1;
-	protected final static int HOVER_STATE = 2;
-
-	protected boolean drawHoverText = false;
-	protected List<String> originalHoverText = new ArrayList<String>();
-
-	protected List<String> hoverText = new ArrayList<String>();
-
-	protected ResourceLocation buttonTexture = new ResourceLocation("textures/gui/widgets.png");
-
-	@LayoutComponent
-	protected boolean isVisible = true;
-
-	@LayoutComponent
-	protected boolean isEnabled = true;
-
-	protected ButtonClickListener onClick;
-
-	protected boolean drawToLeft;
-
 	private CheckBox checkbox;
+	private ResourceLocation pictureTexture;
 
 	/** Dummy constructor. Used in layout */
 	protected CheckBoxButton() {
+		super();
 	}
 
-	public CheckBoxButton(int xPos, int yPos, int width, int height, String title, boolean checked) {
-		super(xPos, yPos, width, height);
-		checkbox = new CheckBox(xPos + 1, yPos + 1, width - 2, height - 2, title, checked);
-	}
-
-	public CheckBoxButton addHoverText(String text) {
-		originalHoverText.add(text);
-		return this;
-	}
-
-	public CheckBoxButton doesDrawHoverText(boolean state) {
-		drawHoverText = state;
-		return this;
-	}
-
-	protected void drawButton(int state) {
-		Renderer.drawContinuousTexturedBox(getX(), getY(), 0, 46 + (20 * state), getWidth(), getHeight(), 200, 20, 2, 3,
-				2, 2);
-	}
-
-	protected void endRender() {
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		GL11.glDisable(GL11.GL_BLEND);
-	}
-
-	public ResourceLocation getButtonTexture() {
-		return buttonTexture;
-	}
-
-	public ButtonClickListener getClickListener() {
-		return onClick;
-	}
-
-	public List<String> getHoverText() {
-		return originalHoverText;
-	}
-
-	public String getText() {
-		return checkbox.getText();
-	}
-
-	public boolean isButtonUnderMouse(int mouseX, int mouseY) {
-		return (mouseX >= getX()) && (mouseX <= (getX() + getWidth())) && (mouseY >= getY())
-				&& (mouseY <= (getY() + getHeight()));
-	}
-
-	/**
-	 * @return <code> true</code> if button can be clicked
-	 */
-	public boolean isEnabled() {
-		return isEnabled;
-	}
-
-	/**
-	 * @return <code> true </code> if button would be rendered
-	 */
-	public boolean isVisible() {
-		return isVisible;
+	public CheckBoxButton(int xPos, int yPos, int width, int height, ResourceLocation texture, boolean checked) {
+		super(xPos, yPos, width, height, "");
+		pictureTexture = texture;
+		try {
+			BufferedImage image = ImageIO
+					.read(Minecraft.getMinecraft().getResourceManager().getResource(texture).getInputStream());
+		} catch (IOException ioex) {
+			throw new RuntimeException("Can't get resource", ioex);
+		}
+		if(width <= height){
+			checkbox = new CheckBox(xPos + 2, (int)(yPos + height*.66 - 2), height /3, height /3, "", checked);
+		} else {
+			checkbox = new CheckBox(xPos + 2, yPos + height/2 - 2, height /2, height /2, "", checked);
+		}
+		checkbox.setIsEnabled(false);
 	}
 
 	@Override
@@ -131,8 +56,12 @@ public class CheckBoxButton extends GuiWidget implements Shiftable {
 			prepareRender();
 			if (!isEnabled()) {
 				drawButton(DISABLED_STATE);
+				renderPicture();
+				checkbox.onDraw(mouseX, mouseY, partialTicks);
 			} else if (isButtonUnderMouse(mouseX, mouseY)) {
 				drawButton(HOVER_STATE);
+				renderPicture();
+				checkbox.onDraw(mouseX, mouseY, partialTicks);
 				if (drawHoverText) {
 					verifyHoverText(mouseX, mouseY);
 					if (drawToLeft) {
@@ -147,9 +76,14 @@ public class CheckBoxButton extends GuiWidget implements Shiftable {
 					}
 				}
 			} else {
-				drawButton(IDLE_STATE);
-			}
-			checkbox.onDraw(mouseX, mouseY, partialTicks);
+				if(checkbox.isChecked()){
+					drawButton(DISABLED_STATE);
+				} else {
+					drawButton(IDLE_STATE);
+				}
+				renderPicture();
+				checkbox.onDraw(mouseX, mouseY, partialTicks);
+			}	
 		}
 	}
 
@@ -160,137 +94,20 @@ public class CheckBoxButton extends GuiWidget implements Shiftable {
 			if (getClickListener() != null) {
 				getClickListener().onClick(this);
 			}
+			checkbox.setIsChecked(!checkbox.isChecked());
 			playClickSound();
 		}
-		checkbox.onMouseClicked(posX, posY, mouseButtonIndex, overlap);
 		return clicked;
 	}
 
-	protected void playClickSound() {
-		Minecraft.getMinecraft().getSoundHandler()
-				.playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
-	}
-
-	protected void prepareRender() {
-		Minecraft.getMinecraft().getTextureManager().bindTexture(getButtonTexture());
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+	private void renderPicture() {
+		GL11.glPushMatrix();
+		GL11.glColor4f(1, 1, 1, 1);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_BLEND);
-		OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-	}
-
-	/**
-	 * Provided listener will be executed by pressing the button
-	 *
-	 * @param onClicked
-	 *            listener
-	 * @return self
-	 */
-	public CheckBoxButton setClickListener(ButtonClickListener onClicked) {
-		onClick = onClicked;
-		return this;
-	}
-
-	public CheckBoxButton setCustomTexture(ResourceLocation res) {
-		buttonTexture = res;
-		return this;
-	}
-
-	public CheckBoxButton setHoverText(List<String> text) {
-		originalHoverText = text;
-		return this;
-	}
-
-	@Override
-	public CheckBoxButton setId(String id) {
-		assignId(id);
-		return this;
-	}
-
-	public CheckBoxButton setIsEnabled(boolean isEnabled) {
-		this.isEnabled = isEnabled;
-		return this;
-	}
-
-	public CheckBoxButton setIsVisible(boolean isVisible) {
-		this.isVisible = isVisible;
-		return this;
-	}
-
-	public CheckBoxButton setText(String text) {
-		checkbox.setText(text);
-		return this;
-	}
-
-	@Override
-	public void shiftX(int x) {
-		setX(getX() + x);
-	}
-
-	@Override
-	public void shiftY(int y) {
-		setY(getY() + y);
-	}
-
-	protected void verifyHoverText(int mouseX, int mouseY) {
-		int tlineWidth = 0;
-		for (String line : originalHoverText) {
-			tlineWidth = TextRenderer.getFontRenderer().getStringWidth(line) > tlineWidth
-					? TextRenderer.getFontRenderer().getStringWidth(line) : tlineWidth;
-		}
-		int dWidth = GuiFoundation.proxy.getCurrentStage().width;
-		if (((tlineWidth + mouseX) > dWidth) && ((mouseX + 1) > (dWidth / 2))) {
-			// the button is on the right half of the screen
-			drawToLeft = true;
-		}
-		List<String> newHoverText = new ArrayList<String>();
-		if (drawToLeft) {
-			for (String line : originalHoverText) {
-				int lineWidth = TextRenderer.getFontRenderer().getStringWidth(line) + 12;
-				// if the line length is longer than the button is from the left
-				// side of the screen we have to split
-				if (lineWidth > mouseX) {
-					// the line is too long lets split it
-					String newString = "";
-					for (String substring : line.split(" ")) {
-						// we can fit the string, we are ok
-						if ((TextRenderer.getFontRenderer().getStringWidth(newString)
-								+ TextRenderer.getFontRenderer().getStringWidth(substring)) < (mouseX - 12)) {
-							newString += substring + " ";
-						} else {
-							newHoverText.add(newString);
-							newString = substring + " ";
-						}
-					}
-					newHoverText.add(newString);
-				} else {
-					newHoverText.add(line);
-				}
-			}
-		} else {
-			for (String line : originalHoverText) {
-				int lineWidth = TextRenderer.getFontRenderer().getStringWidth(line) + 12;
-				// we just need to know what the right most side of the button
-				// is
-				if (lineWidth > (dWidth - mouseX)) {
-					// the line is too long lets split it
-					String newString = "";
-					for (String substring : line.split(" ")) {
-						// we can fit the string, we are ok
-						if ((TextRenderer.getFontRenderer().getStringWidth(newString)
-								+ TextRenderer.getFontRenderer().getStringWidth(substring)) < (dWidth - mouseX - 12)) {
-							newString += substring + " ";
-						} else {
-							newHoverText.add(newString);
-							newString = substring + " ";
-						}
-					}
-					newHoverText.add(newString);
-				} else {
-					newHoverText.add(line);
-				}
-			}
-		}
-		hoverText = newHoverText;
+		Minecraft.getMinecraft().renderEngine.bindTexture(pictureTexture);
+		Renderer.drawScaledTexturedRect(getX() + getWidth()/5, getY() + 1, (int)(getWidth()*.8)-1, (int)(getHeight()*.8)-1);
+		GL11.glPopMatrix();
 	}
 }

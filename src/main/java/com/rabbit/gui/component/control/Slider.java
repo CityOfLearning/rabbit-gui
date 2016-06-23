@@ -17,6 +17,10 @@ public class Slider extends GuiWidget {
 	public static interface OnProgressChanged {
 		void onProgressChanged(Slider bar, float modifier);
 	}
+	
+	public static interface OnMouseReleased {
+		void onMouseReleased(Slider bar, float modifier);
+	}
 
 	protected float sliderValue = 1.0F;
 	protected float sliderMaxValue = 1.0F;
@@ -32,6 +36,9 @@ public class Slider extends GuiWidget {
 	protected boolean visible = true;
 
 	protected OnProgressChanged progressChangedListener = (bar, mod) -> {
+	};
+	
+	protected OnMouseReleased mouseReleasedListener = (bar, mod) -> {
 	};
 
 	protected boolean handleMouseWheel;
@@ -68,6 +75,10 @@ public class Slider extends GuiWidget {
 
 	public OnProgressChanged getProgressChangedListener() {
 		return progressChangedListener;
+	}
+	
+	public OnMouseReleased getMouseReleasedListener() {
+		return mouseReleasedListener;
 	}
 
 	public boolean isScrolling() {
@@ -121,6 +132,7 @@ public class Slider extends GuiWidget {
 			isScrolling = false;
 			float magic = (((mouseX - getX()) + 2) - 10F) / ((getX() + width) - (getX() + 2) - 15.0F);
 			updateProgress(magic - scrolled);
+			getMouseReleasedListener().onMouseReleased(this, scrolled);
 		}
 
 	}
@@ -147,6 +159,11 @@ public class Slider extends GuiWidget {
 
 	public Slider setProgressChangedListener(OnProgressChanged progressChangedListener) {
 		this.progressChangedListener = progressChangedListener;
+		return this;
+	}
+	
+	public Slider setMouseReleasedListener(OnMouseReleased mouseReleasedListener) {
+		this.mouseReleasedListener = mouseReleasedListener;
 		return this;
 	}
 
