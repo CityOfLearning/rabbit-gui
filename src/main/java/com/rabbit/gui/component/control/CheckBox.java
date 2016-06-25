@@ -131,7 +131,6 @@ public class CheckBox extends GuiWidget implements Shiftable {
 			if (isChecked()) {
 				Renderer.drawLine(getX() + 2, (int) (getY() + (getHeight() * .66)), getX() + (getWidth()/2), getY() + getHeight()-2, this.checkColor, getWidth()/3);
 				Renderer.drawLine(getX() + (getWidth()/2), getY() + getHeight()-2, getX() + getWidth() + 1, getY()-1, this.checkColor, getWidth()/3);
-				//TextRenderer.renderString(getX() + (getWidth() / 2) + 1, getY() + 1, "x", color, TextAlignment.CENTER);
 			}
 			TextRenderer.renderString(getX() + getWidth() + 2, (getY() + (getHeight() / 2)) - 3, getText(), this.textColor);
 		}
