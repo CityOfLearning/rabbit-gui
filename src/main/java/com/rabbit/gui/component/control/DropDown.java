@@ -286,22 +286,15 @@ public class DropDown<T> extends GuiWidget implements WidgetList<T>, Shiftable {
 		}
 		if (clicked && this.isEnabled()) {
 
-			if (this.underMouse(posX, posY) && !this.isEmpty()) {
-				this.isUnrolled = !this.isUnrolled;
-			}
-
 			if (this.isUnrolled) {
 				List<String> contentKeys = new ArrayList<>(this.getContent().keySet());
 				int unrollHeight = Math.min(contentKeys.size(), 4) * getHeight();
 				for (int index = 0; index < contentKeys.size(); index++) {
-//					int yPos = getY() + getHeight() + (getHeight() / 8) + (index * getHeight() /* 12 */);
-//					boolean hoverItem = (posX >= getX()) && (posX <= (getX() + getWidth())) && (posY >= yPos)
-//							&& (posY <= (yPos + getHeight() /* 12 */));
 					
 					int slotPosY = ((getY() + (index * height)) - (int) ((height * scrollBar.getProgress() * content.size())
 							- (((unrollHeight - height) * (scrollBar.getProgress())) / 1)));
 
-					boolean hoverItem = (posX >= getX()) && (posX <= (getX() + getWidth())) && (posY >= getHeight() + slotPosY)
+					boolean hoverItem = (posX >= getX()) && (posX <= (getX() + getWidth()-scrollBar.getWidth())) && (posY >= getHeight() + slotPosY)
 							&& (posY <= (slotPosY + getHeight()*2));
 					
 					if (hoverItem) {
@@ -313,6 +306,10 @@ public class DropDown<T> extends GuiWidget implements WidgetList<T>, Shiftable {
 						this.scrollBar.setProgress(0);
 					}
 				}
+			} 
+			
+			if (this.dropButton.isButtonUnderMouse(posX, posY) && !this.isEmpty()) {
+				this.isUnrolled = !this.isUnrolled;
 			}
 		}
 		return clicked;
