@@ -8,7 +8,6 @@
 *.so
 
 .metadata
-.gradle
 bin/
 tmp/
 *.tmp
@@ -54,3 +53,7 @@ local.properties
 
 ## Directory-based project format:
 .idea/
+
+#build artifacts
+.gradle
+build

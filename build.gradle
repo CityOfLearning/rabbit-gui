@@ -83,3 +83,7 @@ processResources
         exclude 'mcmod.info'
     }
 }
+
+reobfJar.doLast {
+    ant.checksum file: tasks.jar.archivePath
+}
