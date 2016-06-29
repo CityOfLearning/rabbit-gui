@@ -14,6 +14,7 @@ import com.rabbit.gui.render.Renderer;
 import com.rabbit.gui.utils.TextureHelper;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -22,7 +23,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class Picture extends GuiWidget {
 
-	private String pictureUUID = UUID.randomUUID().toString();
+	private UUID pictureUUID = UUID.randomUUID();
 	private int imageWidth;
 	private int imageHeight;
 
@@ -35,7 +36,8 @@ public class Picture extends GuiWidget {
 			setImageWidth(image.getWidth());
 			setImageHeight(image.getHeight());
 		} catch (IOException ioex) {
-			throw new RuntimeException("Can't get resource", ioex);
+			ioex.printStackTrace();
+//			throw new RuntimeException("Can't get resource", ioex);
 		}
 	}
 	
@@ -49,11 +51,39 @@ public class Picture extends GuiWidget {
 				setImageWidth(image.getWidth());
 				setImageHeight(image.getHeight());
 			} catch (IOException ioex) {
-				throw new RuntimeException("Can't get resource", ioex);
+				ioex.printStackTrace();
+//				throw new RuntimeException("Can't get resource", ioex);
 			}
 		} else if(TextureHelper.isTextureDynamic(pictureUUID)) {
 			try {
 				BufferedImage image = ImageIO.read(new URL(textureLocation));
+				setImageWidth(image.getWidth());
+				setImageHeight(image.getHeight());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		
+	}
+	
+	public Picture(int xPos, int yPos, int width, int height, UUID textureId) {
+		super(xPos, yPos, width, height);
+		pictureUUID = textureId;
+		if(TextureHelper.isTextureStatic(pictureUUID)){
+			try {
+				BufferedImage image = ImageIO
+						.read(Minecraft.getMinecraft().getResourceManager().getResource(TextureHelper.getStaticTexture(pictureUUID)).getInputStream());
+				setImageWidth(image.getWidth());
+				setImageHeight(image.getHeight());
+			} catch (IOException ioex) {
+				ioex.printStackTrace();
+				//throw new RuntimeException("Can't get resource", ioex);
+			}
+		} else if(TextureHelper.isTextureDynamic(pictureUUID)) {
+			try {
+				BufferedImage image = ImageIO.read(new URL(TextureHelper.getDynamicTextureLocation(pictureUUID)));
 				setImageWidth(image.getWidth());
 				setImageHeight(image.getHeight());
 			} catch (IOException e) {
@@ -82,10 +112,9 @@ public class Picture extends GuiWidget {
 	private void renderPicture() {
 		GL11.glPushMatrix();
 		GL11.glColor4f(1, 1, 1, 1);
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glEnable(GL11.GL_BLEND);
+		GlStateManager.enableTexture2D();
+		GlStateManager.enableBlend();
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-//		Minecraft.getMinecraft().renderEngine.bindTexture(texture);
 		TextureHelper.bindTexture(pictureUUID);
 		Renderer.drawScaledTexturedRect(getX(), getY(), getWidth(), getHeight());
 		GL11.glPopMatrix();
@@ -97,5 +126,41 @@ public class Picture extends GuiWidget {
 
 	public void setImageWidth(int imageWidth) {
 		this.imageWidth = imageWidth;
+	}
+	
+	public void setImageTexture(String textureLocation){
+		TextureHelper.addTexture(pictureUUID, textureLocation);
+		if(TextureHelper.isTextureStatic(pictureUUID)){
+			try {
+				BufferedImage image = ImageIO
+						.read(Minecraft.getMinecraft().getResourceManager().getResource(TextureHelper.getStaticTexture(pictureUUID)).getInputStream());
+				setImageWidth(image.getWidth());
+				setImageHeight(image.getHeight());
+			} catch (IOException ioex) {
+				throw new RuntimeException("Can't get resource", ioex);
+			}
+		} else if(TextureHelper.isTextureDynamic(pictureUUID)) {
+			try {
+				BufferedImage image = ImageIO.read(new URL(textureLocation));
+				setImageWidth(image.getWidth());
+				setImageHeight(image.getHeight());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+	}
+	
+	public void setImageTexture(ResourceLocation texture){
+		TextureHelper.addStaticTexture(pictureUUID, texture);
+		try {
+			BufferedImage image = ImageIO
+					.read(Minecraft.getMinecraft().getResourceManager().getResource(texture).getInputStream());
+			setImageWidth(image.getWidth());
+			setImageHeight(image.getHeight());
+		} catch (IOException ioex) {
+			throw new RuntimeException("Can't get resource", ioex);
+		}
 	}
 }

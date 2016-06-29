@@ -7,6 +7,7 @@ import javax.imageio.ImageIO;
 
 import org.lwjgl.opengl.GL11;
 
+import com.rabbit.gui.component.display.Picture;
 import com.rabbit.gui.layout.LayoutComponent;
 import com.rabbit.gui.render.Renderer;
 import com.rabbit.gui.render.TextRenderer;
@@ -22,22 +23,35 @@ public class PictureToggleButton extends Button {
 	
 	private boolean toggle;
 
-	private ResourceLocation onPictureTexture;
-	private ResourceLocation offPictureTexture;
+	private Picture onPicture;
+	private Picture offPicture;
 
 	public PictureToggleButton(int xPos, int yPos, int width, int height, ResourceLocation ontexture, ResourceLocation offtexture, boolean toggled) {
 		super(xPos, yPos, width, height, "");
 		this.toggle = toggled;
-		try {
-			BufferedImage image = ImageIO
-					.read(Minecraft.getMinecraft().getResourceManager().getResource(ontexture).getInputStream());
-			image = ImageIO
-					.read(Minecraft.getMinecraft().getResourceManager().getResource(offtexture).getInputStream());
-		} catch (IOException ioex) {
-			throw new RuntimeException("Can't get resource", ioex);
-		}
-		setOnPictureTexture(ontexture);
-		setOffPictureTexture(offtexture);
+		onPicture = new Picture(xPos + 1, yPos + 1, width-2, height-2, ontexture);
+		offPicture = new Picture(xPos + 1, yPos + 1, width-2, height-2, offtexture);
+	}
+	
+	public PictureToggleButton(int xPos, int yPos, int width, int height, ResourceLocation ontexture, String offtexture, boolean toggled) {
+		super(xPos, yPos, width, height, "");
+		this.toggle = toggled;
+		onPicture = new Picture(xPos + 1, yPos + 1, width-2, height-2, ontexture);
+		offPicture = new Picture(xPos + 1, yPos + 1, width-2, height-2, offtexture);
+	}
+	
+	public PictureToggleButton(int xPos, int yPos, int width, int height, String ontexture, ResourceLocation offtexture, boolean toggled) {
+		super(xPos, yPos, width, height, "");
+		this.toggle = toggled;
+		onPicture = new Picture(xPos + 1, yPos + 1, width-2, height-2, ontexture);
+		offPicture = new Picture(xPos + 1, yPos + 1, width-2, height-2, offtexture);
+	}
+	
+	public PictureToggleButton(int xPos, int yPos, int width, int height, String ontexture, String offtexture, boolean toggled) {
+		super(xPos, yPos, width, height, "");
+		this.toggle = toggled;
+		onPicture = new Picture(xPos + 1, yPos + 1, width-2, height-2, ontexture);
+		offPicture = new Picture(xPos + 1, yPos + 1, width-2, height-2, offtexture);
 	}
 
 	/** Dummy constructor. Used in layout */
@@ -52,10 +66,18 @@ public class PictureToggleButton extends Button {
 			prepareRender();
 			if (!isEnabled()) {
 				drawButton(DISABLED_STATE);
-				renderPicture();
+				if(toggle){
+					onPicture.onDraw(mouseX, mouseY, partialTicks);
+				} else {
+					offPicture.onDraw(mouseX, mouseY, partialTicks);
+				}
 			} else if (isButtonUnderMouse(mouseX, mouseY)) {
 				drawButton(HOVER_STATE);
-				renderPicture();
+				if(toggle){
+					onPicture.onDraw(mouseX, mouseY, partialTicks);
+				} else {
+					offPicture.onDraw(mouseX, mouseY, partialTicks);
+				}
 				if (drawHoverText) {
 					verifyHoverText(mouseX, mouseY);
 					if (drawToLeft) {
@@ -71,26 +93,15 @@ public class PictureToggleButton extends Button {
 				}
 			} else {
 				drawButton(IDLE_STATE);
-				renderPicture();
+				if(toggle){
+					onPicture.onDraw(mouseX, mouseY, partialTicks);
+				} else {
+					offPicture.onDraw(mouseX, mouseY, partialTicks);
+				}
 			}
 			endRender();
 			GL11.glPopMatrix();
 		}
-	}
-
-	private void renderPicture() {
-		GL11.glPushMatrix();
-		GL11.glColor4f(1, 1, 1, 1);
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		if(toggle){
-			Minecraft.getMinecraft().renderEngine.bindTexture(onPictureTexture);
-		} else {
-			Minecraft.getMinecraft().renderEngine.bindTexture(offPictureTexture);
-		}
-		Renderer.drawScaledTexturedRect(getX() + 1, getY() + 1, getWidth()-2, getHeight()-2);
-		GL11.glPopMatrix();
 	}
 
 	public boolean isToggled() {
@@ -113,21 +124,4 @@ public class PictureToggleButton extends Button {
 		}
 		return clicked;
 	}
-
-	public ResourceLocation getOnPictureTexture() {
-		return onPictureTexture;
-	}
-
-	public void setOnPictureTexture(ResourceLocation onPictureTexture) {
-		this.onPictureTexture = onPictureTexture;
-	}
-
-	public ResourceLocation getOffPictureTexture() {
-		return offPictureTexture;
-	}
-
-	public void setOffPictureTexture(ResourceLocation offPictureTexture) {
-		this.offPictureTexture = offPictureTexture;
-	}
-
 }

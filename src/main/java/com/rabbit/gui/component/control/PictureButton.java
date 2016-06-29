@@ -7,6 +7,7 @@ import javax.imageio.ImageIO;
 
 import org.lwjgl.opengl.GL11;
 
+import com.rabbit.gui.component.display.Picture;
 import com.rabbit.gui.layout.LayoutComponent;
 import com.rabbit.gui.render.Renderer;
 import com.rabbit.gui.render.TextRenderer;
@@ -20,26 +21,21 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @LayoutComponent
 public class PictureButton extends Button {
 
-	private ResourceLocation pictureTexture;
+	private Picture picture;
 
 	public PictureButton(int xPos, int yPos, int width, int height, ResourceLocation texture) {
 		super(xPos, yPos, width, height, "");
-		pictureTexture = texture;
-		try {
-			BufferedImage image = ImageIO
-					.read(Minecraft.getMinecraft().getResourceManager().getResource(texture).getInputStream());
-		} catch (IOException ioex) {
-			throw new RuntimeException("Can't get resource", ioex);
-		}
+		picture = new Picture(xPos + 1, yPos + 1, width-2, height-2, texture);
+	}
+	
+	public PictureButton(int xPos, int yPos, int width, int height, String texture) {
+		super(xPos, yPos, width, height, "");
+		picture = new Picture(xPos + 1, yPos + 1, width-2, height-2, texture);
 	}
 
 	/** Dummy constructor. Used in layout */
 	public PictureButton() {
 		super();
-	}
-
-	public ResourceLocation getPictureTexture() {
-		return pictureTexture;
 	}
 
 	@Override
@@ -49,10 +45,10 @@ public class PictureButton extends Button {
 			prepareRender();
 			if (!isEnabled()) {
 				drawButton(DISABLED_STATE);
-				renderPicture();
+				picture.onDraw(mouseX, mouseY, partialTicks);
 			} else if (isButtonUnderMouse(mouseX, mouseY)) {
 				drawButton(HOVER_STATE);
-				renderPicture();
+				picture.onDraw(mouseX, mouseY, partialTicks);
 				if (drawHoverText) {
 					verifyHoverText(mouseX, mouseY);
 					if (drawToLeft) {
@@ -68,26 +64,20 @@ public class PictureButton extends Button {
 				}
 			} else {
 				drawButton(IDLE_STATE);
-				renderPicture();
+				picture.onDraw(mouseX, mouseY, partialTicks);
 			}
 			endRender();
 			GL11.glPopMatrix();
 		}
 	}
 
-	private void renderPicture() {
-		GL11.glPushMatrix();
-		GL11.glColor4f(1, 1, 1, 1);
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		Minecraft.getMinecraft().renderEngine.bindTexture(pictureTexture);
-		Renderer.drawScaledTexturedRect(getX() + 1, getY() + 1, getWidth()-2, getHeight()-2);
-		GL11.glPopMatrix();
-	}
-
 	public PictureButton setPictureTexture(ResourceLocation res) {
-		pictureTexture = res;
+		picture.setImageTexture(res);;
+		return this;
+	}
+	
+	public PictureButton setPictureTexture(String res) {
+		picture.setImageTexture(res);;
 		return this;
 	}
 
