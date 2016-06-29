@@ -12,9 +12,11 @@ buildscript {
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
+//we have to do this for jitpack
+apply plugin: 'maven'
 
 version = "v1.3.1"
-group= "com.rabbit"
+group = 'com.github.CityOfLearning'
 archivesBaseName = "rabbit-gui"
 
 minecraft {
