@@ -40,6 +40,7 @@ public class ScrollTextLabel extends TextLabel {
 	@Override
 	protected void drawMultilined() {
 		scrollBar.setVisiblie(!canFit());
+		scrollBar.setHandleMouseWheel(!canFit() && isUnderMouse(Mouse.getX(), Mouse.getY()));
 		List<String> displayLines = getLines();
 		int scale = Geometry.computeScaleFactor();
 		for (int i = 0; i < displayLines.size(); i++) {
@@ -67,20 +68,6 @@ public class ScrollTextLabel extends TextLabel {
 			scrollBar = new ScrollBar((getX() + width) - 10, getY(), 10, height, scrollerSize)
 					.setHandleMouseWheel(false);
 			registerComponent(scrollBar);
-		}
-	}
-	
-	@Override
-	public void onMouseInput() {
-		super.onMouseInput();
-		if (scrollBar.shouldHandleMouseWheel() && isUnderMouse(Mouse.getX(), Mouse.getY())) {
-			double delta = Mouse.getDWheel(); //getDWheel resets to 0 so only 1 object responds...
-			if (delta < 0) {
-				scrollBar.updateProgress(0.10F);
-			}
-			if (delta > 0) {
-				scrollBar.updateProgress(-0.10F);
-			}
 		}
 	}
 	

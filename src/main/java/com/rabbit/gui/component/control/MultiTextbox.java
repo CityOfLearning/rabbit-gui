@@ -97,6 +97,7 @@ public class MultiTextbox extends TextBox {
 			}
 			listHeight = lineCount * TextRenderer.getFontRenderer().FONT_HEIGHT;
 			scrollBar.setVisiblie(listHeight > (height - 4));
+			scrollBar.setHandleMouseWheel(listHeight > (height - 4) && isUnderMouse(Mouse.getX(), Mouse.getY()));
 			scrollBar.setScrollerSize((getScrollerSize()));
 		}
 	}
@@ -201,20 +202,6 @@ public class MultiTextbox extends TextBox {
 	public void setup() {
 		registerComponent(
 				scrollBar = new ScrollBar(getX() + getWidth(), getY(), 15, getHeight(), 20).setVisiblie(false));
-	}
-	
-	@Override
-	public void onMouseInput() {
-		super.onMouseInput();
-		if (scrollBar.shouldHandleMouseWheel() && isUnderMouse(Mouse.getX(), Mouse.getY())) {
-			double delta = Mouse.getDWheel(); //getDWheel resets to 0 so only 1 object responds...
-			if (delta < 0) {
-				scrollBar.updateProgress(0.10F);
-			}
-			if (delta > 0) {
-				scrollBar.updateProgress(-0.10F);
-			}
-		}
 	}
 	
 	public boolean isUnderMouse(int mouseX, int mouseY) {
