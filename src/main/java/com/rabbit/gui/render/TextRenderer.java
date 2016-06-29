@@ -96,4 +96,21 @@ public class TextRenderer {
 	public static int renderString(int xPos, int yPos, String text, TextAlignment align) {
 		return renderString(xPos, yPos, text, Color.white, align);
 	}
+	
+	/**
+	 * See {@link #renderString(int, int, String, int, boolean)}
+	 */
+	public static int renderUnicodeString(int xPos, int yPos, String text, Color color, TextAlignment align) {
+		getFontRenderer().setUnicodeFlag(true);
+		int retVal = renderString(xPos, yPos, text, color, false, align);
+		getFontRenderer().setUnicodeFlag(false);
+		return retVal;
+	}
+
+	public static int renderUnicodeString(int xPos, int yPos, String text, TextAlignment align) {
+		getFontRenderer().setUnicodeFlag(true);
+		int retVal = renderString(xPos, yPos, text, Color.white, align);
+		getFontRenderer().setUnicodeFlag(false);
+		return retVal;
+	}
 }

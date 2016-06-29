@@ -93,6 +93,7 @@ public class Slider extends GuiWidget {
 	public void onDraw(int mouseX, int mouseY, float partialTicks) {
 		super.onDraw(mouseX, mouseY, partialTicks);
 		if (isVisible()) {
+			setHandleMouseWheel(isUnderMouse(mouseX, mouseY));
 			calculateScroller(mouseX);
 			Minecraft.getMinecraft().renderEngine
 					.bindTexture(new ResourceLocation("textures/gui/container/creative_inventory/tab_items.png"));
@@ -186,4 +187,8 @@ public class Slider extends GuiWidget {
 		getProgressChangedListener().onProgressChanged(this, scrolled);
 	}
 
+	public boolean isUnderMouse(int mouseX, int mouseY) {
+		return (mouseX >= getX()) && (mouseX <= (getX() + getWidth())) && (mouseY >= getY())
+				&& (mouseY <= (getY() + getHeight()));
+	}
 }

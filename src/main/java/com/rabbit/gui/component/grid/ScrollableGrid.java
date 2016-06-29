@@ -35,7 +35,7 @@ public class ScrollableGrid extends Grid {
 	@Override
 	protected void drawGridContent(int mouseX, int mouseY) {
 		scrollBar.setVisiblie(!canFit());
-		scrollBar.setHandleMouseWheel(!canFit());
+		scrollBar.setHandleMouseWheel(!canFit() && isUnderMouse(mouseX, mouseY));
 		scrollBar.setScrollerSize(getScrollerSize());
 		int scale = Geometry.computeScaleFactor();
 		for (int i = 0; i < content.size(); i++) {
@@ -104,4 +104,8 @@ public class ScrollableGrid extends Grid {
 		registerComponent(scrollBar);
 	}
 
+	public boolean isUnderMouse(int mouseX, int mouseY) {
+		return (mouseX >= getX()) && (mouseX <= (getX() + getWidth())) && (mouseY >= getY())
+				&& (mouseY <= (getY() + getHeight()));
+	}
 }

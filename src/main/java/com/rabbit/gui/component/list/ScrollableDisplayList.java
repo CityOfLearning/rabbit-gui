@@ -2,6 +2,7 @@ package com.rabbit.gui.component.list;
 
 import java.util.List;
 
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import com.rabbit.gui.component.control.ScrollBar;
@@ -35,7 +36,7 @@ public class ScrollableDisplayList extends DisplayList {
 	@Override
 	protected void drawListContent(int mouseX, int mouseY) {
 		scrollBar.setVisiblie(!canFit());
-		scrollBar.setHandleMouseWheel(!canFit());
+		scrollBar.setHandleMouseWheel(!canFit() && isUnderMouse(mouseX, mouseY));
 		scrollBar.setScrollerSize(getScrollerSize());
 		int scale = Geometry.computeScaleFactor();
 		for (int i = 0; i < content.size(); i++) {
@@ -101,8 +102,12 @@ public class ScrollableDisplayList extends DisplayList {
 		if (content.size() < (height / slotHeight)) {
 			scrollerSize = height - 4;
 		}
-		scrollBar = new ScrollBar((getX() + width) - 10, getY(), 10, height, scrollerSize);
+		scrollBar = new ScrollBar((getX() + width) - 10, getY(), 10, height, scrollerSize).setHandleMouseWheel(false);
 		registerComponent(scrollBar);
 	}
-
+	
+	public boolean isUnderMouse(int mouseX, int mouseY) {
+		return (mouseX >= getX()) && (mouseX <= (getX() + getWidth())) && (mouseY >= getY())
+				&& (mouseY <= (getY() + getHeight()));
+	}
 }

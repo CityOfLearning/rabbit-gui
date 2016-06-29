@@ -2,6 +2,7 @@ package com.rabbit.gui.component.display;
 
 import java.util.List;
 
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import com.rabbit.gui.component.control.ScrollBar;
@@ -67,5 +68,24 @@ public class ScrollTextLabel extends TextLabel {
 					.setHandleMouseWheel(false);
 			registerComponent(scrollBar);
 		}
+	}
+	
+	@Override
+	public void onMouseInput() {
+		super.onMouseInput();
+		if (scrollBar.shouldHandleMouseWheel() && isUnderMouse(Mouse.getX(), Mouse.getY())) {
+			double delta = Mouse.getDWheel(); //getDWheel resets to 0 so only 1 object responds...
+			if (delta < 0) {
+				scrollBar.updateProgress(0.10F);
+			}
+			if (delta > 0) {
+				scrollBar.updateProgress(-0.10F);
+			}
+		}
+	}
+	
+	public boolean isUnderMouse(int mouseX, int mouseY) {
+		return (mouseX >= getX()) && (mouseX <= (getX() + getWidth())) && (mouseY >= getY())
+				&& (mouseY <= (getY() + getHeight()));
 	}
 }

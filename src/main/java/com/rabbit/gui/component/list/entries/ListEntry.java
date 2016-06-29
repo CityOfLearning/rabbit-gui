@@ -1,6 +1,7 @@
 package com.rabbit.gui.component.list.entries;
 
 import com.rabbit.gui.component.list.DisplayList;
+import com.rabbit.gui.layout.LayoutComponent;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -10,7 +11,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 @SideOnly(Side.CLIENT)
 public interface ListEntry {
+	
+	/**
+	 * @return <code> true</code> if can be clicked/selected
+	 */
+	public boolean isEnabled();
 
+	public ListEntry setIsEnabled(boolean isEnabled);
+	
 	/**
 	 * Called when user clicks on the list entry
 	 *

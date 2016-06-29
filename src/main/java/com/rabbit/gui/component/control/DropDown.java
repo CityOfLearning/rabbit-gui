@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import com.rabbit.gui.component.GuiWidget;
@@ -15,6 +16,7 @@ import com.rabbit.gui.component.WidgetList;
 import com.rabbit.gui.component.list.entries.ListEntry;
 import com.rabbit.gui.layout.LayoutComponent;
 import com.rabbit.gui.render.Renderer;
+import com.rabbit.gui.render.TextAlignment;
 import com.rabbit.gui.render.TextRenderer;
 import com.rabbit.gui.utils.Geometry;
 
@@ -69,6 +71,8 @@ public class DropDown<T> extends GuiWidget implements WidgetList<T>, Shiftable {
 	protected String selected;
 
 	protected String hovered;
+	
+	protected boolean drawUnicode;
 
 	protected boolean isUnrolled = false;
 
@@ -197,14 +201,26 @@ public class DropDown<T> extends GuiWidget implements WidgetList<T>, Shiftable {
 	}
 
 	private void drawSlot(String item, int xPos, int yPos, int width, int height, boolean background, int drawOffset) {
-		String text = TextRenderer.getFontRenderer().trimStringToWidth(item, width - drawOffset);
+		String text = "";
+		if(drawUnicode){
+			TextRenderer.getFontRenderer().setUnicodeFlag(true);
+			text = TextRenderer.getFontRenderer().trimStringToWidth(item, width - drawOffset);
+			TextRenderer.getFontRenderer().setUnicodeFlag(false);
+		} else {
+			text = TextRenderer.getFontRenderer().trimStringToWidth(item, width - drawOffset);
+		}
+		 
 		GlStateManager.resetColor();
 		Color color = Color.white;
 		if (background) {
 			Renderer.drawRect(xPos, yPos, xPos + width, (yPos + height) - (height / 8), 0xFFFFFFFF);
 			color = Color.black;
 		}
-		TextRenderer.renderString(xPos + 2, yPos + (getHeight() / 8), text, color);
+		if(drawUnicode){
+			TextRenderer.renderUnicodeString(xPos + 2, yPos + (getHeight() / 8), text, color, TextAlignment.LEFT);
+		} else {
+			TextRenderer.renderString(xPos + 2, yPos + (getHeight() / 8), text, color);
+		}
 	}
 
 	private boolean expandedListUnderMouse(int mouseX, int mouseY) {
@@ -264,7 +280,7 @@ public class DropDown<T> extends GuiWidget implements WidgetList<T>, Shiftable {
 			this.drawDropDownBackground();
 			if (this.isUnrolled) {
 				scrollBar.setVisiblie(!canFit());
-				scrollBar.setHandleMouseWheel(!canFit());
+				scrollBar.setHandleMouseWheel(!canFit() && expandedListUnderMouse(mouseX, mouseY));
 				scrollBar.setScrollerSize(getScrollerSize());
 				this.drawExpandedList(mouseX, mouseY, partialTicks);
 			}
@@ -376,5 +392,14 @@ public class DropDown<T> extends GuiWidget implements WidgetList<T>, Shiftable {
 
 	private boolean underMouse(int x, int y) {
 		return (x >= getX()) && (x <= (getX() + getWidth())) && (y >= getY()) && (y <= (getY() + getHeight()));
+	}
+
+	public boolean doesDrawUnicode() {
+		return drawUnicode;
+	}
+
+	public DropDown<T> setDrawUnicode(boolean drawUnicode) {
+		this.drawUnicode = drawUnicode;
+		return this;
 	}
 }
