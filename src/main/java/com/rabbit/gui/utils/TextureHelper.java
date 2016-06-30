@@ -1,5 +1,8 @@
 package com.rabbit.gui.utils;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -28,7 +31,12 @@ public class TextureHelper {
 	public static void addTexture(UUID textureId, String textureLocation) {
 		if(textureLocation != null && !textureLocation.isEmpty()){
 			try {
-				dynamicImages.put(textureId, new ImmutablePair<String, DynamicTexture>(textureLocation, new DynamicTexture(ImageIO.read(new URL(textureLocation)))));
+				BufferedImage bufImg = ImageIO.read(new URL(textureLocation));
+				bufImg = trim(bufImg);
+				if(bufImg.getWidth()>128 || bufImg.getHeight()>128){
+					bufImg = resize(bufImg, bufImg.getWidth(), bufImg.getHeight());
+				}
+				dynamicImages.put(textureId, new ImmutablePair<String, DynamicTexture>(textureLocation, new DynamicTexture(bufImg)));
 				System.out.println("Added Texture "+textureLocation + " to Dynamic Textures");
 			} catch (MalformedURLException e) {
 				System.out.println("Adding Texture "+textureLocation + " to Static Textures");
@@ -46,7 +54,12 @@ public class TextureHelper {
 
 	public static void addDynamicTexture(UUID textureId, URL textureLocation) {
 		try {
-			dynamicImages.put(textureId, new ImmutablePair<String, DynamicTexture>(textureLocation.getPath(), new DynamicTexture(ImageIO.read(textureLocation))));
+			BufferedImage bufImg = ImageIO.read(textureLocation);
+			bufImg = trim(bufImg);
+			if(bufImg.getWidth()>128 || bufImg.getHeight()>128){
+				bufImg = resize(bufImg, bufImg.getWidth(), bufImg.getHeight());
+			}
+			dynamicImages.put(textureId, new ImmutablePair<String, DynamicTexture>(textureLocation.getPath(), new DynamicTexture(bufImg)));
 		} catch (Exception e) {
 			// must not be a valid image
 		}
@@ -118,4 +131,107 @@ public class TextureHelper {
 		}
 	}
 
+	public static BufferedImage resize(BufferedImage img, int width, int height) { 
+		int newW =0, newH =0;
+		if(width>128){
+			//image is too big lets just scale from width
+			float scale = 128.0f/width;
+			newW = (int) (width*scale);
+			newH = (int) (height*scale);
+		} else {
+			//image is tall but not wide thought we still need to scale
+			float scale = 128.0f/height;
+			newW = (int) (width*scale);
+			newH = (int) (height*scale);
+		}
+	    Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
+	    BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
+
+	    Graphics2D g2d = dimg.createGraphics();
+	    g2d.drawImage(tmp, 0, 0, null);
+	    g2d.dispose();
+
+	    return dimg;
+	}
+
+    public static BufferedImage trim(BufferedImage img) {
+        int width  = getTrimmedWidth(img);
+        int height = getTrimmedHeight(img);
+        int xpos = getXMostPos(img);
+        int ypos = getYMostPos(img);
+        
+        return img.getSubimage(xpos, ypos, width-xpos, height-ypos);
+    }
+
+    private static int getXMostPos(BufferedImage img) {
+        int height       = img.getHeight();
+        int width        = img.getWidth();
+        int x = width;
+
+        for(int i = 0; i < height; i++) {
+            for(int j = width - 1; j >= 0; j--) {
+                if((img.getRGB(j, i) >>24) != 0x00 &&
+                        j < x) {
+                    x = j;
+                    break;
+                }
+            }
+        }
+
+        return x;
+    }
+    
+    private static int getYMostPos(BufferedImage img) {
+    	int width         = img.getWidth();
+        int height        = img.getHeight();
+        int y = height;
+
+        for(int i = 0; i < width; i++) {
+            for(int j = height - 1; j >= 0; j--) {
+                if((img.getRGB(i, j) >>24) != 0x00 &&
+                        j < y) {
+                    y = j;
+                    break;
+                }
+            }
+        }
+
+        return y;
+    }
+    
+    private static int getTrimmedWidth(BufferedImage img) {
+        int height       = img.getHeight();
+        int width        = img.getWidth();
+        int trimmedWidth = 0;
+
+        for(int i = 0; i < height; i++) {
+            for(int j = width - 1; j >= 0; j--) {
+                if((img.getRGB(j, i) >>24) != 0x00 &&
+                        j > trimmedWidth) {
+                    trimmedWidth = j;
+                    break;
+                }
+            }
+        }
+
+        return trimmedWidth;
+    }
+
+    private static int getTrimmedHeight(BufferedImage img) {
+        int width         = img.getWidth();
+        int height        = img.getHeight();
+        int trimmedHeight = 0;
+
+        for(int i = 0; i < width; i++) {
+            for(int j = height - 1; j >= 0; j--) {
+                if((img.getRGB(i, j) >>24) != 0x00 &&
+                        j > trimmedHeight) {
+                    trimmedHeight = j;
+                    break;
+                }
+            }
+        }
+
+        return trimmedHeight;
+    }
 }
