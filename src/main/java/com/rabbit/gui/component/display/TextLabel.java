@@ -19,7 +19,7 @@ public class TextLabel extends GuiWidget implements Shiftable {
 
 	@LayoutComponent
 	protected Color color;
-	
+
 	@LayoutComponent
 	protected String text;
 
@@ -35,23 +35,23 @@ public class TextLabel extends GuiWidget implements Shiftable {
 	@LayoutComponent
 	protected TextAlignment alignment = TextAlignment.LEFT;
 
-	public TextLabel(int xPos, int yPos, int width, int height, String text) {
-		this(xPos, yPos, width, height, null, text, TextAlignment.LEFT);
-	}
-	
 	public TextLabel(int xPos, int yPos, int width, int height, Color color, String text) {
 		this(xPos, yPos, width, height, color, text, TextAlignment.LEFT);
 	}
 
-	public TextLabel(int xPos, int yPos, int width, int height, String text, TextAlignment align) {
-		this(xPos, yPos, width, height, null, text, align);
-	}
-	
 	public TextLabel(int xPos, int yPos, int width, int height, Color color, String text, TextAlignment align) {
 		super(xPos, yPos, width, height);
 		this.text = text;
 		this.color = color;
 		alignment = align;
+	}
+
+	public TextLabel(int xPos, int yPos, int width, int height, String text) {
+		this(xPos, yPos, width, height, null, text, TextAlignment.LEFT);
+	}
+
+	public TextLabel(int xPos, int yPos, int width, int height, String text, TextAlignment align) {
+		this(xPos, yPos, width, height, null, text, align);
 	}
 
 	public TextLabel(int xPos, int yPos, int width, String text) {
@@ -64,7 +64,7 @@ public class TextLabel extends GuiWidget implements Shiftable {
 		} else if (alignment == TextAlignment.RIGHT) {
 			x = x + getWidth();
 		}
-		if(color != null){
+		if (color != null) {
 			TextRenderer.renderString(x, y, text, color, alignment);
 		} else {
 			TextRenderer.renderString(x, y, text, alignment);

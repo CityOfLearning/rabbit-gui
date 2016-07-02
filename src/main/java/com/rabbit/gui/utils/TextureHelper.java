@@ -1,6 +1,5 @@
 package com.rabbit.gui.utils;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -14,7 +13,6 @@ import javax.imageio.ImageIO;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.Maps;
 
@@ -28,23 +26,17 @@ public class TextureHelper {
 	private static Map<UUID, ResourceLocation> staticImages = Maps.newHashMap();
 	private static ResourceLocation defaultTexture = new ResourceLocation("Minecraft", "textures/items/barrier.png");
 
-	public static void addTexture(UUID textureId, String textureLocation) {
-		if(textureLocation != null && !textureLocation.isEmpty()){
-			try {
-				BufferedImage bufImg = ImageIO.read(new URL(textureLocation));
-				bufImg = trim(bufImg);
-				if(bufImg.getWidth()>128 || bufImg.getHeight()>128){
-					bufImg = resize(bufImg, bufImg.getWidth(), bufImg.getHeight());
-				}
-				dynamicImages.put(textureId, new ImmutablePair<String, DynamicTexture>(textureLocation, new DynamicTexture(bufImg)));
-				System.out.println("Added Texture "+textureLocation + " to Dynamic Textures");
-			} catch (MalformedURLException e) {
-				System.out.println("Adding Texture "+textureLocation + " to Static Textures");
-				staticImages.put(textureId, new ResourceLocation(textureLocation));
-			} catch (IOException e) {
-				System.out.println("Adding Texture "+textureLocation + " to Static Textures 2");
-				staticImages.put(textureId, new ResourceLocation(textureLocation));
+	public static void addDynamicTexture(UUID textureId, URL textureLocation) {
+		try {
+			BufferedImage bufImg = ImageIO.read(textureLocation);
+			bufImg = trim(bufImg);
+			if ((bufImg.getWidth() > 128) || (bufImg.getHeight() > 128)) {
+				bufImg = resize(bufImg, bufImg.getWidth(), bufImg.getHeight());
 			}
+			dynamicImages.put(textureId,
+					new ImmutablePair<String, DynamicTexture>(textureLocation.getPath(), new DynamicTexture(bufImg)));
+		} catch (Exception e) {
+			// must not be a valid image
 		}
 	}
 
@@ -52,61 +44,67 @@ public class TextureHelper {
 		staticImages.put(textureId, texture);
 	}
 
-	public static void addDynamicTexture(UUID textureId, URL textureLocation) {
-		try {
-			BufferedImage bufImg = ImageIO.read(textureLocation);
-			bufImg = trim(bufImg);
-			if(bufImg.getWidth()>128 || bufImg.getHeight()>128){
-				bufImg = resize(bufImg, bufImg.getWidth(), bufImg.getHeight());
+	public static void addTexture(UUID textureId, String textureLocation) {
+		if ((textureLocation != null) && !textureLocation.isEmpty()) {
+			try {
+				BufferedImage bufImg = ImageIO.read(new URL(textureLocation));
+				bufImg = trim(bufImg);
+				if ((bufImg.getWidth() > 128) || (bufImg.getHeight() > 128)) {
+					bufImg = resize(bufImg, bufImg.getWidth(), bufImg.getHeight());
+				}
+				dynamicImages.put(textureId,
+						new ImmutablePair<String, DynamicTexture>(textureLocation, new DynamicTexture(bufImg)));
+				System.out.println("Added Texture " + textureLocation + " to Dynamic Textures");
+			} catch (MalformedURLException e) {
+				System.out.println("Adding Texture " + textureLocation + " to Static Textures");
+				staticImages.put(textureId, new ResourceLocation(textureLocation));
+			} catch (IOException e) {
+				System.out.println("Adding Texture " + textureLocation + " to Static Textures 2");
+				staticImages.put(textureId, new ResourceLocation(textureLocation));
 			}
-			dynamicImages.put(textureId, new ImmutablePair<String, DynamicTexture>(textureLocation.getPath(), new DynamicTexture(bufImg)));
-		} catch (Exception e) {
-			// must not be a valid image
 		}
 	}
-	
-	public static boolean isTextureStatic(UUID textureId){
-		return staticImages.containsKey(textureId);
+
+	public static void bindTexture(UUID textureId) {
+		if (dynamicImages.containsKey(textureId)) {
+			GlStateManager.bindTexture(dynamicImages.get(textureId).getRight().getGlTextureId());
+		} else if (staticImages.containsKey(textureId)) {
+			Minecraft.getMinecraft().renderEngine.bindTexture(staticImages.get(textureId));
+		} else {
+			Minecraft.getMinecraft().renderEngine.bindTexture(defaultTexture);
+		}
 	}
-	
-	public static boolean isTextureDynamic(UUID textureId){
-		return dynamicImages.containsKey(textureId);
-	}
-	
-	public static boolean textureExists(UUID textureId){
-		return staticImages.containsKey(textureId) || dynamicImages.containsKey(textureId);
-	}
-	
-	public static ResourceLocation getStaticTexture(UUID textureId){
-		return staticImages.get(textureId);
-	}
-	
-	public static DynamicTexture getDynamicTexture(UUID textureId){
-		if(isTextureDynamic(textureId)){
+
+	public static DynamicTexture getDynamicTexture(UUID textureId) {
+		if (isTextureDynamic(textureId)) {
 			return dynamicImages.get(textureId).getRight();
 		}
 		return null;
 	}
-	
-	public static String getDynamicTextureLocation(UUID textureId){
-		if(isTextureDynamic(textureId)){
+
+	public static String getDynamicTextureLocation(UUID textureId) {
+		if (isTextureDynamic(textureId)) {
 			return dynamicImages.get(textureId).getLeft();
 		}
 		return null;
 	}
-	
-	public static Pair<Integer, Integer> getTextureWidthAndHeight(UUID textureId){
-		int width = 0, height =0;
-		if(isTextureStatic(textureId)){
+
+	public static ResourceLocation getStaticTexture(UUID textureId) {
+		return staticImages.get(textureId);
+	}
+
+	public static Pair<Integer, Integer> getTextureWidthAndHeight(UUID textureId) {
+		int width = 0, height = 0;
+		if (isTextureStatic(textureId)) {
 			try {
-				BufferedImage image = ImageIO
-						.read(Minecraft.getMinecraft().getResourceManager().getResource(getStaticTexture(textureId)).getInputStream());
+				BufferedImage image = ImageIO.read(Minecraft.getMinecraft().getResourceManager()
+						.getResource(getStaticTexture(textureId)).getInputStream());
 				width = image.getWidth();
 				height = image.getHeight();
 			} catch (IOException ioex) {
 				throw new RuntimeException("Can't get resource", ioex);
 			}
-		} else if(isTextureDynamic(textureId)) {
+		} else if (isTextureDynamic(textureId)) {
 			try {
 				BufferedImage image = ImageIO.read(new URL(dynamicImages.get(textureId).getLeft()));
 				width = image.getWidth();
@@ -115,123 +113,120 @@ public class TextureHelper {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 		}
 		return new ImmutablePair<Integer, Integer>(width, height);
 	}
 
-	public static void bindTexture(UUID textureId) {
-		if (dynamicImages.containsKey(textureId)) {
-			GlStateManager.bindTexture(dynamicImages.get(textureId).getRight().getGlTextureId());
-//			GL11.glBindTexture(GL11.GL_TEXTURE_2D, dynamicImages.get(textureId).getRight().getGlTextureId());
-		} else if (staticImages.containsKey(textureId)) {
-			Minecraft.getMinecraft().renderEngine.bindTexture(staticImages.get(textureId));
-		} else {
-			Minecraft.getMinecraft().renderEngine.bindTexture(defaultTexture);
+	private static int getTrimmedHeight(BufferedImage img) {
+		int width = img.getWidth();
+		int height = img.getHeight();
+		int trimmedHeight = 0;
+
+		for (int i = 0; i < width; i++) {
+			for (int j = height - 1; j >= 0; j--) {
+				if (((img.getRGB(i, j) >> 24) != 0x00) && (j > trimmedHeight)) {
+					trimmedHeight = j;
+					break;
+				}
+			}
 		}
+
+		return trimmedHeight;
 	}
 
-	public static BufferedImage resize(BufferedImage img, int width, int height) { 
-		int newW =0, newH =0;
-		if(width>128){
-			//image is too big lets just scale from width
-			float scale = 128.0f/width;
-			newW = (int) (width*scale);
-			newH = (int) (height*scale);
-		} else {
-			//image is tall but not wide thought we still need to scale
-			float scale = 128.0f/height;
-			newW = (int) (width*scale);
-			newH = (int) (height*scale);
+	private static int getTrimmedWidth(BufferedImage img) {
+		int height = img.getHeight();
+		int width = img.getWidth();
+		int trimmedWidth = 0;
+
+		for (int i = 0; i < height; i++) {
+			for (int j = width - 1; j >= 0; j--) {
+				if (((img.getRGB(j, i) >> 24) != 0x00) && (j > trimmedWidth)) {
+					trimmedWidth = j;
+					break;
+				}
+			}
 		}
-	    Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
-	    BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
 
-	    Graphics2D g2d = dimg.createGraphics();
-	    g2d.drawImage(tmp, 0, 0, null);
-	    g2d.dispose();
-
-	    return dimg;
+		return trimmedWidth;
 	}
 
-    public static BufferedImage trim(BufferedImage img) {
-        int width  = getTrimmedWidth(img);
-        int height = getTrimmedHeight(img);
-        int xpos = getXMostPos(img);
-        int ypos = getYMostPos(img);
-        
-        return img.getSubimage(xpos, ypos, width-xpos, height-ypos);
-    }
+	private static int getXMostPos(BufferedImage img) {
+		int height = img.getHeight();
+		int width = img.getWidth();
+		int x = width;
 
-    private static int getXMostPos(BufferedImage img) {
-        int height       = img.getHeight();
-        int width        = img.getWidth();
-        int x = width;
+		for (int i = 0; i < height; i++) {
+			for (int j = width - 1; j >= 0; j--) {
+				if (((img.getRGB(j, i) >> 24) != 0x00) && (j < x)) {
+					x = j;
+					break;
+				}
+			}
+		}
 
-        for(int i = 0; i < height; i++) {
-            for(int j = width - 1; j >= 0; j--) {
-                if((img.getRGB(j, i) >>24) != 0x00 &&
-                        j < x) {
-                    x = j;
-                    break;
-                }
-            }
-        }
+		return x;
+	}
 
-        return x;
-    }
-    
-    private static int getYMostPos(BufferedImage img) {
-    	int width         = img.getWidth();
-        int height        = img.getHeight();
-        int y = height;
+	private static int getYMostPos(BufferedImage img) {
+		int width = img.getWidth();
+		int height = img.getHeight();
+		int y = height;
 
-        for(int i = 0; i < width; i++) {
-            for(int j = height - 1; j >= 0; j--) {
-                if((img.getRGB(i, j) >>24) != 0x00 &&
-                        j < y) {
-                    y = j;
-                    break;
-                }
-            }
-        }
+		for (int i = 0; i < width; i++) {
+			for (int j = height - 1; j >= 0; j--) {
+				if (((img.getRGB(i, j) >> 24) != 0x00) && (j < y)) {
+					y = j;
+					break;
+				}
+			}
+		}
 
-        return y;
-    }
-    
-    private static int getTrimmedWidth(BufferedImage img) {
-        int height       = img.getHeight();
-        int width        = img.getWidth();
-        int trimmedWidth = 0;
+		return y;
+	}
 
-        for(int i = 0; i < height; i++) {
-            for(int j = width - 1; j >= 0; j--) {
-                if((img.getRGB(j, i) >>24) != 0x00 &&
-                        j > trimmedWidth) {
-                    trimmedWidth = j;
-                    break;
-                }
-            }
-        }
+	public static boolean isTextureDynamic(UUID textureId) {
+		return dynamicImages.containsKey(textureId);
+	}
 
-        return trimmedWidth;
-    }
+	public static boolean isTextureStatic(UUID textureId) {
+		return staticImages.containsKey(textureId);
+	}
 
-    private static int getTrimmedHeight(BufferedImage img) {
-        int width         = img.getWidth();
-        int height        = img.getHeight();
-        int trimmedHeight = 0;
+	public static BufferedImage resize(BufferedImage img, int width, int height) {
+		int newW = 0, newH = 0;
+		if (width > 128) {
+			// image is too big lets just scale from width
+			float scale = 128.0f / width;
+			newW = (int) (width * scale);
+			newH = (int) (height * scale);
+		} else {
+			// image is tall but not wide thought we still need to scale
+			float scale = 128.0f / height;
+			newW = (int) (width * scale);
+			newH = (int) (height * scale);
+		}
+		Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
+		BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
 
-        for(int i = 0; i < width; i++) {
-            for(int j = height - 1; j >= 0; j--) {
-                if((img.getRGB(i, j) >>24) != 0x00 &&
-                        j > trimmedHeight) {
-                    trimmedHeight = j;
-                    break;
-                }
-            }
-        }
+		Graphics2D g2d = dimg.createGraphics();
+		g2d.drawImage(tmp, 0, 0, null);
+		g2d.dispose();
 
-        return trimmedHeight;
-    }
+		return dimg;
+	}
+
+	public static boolean textureExists(UUID textureId) {
+		return staticImages.containsKey(textureId) || dynamicImages.containsKey(textureId);
+	}
+
+	public static BufferedImage trim(BufferedImage img) {
+		int width = getTrimmedWidth(img);
+		int height = getTrimmedHeight(img);
+		int xpos = getXMostPos(img);
+		int ypos = getYMostPos(img);
+
+		return img.getSubimage(xpos, ypos, width - xpos, height - ypos);
+	}
 }

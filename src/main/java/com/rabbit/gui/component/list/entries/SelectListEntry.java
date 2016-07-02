@@ -27,6 +27,7 @@ public abstract class SelectListEntry implements ListEntry {
 		}
 	}
 
+	@Override
 	public void setSelected(boolean selected) {
 		this.selected = selected;
 	}

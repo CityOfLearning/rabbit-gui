@@ -13,12 +13,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class SelectStringEntry extends SelectListEntry {
 
-	@LayoutComponent
-	protected boolean isEnabled = true;
-	
 	public static interface OnClickListener {
 		void onClick(SelectStringEntry entry, DisplayList list, int mouseX, int mouseY);
 	}
+
+	@LayoutComponent
+	protected boolean isEnabled = true;
 
 	/**
 	 * String which would be drawn in the center of the entry <br>
@@ -26,22 +26,42 @@ public class SelectStringEntry extends SelectListEntry {
 	 */
 	private final String title;
 
+	@LayoutComponent
+	private Color color;
+
 	/**
 	 * Listener which would be called when user click the entry
 	 */
 	private OnClickListener listener;
 
 	public SelectStringEntry(String title) {
-		this(title, null);
+		this(title, Color.WHITE, null);
+	}
+
+	public SelectStringEntry(String title, Color color) {
+		this(title, color, null);
+	}
+
+	public SelectStringEntry(String title, Color color, OnClickListener listener) {
+		this.title = title;
+		this.listener = listener;
+		this.color = color;
 	}
 
 	public SelectStringEntry(String title, OnClickListener listener) {
-		this.title = title;
-		this.listener = listener;
+		this(title, Color.WHITE, listener);
 	}
 
 	public String getTitle() {
 		return title;
+	}
+
+	/**
+	 * @return <code> true</code> if button can be clicked
+	 */
+	@Override
+	public boolean isEnabled() {
+		return isEnabled;
 	}
 
 	@Override
@@ -52,7 +72,7 @@ public class SelectStringEntry extends SelectListEntry {
 				listener.onClick(this, list, mouseX, mouseY);
 			}
 		} else {
-			this.setSelected(false);
+			setSelected(false);
 		}
 
 	}
@@ -62,7 +82,7 @@ public class SelectStringEntry extends SelectListEntry {
 		super.onDraw(list, posX, posY, width, height, mouseX, mouseY);
 		if (isEnabled) {
 			TextRenderer.renderString(posX + (width / 2), (posY + (height / 2)) - 5,
-					TextRenderer.getFontRenderer().trimStringToWidth(title, width), Color.WHITE, TextAlignment.CENTER);
+					TextRenderer.getFontRenderer().trimStringToWidth(title, width), color, TextAlignment.CENTER);
 		} else {
 			TextRenderer.renderString(posX + (width / 2), (posY + (height / 2)) - 5,
 					TextRenderer.getFontRenderer().trimStringToWidth(title, width), Color.GRAY, TextAlignment.CENTER);
@@ -70,13 +90,7 @@ public class SelectStringEntry extends SelectListEntry {
 
 	}
 
-	/**
-	 * @return <code> true</code> if button can be clicked
-	 */
-	public boolean isEnabled() {
-		return isEnabled;
-	}
-
+	@Override
 	public SelectStringEntry setIsEnabled(boolean isEnabled) {
 		this.isEnabled = isEnabled;
 		return this;

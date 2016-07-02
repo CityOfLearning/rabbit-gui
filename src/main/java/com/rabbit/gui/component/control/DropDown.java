@@ -7,13 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import com.rabbit.gui.component.GuiWidget;
 import com.rabbit.gui.component.Shiftable;
 import com.rabbit.gui.component.WidgetList;
-import com.rabbit.gui.component.list.entries.ListEntry;
 import com.rabbit.gui.layout.LayoutComponent;
 import com.rabbit.gui.render.Renderer;
 import com.rabbit.gui.render.TextAlignment;
@@ -71,7 +69,7 @@ public class DropDown<T> extends GuiWidget implements WidgetList<T>, Shiftable {
 	protected String selected;
 
 	protected String hovered;
-	
+
 	protected boolean drawUnicode;
 
 	protected boolean isUnrolled = false;
@@ -130,19 +128,18 @@ public class DropDown<T> extends GuiWidget implements WidgetList<T>, Shiftable {
 		return this;
 	}
 
+	private boolean canFit() {
+		return content.size() < 4;
+	}
+
 	@Override
 	public DropDown<T> clear() {
 		this.getContent().clear();
 		return this;
 	}
 
-	private boolean canFit() {
-		return content.size() < 4;
-	}
-
-	private int getScrollerSize() {
-		return (int) Math.min(Math.max((int) (((1F * height) / (content.size() * height)) * (height - 4)) * 2, 15),
-				height * .8);
+	public boolean doesDrawUnicode() {
+		return drawUnicode;
 	}
 
 	private void drawDropDownBackground() {
@@ -154,40 +151,42 @@ public class DropDown<T> extends GuiWidget implements WidgetList<T>, Shiftable {
 		GlStateManager.resetColor();
 		List<String> keys = new ArrayList<String>(this.getContent().keySet());
 		int unrollHeight = Math.min(keys.size(), 4) * getHeight();
-		
+
 		Renderer.drawRect(getX() - 1, getY() + getHeight(), getX() + getWidth() + 1,
 				getY() + getHeight() + unrollHeight + 1, -6250336);
 		Renderer.drawRect(getX(), getY() + getHeight() + 1, getX() + getWidth(), getY() + getHeight() + unrollHeight,
 				-16777216);
-		
+
 		boolean hoverUnrolledList = (mouseX >= getX()) && (mouseX <= (getX() + getWidth())) && (mouseY >= getY())
 				&& (mouseY <= (getY() + getHeight() + unrollHeight + 1));
-		
+
 		int scale = Geometry.computeScaleFactor();
-		
+
 		for (int index = 0; index < keys.size(); index++) {
 			String itemIdentifier = keys.get(index);
-//			int yPos = getY() + getHeight() + (getHeight() / 8) + (index * getHeight());
-//			boolean hoverSlot = (mouseX >= getX()) && (mouseX <= (getX() + getWidth())) && (mouseY >= yPos)
-//					&& (mouseY <= (yPos + getHeight()));
-//			boolean selectedSlot = hoverSlot
-//					|| (!hoverUnrolledList && itemIdentifier.equalsIgnoreCase(this.getSelectedIdentifier()));
+			// int yPos = getY() + getHeight() + (getHeight() / 8) + (index *
+			// getHeight());
+			// boolean hoverSlot = (mouseX >= getX()) && (mouseX <= (getX() +
+			// getWidth())) && (mouseY >= yPos)
+			// && (mouseY <= (yPos + getHeight()));
+			// boolean selectedSlot = hoverSlot
+			// || (!hoverUnrolledList &&
+			// itemIdentifier.equalsIgnoreCase(this.getSelectedIdentifier()));
 
 			int slotPosY = ((getY() + (index * height)) - (int) ((height * scrollBar.getProgress() * content.size())
 					- (((unrollHeight - height) * (scrollBar.getProgress())) / 1)));
 
-			boolean hoverSlot = (mouseX >= getX()) && (mouseX <= (getX() + getWidth())) && (mouseY >= getHeight() + slotPosY)
-					&& (mouseY <= (slotPosY + getHeight()*2));
+			boolean hoverSlot = (mouseX >= getX()) && (mouseX <= (getX() + getWidth()))
+					&& (mouseY >= (getHeight() + slotPosY)) && (mouseY <= (slotPosY + (getHeight() * 2)));
 			boolean selectedSlot = hoverSlot
 					|| (!hoverUnrolledList && itemIdentifier.equalsIgnoreCase(this.getSelectedIdentifier()));
 
-			
 			if ((slotPosY < (getY() + unrollHeight)) && ((slotPosY + getHeight()) > getY())) {
 				GL11.glPushMatrix();
 				GL11.glEnable(GL11.GL_SCISSOR_TEST);
 				Minecraft mc = Minecraft.getMinecraft();
-				GL11.glScissor(getX() * scale, mc.displayHeight - ((getY() + getHeight() + unrollHeight) * scale), getWidth() * scale,
-						unrollHeight * scale);
+				GL11.glScissor(getX() * scale, mc.displayHeight - ((getY() + getHeight() + unrollHeight) * scale),
+						getWidth() * scale, unrollHeight * scale);
 				GlStateManager.resetColor();
 				this.drawSlot(itemIdentifier, getX(), getHeight() + slotPosY, getWidth(), getHeight(), selectedSlot);
 				GL11.glDisable(GL11.GL_SCISSOR_TEST);
@@ -202,21 +201,21 @@ public class DropDown<T> extends GuiWidget implements WidgetList<T>, Shiftable {
 
 	private void drawSlot(String item, int xPos, int yPos, int width, int height, boolean background, int drawOffset) {
 		String text = "";
-		if(drawUnicode){
+		if (drawUnicode) {
 			TextRenderer.getFontRenderer().setUnicodeFlag(true);
 			text = TextRenderer.getFontRenderer().trimStringToWidth(item, width - drawOffset);
 			TextRenderer.getFontRenderer().setUnicodeFlag(false);
 		} else {
 			text = TextRenderer.getFontRenderer().trimStringToWidth(item, width - drawOffset);
 		}
-		 
+
 		GlStateManager.resetColor();
 		Color color = Color.white;
 		if (background) {
 			Renderer.drawRect(xPos, yPos, xPos + width, (yPos + height) - (height / 8), 0xFFFFFFFF);
 			color = Color.black;
 		}
-		if(drawUnicode){
+		if (drawUnicode) {
 			TextRenderer.renderUnicodeString(xPos + 2, yPos + (getHeight() / 8), text, color, TextAlignment.LEFT);
 		} else {
 			TextRenderer.renderString(xPos + 2, yPos + (getHeight() / 8), text, color);
@@ -239,6 +238,11 @@ public class DropDown<T> extends GuiWidget implements WidgetList<T>, Shiftable {
 
 	public ItemSelectedListener<T> getItemSelectedListener() {
 		return this.itemSelectedListener;
+	}
+
+	private int getScrollerSize() {
+		return (int) Math.min(Math.max((int) (((1F * height) / (content.size() * height)) * (height - 4)) * 2, 15),
+				height * .8);
 	}
 
 	public DropDownElement<T> getSelectedElement() {
@@ -306,13 +310,14 @@ public class DropDown<T> extends GuiWidget implements WidgetList<T>, Shiftable {
 				List<String> contentKeys = new ArrayList<>(this.getContent().keySet());
 				int unrollHeight = Math.min(contentKeys.size(), 4) * getHeight();
 				for (int index = 0; index < contentKeys.size(); index++) {
-					
-					int slotPosY = ((getY() + (index * height)) - (int) ((height * scrollBar.getProgress() * content.size())
-							- (((unrollHeight - height) * (scrollBar.getProgress())) / 1)));
 
-					boolean hoverItem = (posX >= getX()) && (posX <= (getX() + getWidth()-scrollBar.getWidth())) && (posY >= getHeight() + slotPosY)
-							&& (posY <= (slotPosY + getHeight()*2));
-					
+					int slotPosY = ((getY() + (index * height))
+							- (int) ((height * scrollBar.getProgress() * content.size())
+									- (((unrollHeight - height) * (scrollBar.getProgress())) / 1)));
+
+					boolean hoverItem = (posX >= getX()) && (posX <= ((getX() + getWidth()) - scrollBar.getWidth()))
+							&& (posY >= (getHeight() + slotPosY)) && (posY <= (slotPosY + (getHeight() * 2)));
+
 					if (hoverItem) {
 						this.selected = contentKeys.get(index);
 						if (this.getItemSelectedListener() != null) {
@@ -322,8 +327,8 @@ public class DropDown<T> extends GuiWidget implements WidgetList<T>, Shiftable {
 						this.scrollBar.setProgress(0);
 					}
 				}
-			} 
-			
+			}
+
 			if (this.dropButton.isButtonUnderMouse(posX, posY) && !this.isEmpty()) {
 				this.isUnrolled = !this.isUnrolled;
 			}
@@ -341,6 +346,11 @@ public class DropDown<T> extends GuiWidget implements WidgetList<T>, Shiftable {
 		if (this.getContent().containsKey(name)) {
 			this.selected = name;
 		}
+	}
+
+	public DropDown<T> setDrawUnicode(boolean drawUnicode) {
+		this.drawUnicode = drawUnicode;
+		return this;
 	}
 
 	@Override
@@ -392,14 +402,5 @@ public class DropDown<T> extends GuiWidget implements WidgetList<T>, Shiftable {
 
 	private boolean underMouse(int x, int y) {
 		return (x >= getX()) && (x <= (getX() + getWidth())) && (y >= getY()) && (y <= (getY() + getHeight()));
-	}
-
-	public boolean doesDrawUnicode() {
-		return drawUnicode;
-	}
-
-	public DropDown<T> setDrawUnicode(boolean drawUnicode) {
-		this.drawUnicode = drawUnicode;
-		return this;
 	}
 }

@@ -26,29 +26,26 @@ public class StringEntry implements ListEntry {
 		this.title = title;
 	}
 
-
-	@Override
-	public void onClick(DisplayList list, int mouseX, int mouseY) {
-		//nothing happens its not a selectable component
-	}
-
-	@Override
-	public void onDraw(DisplayList list, int posX, int posY, int width, int height, int mouseX, int mouseY) {
-		if(isEnabled()){
-			TextRenderer.renderString(posX + (width / 2), (posY + (height / 2)) - 5,
-					TextRenderer.getFontRenderer().trimStringToWidth(title, width), TextAlignment.CENTER);	
-		} else {
-			TextRenderer.renderString(posX + (width / 2), (posY + (height / 2)) - 5,
-					TextRenderer.getFontRenderer().trimStringToWidth(title, width), Color.gray, TextAlignment.CENTER);
-		}	
-	}
-
-
 	@Override
 	public boolean isEnabled() {
 		return isEnabled;
 	}
 
+	@Override
+	public void onClick(DisplayList list, int mouseX, int mouseY) {
+		// nothing happens its not a selectable component
+	}
+
+	@Override
+	public void onDraw(DisplayList list, int posX, int posY, int width, int height, int mouseX, int mouseY) {
+		if (isEnabled()) {
+			TextRenderer.renderString(posX + (width / 2), (posY + (height / 2)) - 5,
+					TextRenderer.getFontRenderer().trimStringToWidth(title, width), TextAlignment.CENTER);
+		} else {
+			TextRenderer.renderString(posX + (width / 2), (posY + (height / 2)) - 5,
+					TextRenderer.getFontRenderer().trimStringToWidth(title, width), Color.gray, TextAlignment.CENTER);
+		}
+	}
 
 	@Override
 	public StringEntry setIsEnabled(boolean isEnabled) {

@@ -2,7 +2,6 @@ package com.rabbit.gui.component.control;
 
 import com.rabbit.gui.layout.LayoutComponent;
 import com.rabbit.gui.render.Renderer;
-import com.rabbit.gui.render.TextAlignment;
 import com.rabbit.gui.render.TextRenderer;
 
 import net.minecraftforge.fml.relauncher.Side;
@@ -27,7 +26,7 @@ public class CheckBoxButton extends Button {
 	public CheckBoxButton(int xPos, int yPos, int width, int height, String text, boolean checked) {
 		super(xPos, yPos, width, height, "");
 
-		checkbox = new CheckBox(xPos + 2, (int) (yPos + 2), height - 4, height - 4, text, checked);
+		checkbox = new CheckBox(xPos + 2, yPos + 2, height - 4, height - 4, text, checked);
 		checkbox.setIsEnabled(checked);
 	}
 

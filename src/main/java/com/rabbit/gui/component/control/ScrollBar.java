@@ -99,7 +99,8 @@ public class ScrollBar extends GuiWidget {
 	public void onMouseInput() {
 		super.onMouseInput();
 		if (shouldHandleMouseWheel()) {
-			double delta = Mouse.getDWheel(); //getDWheel resets to 0 so only 1 object responds...
+			double delta = Mouse.getDWheel(); // getDWheel resets to 0 so only 1
+												// object responds...
 			if (delta < 0) {
 				updateProgress(0.10F);
 			}

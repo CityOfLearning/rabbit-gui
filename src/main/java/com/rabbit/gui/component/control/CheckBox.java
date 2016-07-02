@@ -8,7 +8,6 @@ import com.rabbit.gui.component.GuiWidget;
 import com.rabbit.gui.component.Shiftable;
 import com.rabbit.gui.layout.LayoutComponent;
 import com.rabbit.gui.render.Renderer;
-import com.rabbit.gui.render.TextAlignment;
 import com.rabbit.gui.render.TextRenderer;
 
 import net.minecraft.client.Minecraft;
@@ -29,16 +28,16 @@ public class CheckBox extends GuiWidget implements Shiftable {
 	public interface CheckBoxStatusChangedListener {
 		void onStatusChanged(CheckBox box);
 	}
-	
-	@LayoutComponent
-	protected Color checkColor;
-	
-	@LayoutComponent
-	protected Color textColor;
 
 	// hard coded sizes? why
 	protected static final int WIDTH = 11;
+
 	protected static final int HEIGHT = 11;
+
+	@LayoutComponent
+	protected Color checkColor;
+	@LayoutComponent
+	protected Color textColor;
 
 	protected ResourceLocation buttonTexture = new ResourceLocation("textures/gui/widgets.png");
 
@@ -56,7 +55,8 @@ public class CheckBox extends GuiWidget implements Shiftable {
 
 	protected CheckBoxStatusChangedListener onStatusChangedListener;
 
-	public CheckBox(int xPos, int yPos, int width, int height, Color checkColor, Color textColor, String title, boolean checked) {
+	public CheckBox(int xPos, int yPos, int width, int height, Color checkColor, Color textColor, String title,
+			boolean checked) {
 		super(xPos, yPos, width, height);
 		this.textColor = textColor;
 		this.checkColor = checkColor;
@@ -64,20 +64,20 @@ public class CheckBox extends GuiWidget implements Shiftable {
 		isChecked = checked;
 	}
 
-	public CheckBox(int xPos, int yPos, String title, Color checkColor, Color textColor, boolean checked) {
-		this(xPos, yPos, WIDTH, HEIGHT, checkColor, textColor, title, checked);
+	public CheckBox(int xPos, int yPos, int width, int height, String title, boolean checked) {
+		this(xPos, yPos, width, height, Color.GREEN, Color.white, title, checked);
 	}
-	
-	public CheckBox(int xPos, int yPos, String title, Color textColor, boolean checked) {
-		this(xPos, yPos, WIDTH, HEIGHT, Color.GREEN, textColor, title, checked);
-	}
-	
+
 	public CheckBox(int xPos, int yPos, String title, boolean checked) {
 		this(xPos, yPos, WIDTH, HEIGHT, Color.GREEN, Color.white, title, checked);
 	}
-	
-	public CheckBox(int xPos, int yPos, int width, int height, String title, boolean checked) {
-		this(xPos, yPos, width, height, Color.GREEN, Color.white, title, checked);
+
+	public CheckBox(int xPos, int yPos, String title, Color textColor, boolean checked) {
+		this(xPos, yPos, WIDTH, HEIGHT, Color.GREEN, textColor, title, checked);
+	}
+
+	public CheckBox(int xPos, int yPos, String title, Color checkColor, Color textColor, boolean checked) {
+		this(xPos, yPos, WIDTH, HEIGHT, checkColor, textColor, title, checked);
 	}
 
 	void b(ResourceLocation loc) {
@@ -129,10 +129,12 @@ public class CheckBox extends GuiWidget implements Shiftable {
 			prepareRender();
 			drawButton();
 			if (isChecked()) {
-				Renderer.drawLine(getX() + 2, (int) (getY() + (getHeight() * .66)), getX() + (getWidth()/2), getY() + getHeight()-2, this.checkColor, getWidth()/3);
-				Renderer.drawLine(getX() + (getWidth()/2), getY() + getHeight()-2, getX() + getWidth() + 1, getY()-1, this.checkColor, getWidth()/3);
+				Renderer.drawLine(getX() + 2, (int) (getY() + (getHeight() * .66)), getX() + (getWidth() / 2),
+						(getY() + getHeight()) - 2, checkColor, getWidth() / 3);
+				Renderer.drawLine(getX() + (getWidth() / 2), (getY() + getHeight()) - 2, getX() + getWidth() + 1,
+						getY() - 1, checkColor, getWidth() / 3);
 			}
-			TextRenderer.renderString(getX() + getWidth() + 2, (getY() + (getHeight() / 2)) - 3, getText(), this.textColor);
+			TextRenderer.renderString(getX() + getWidth() + 2, (getY() + (getHeight() / 2)) - 3, getText(), textColor);
 		}
 	}
 

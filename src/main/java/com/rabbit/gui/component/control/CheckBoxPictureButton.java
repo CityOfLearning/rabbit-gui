@@ -1,21 +1,13 @@
 package com.rabbit.gui.component.control;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import javax.imageio.ImageIO;
-
-import org.lwjgl.opengl.GL11;
-
 import com.rabbit.gui.component.display.Picture;
 import com.rabbit.gui.layout.LayoutComponent;
 import com.rabbit.gui.render.Renderer;
 import com.rabbit.gui.render.TextRenderer;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
 
 @SideOnly(Side.CLIENT)
 @LayoutComponent
@@ -36,22 +28,22 @@ public class CheckBoxPictureButton extends Button {
 
 	public CheckBoxPictureButton(int xPos, int yPos, int width, int height, ResourceLocation texture, boolean checked) {
 		super(xPos, yPos, width, height, "");
-		picture = new Picture(xPos + width/5, yPos + 1, (int)(width*.8)-1, (int)(height*.8)-1, texture);
-		if(width <= height){
-			checkbox = new CheckBox(xPos + 2, (int)(yPos + height*.66 - 2), height /3, height /3, "", checked);
+		picture = new Picture(xPos + (width / 5), yPos + 1, (int) (width * .8) - 1, (int) (height * .8) - 1, texture);
+		if (width <= height) {
+			checkbox = new CheckBox(xPos + 2, (int) ((yPos + (height * .66)) - 2), height / 3, height / 3, "", checked);
 		} else {
-			checkbox = new CheckBox(xPos + 2, yPos + height/2 - 2, height /2, height /2, "", checked);
+			checkbox = new CheckBox(xPos + 2, (yPos + (height / 2)) - 2, height / 2, height / 2, "", checked);
 		}
 		checkbox.setIsEnabled(false);
 	}
-	
+
 	public CheckBoxPictureButton(int xPos, int yPos, int width, int height, String texture, boolean checked) {
 		super(xPos, yPos, width, height, "");
-		picture = new Picture(xPos + width/5, yPos + 1, (int)(width*.8)-1, (int)(height*.8)-1, texture);
-		if(width <= height){
-			checkbox = new CheckBox(xPos + 2, (int)(yPos + height*.66 - 2), height /3, height /3, "", checked);
+		picture = new Picture(xPos + (width / 5), yPos + 1, (int) (width * .8) - 1, (int) (height * .8) - 1, texture);
+		if (width <= height) {
+			checkbox = new CheckBox(xPos + 2, (int) ((yPos + (height * .66)) - 2), height / 3, height / 3, "", checked);
 		} else {
-			checkbox = new CheckBox(xPos + 2, yPos + height/2 - 2, height /2, height /2, "", checked);
+			checkbox = new CheckBox(xPos + 2, (yPos + (height / 2)) - 2, height / 2, height / 2, "", checked);
 		}
 		checkbox.setIsEnabled(false);
 	}
@@ -82,14 +74,14 @@ public class CheckBoxPictureButton extends Button {
 					}
 				}
 			} else {
-				if(checkbox.isChecked()){
+				if (checkbox.isChecked()) {
 					drawButton(DISABLED_STATE);
 				} else {
 					drawButton(IDLE_STATE);
 				}
 				picture.onDraw(mouseX, mouseY, partialTicks);
 				checkbox.onDraw(mouseX, mouseY, partialTicks);
-			}	
+			}
 		}
 	}
 

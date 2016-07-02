@@ -96,7 +96,7 @@ public class TextRenderer {
 	public static int renderString(int xPos, int yPos, String text, TextAlignment align) {
 		return renderString(xPos, yPos, text, Color.white, align);
 	}
-	
+
 	/**
 	 * See {@link #renderString(int, int, String, int, boolean)}
 	 */

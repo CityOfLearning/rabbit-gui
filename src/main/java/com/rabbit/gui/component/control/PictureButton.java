@@ -1,10 +1,5 @@
 package com.rabbit.gui.component.control;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-
 import org.lwjgl.opengl.GL11;
 
 import com.rabbit.gui.component.display.Picture;
@@ -12,7 +7,6 @@ import com.rabbit.gui.layout.LayoutComponent;
 import com.rabbit.gui.render.Renderer;
 import com.rabbit.gui.render.TextRenderer;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -23,19 +17,19 @@ public class PictureButton extends Button {
 
 	private Picture picture;
 
-	public PictureButton(int xPos, int yPos, int width, int height, ResourceLocation texture) {
-		super(xPos, yPos, width, height, "");
-		picture = new Picture(xPos + 1, yPos + 1, width-2, height-2, texture);
-	}
-	
-	public PictureButton(int xPos, int yPos, int width, int height, String texture) {
-		super(xPos, yPos, width, height, "");
-		picture = new Picture(xPos + 1, yPos + 1, width-2, height-2, texture);
-	}
-
 	/** Dummy constructor. Used in layout */
 	public PictureButton() {
 		super();
+	}
+
+	public PictureButton(int xPos, int yPos, int width, int height, ResourceLocation texture) {
+		super(xPos, yPos, width, height, "");
+		picture = new Picture(xPos + 1, yPos + 1, width - 2, height - 2, texture);
+	}
+
+	public PictureButton(int xPos, int yPos, int width, int height, String texture) {
+		super(xPos, yPos, width, height, "");
+		picture = new Picture(xPos + 1, yPos + 1, width - 2, height - 2, texture);
 	}
 
 	@Override
@@ -72,12 +66,14 @@ public class PictureButton extends Button {
 	}
 
 	public PictureButton setPictureTexture(ResourceLocation res) {
-		picture.setImageTexture(res);;
+		picture.setImageTexture(res);
+		;
 		return this;
 	}
-	
+
 	public PictureButton setPictureTexture(String res) {
-		picture.setImageTexture(res);;
+		picture.setImageTexture(res);
+		;
 		return this;
 	}
 

@@ -1,22 +1,10 @@
 package com.rabbit.gui.component.control;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.lwjgl.opengl.GL11;
-
-import com.rabbit.gui.GuiFoundation;
-import com.rabbit.gui.component.GuiWidget;
-import com.rabbit.gui.component.Shiftable;
 import com.rabbit.gui.layout.LayoutComponent;
 import com.rabbit.gui.render.Renderer;
 import com.rabbit.gui.render.TextAlignment;
 import com.rabbit.gui.render.TextRenderer;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -33,7 +21,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 @LayoutComponent
 public class ToggleButton extends Button {
-	
+
 	protected boolean toggle;
 
 	/** Dummy constructor. Used in layout */
@@ -44,7 +32,7 @@ public class ToggleButton extends Button {
 		super(xPos, yPos, width, height, title);
 		this.toggle = toggle;
 	}
-	
+
 	@Override
 	public void onDraw(int mouseX, int mouseY, float partialTicks) {
 		if (isVisible()) {
@@ -67,12 +55,12 @@ public class ToggleButton extends Button {
 					}
 				}
 			} else {
-				if(toggle){
+				if (toggle) {
 					drawButton(IDLE_STATE);
 				} else {
 					drawButton(DISABLED_STATE);
 				}
-				
+
 			}
 			TextRenderer.renderString(getX() + (getWidth() / 2), (getY() + (getHeight() / 2)) - 4, getText(),
 					TextAlignment.CENTER);

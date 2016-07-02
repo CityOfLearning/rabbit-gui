@@ -84,6 +84,11 @@ public class ScrollableGrid extends Grid {
 		}
 	}
 
+	public boolean isUnderMouse(int mouseX, int mouseY) {
+		return (mouseX >= getX()) && (mouseX <= (getX() + getWidth())) && (mouseY >= getY())
+				&& (mouseY <= (getY() + getHeight()));
+	}
+
 	@Override
 	public void onDraw(int mouseX, int mouseY, float partialTicks) {
 		super.onDraw(mouseX, mouseY, partialTicks);
@@ -102,10 +107,5 @@ public class ScrollableGrid extends Grid {
 		}
 		scrollBar = new ScrollBar((getX() + width) - 10, getY(), 10, height, scrollerSize);
 		registerComponent(scrollBar);
-	}
-
-	public boolean isUnderMouse(int mouseX, int mouseY) {
-		return (mouseX >= getX()) && (mouseX <= (getX() + getWidth())) && (mouseY >= getY())
-				&& (mouseY <= (getY() + getHeight()));
 	}
 }

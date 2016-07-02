@@ -1,22 +1,14 @@
 package com.rabbit.gui.component.grid.entries;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
-import javax.imageio.ImageIO;
-
-import org.lwjgl.opengl.GL11;
-
 import com.rabbit.gui.component.control.Button;
-import com.rabbit.gui.component.control.PictureButton;
 import com.rabbit.gui.component.display.Picture;
 import com.rabbit.gui.component.grid.Grid;
 import com.rabbit.gui.render.Renderer;
 import com.rabbit.gui.render.TextRenderer;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -47,27 +39,27 @@ public class PictureButtonGridEntry extends Button implements GridEntry {
 
 	public PictureButtonGridEntry(int width, int height, ResourceLocation texture, OnClickListener listener) {
 		super(0, 0, width, height, "");
-		picture = new Picture(0, 0, width-2, height-2, texture);
+		picture = new Picture(0, 0, width - 2, height - 2, texture);
 		this.listener = listener;
 	}
-	
+
 	public PictureButtonGridEntry(int width, int height, String texture) {
 		this(width, height, texture, null);
 	}
 
 	public PictureButtonGridEntry(int width, int height, String texture, OnClickListener listener) {
 		super(0, 0, width, height, "");
-		picture = new Picture(0, 0, width-2, height-2, texture);
+		picture = new Picture(0, 0, width - 2, height - 2, texture);
 		this.listener = listener;
 	}
-	
+
 	public PictureButtonGridEntry(int width, int height, UUID textureId) {
 		this(width, height, textureId, null);
 	}
 
 	public PictureButtonGridEntry(int width, int height, UUID textureId, OnClickListener listener) {
 		super(0, 0, width, height, "");
-		picture = new Picture(0, 0, width-2, height-2, textureId);
+		picture = new Picture(0, 0, width - 2, height - 2, textureId);
 		this.listener = listener;
 	}
 
@@ -107,19 +99,19 @@ public class PictureButtonGridEntry extends Button implements GridEntry {
 	public void onDraw(Grid grid, int posX, int posY, int width, int height, int mouseX, int mouseY) {
 		if (getX() != posX) {
 			setX(posX);
-			picture.setX(posX+1);
+			picture.setX(posX + 1);
 		}
 		if (getY() != posY) {
 			setY(posY);
-			picture.setY(posY+1);
+			picture.setY(posY + 1);
 		}
 		if (getWidth() != width) {
 			setWidth(width);
-			picture.setWidth(width-2);
+			picture.setWidth(width - 2);
 		}
 		if (getHeight() != height) {
 			setHeight(height);
-			picture.setHeight(height-2);
+			picture.setHeight(height - 2);
 		}
 		if (isVisible()) {
 			prepareRender();
@@ -167,14 +159,16 @@ public class PictureButtonGridEntry extends Button implements GridEntry {
 	public void setImageWidth(int imageWidth) {
 		this.imageWidth = imageWidth;
 	}
-	
+
 	public PictureButtonGridEntry setPictureTexture(ResourceLocation res) {
-		picture.setImageTexture(res);;
+		picture.setImageTexture(res);
+		;
 		return this;
 	}
-	
+
 	public PictureButtonGridEntry setPictureTexture(String res) {
-		picture.setImageTexture(res);;
+		picture.setImageTexture(res);
+		;
 		return this;
 	}
 }

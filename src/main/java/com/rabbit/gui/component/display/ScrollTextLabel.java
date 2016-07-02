@@ -60,6 +60,11 @@ public class ScrollTextLabel extends TextLabel {
 		return TextRenderer.getFontRenderer().listFormattedStringToWidth(getText(), width - 10);
 	}
 
+	public boolean isUnderMouse(int mouseX, int mouseY) {
+		return (mouseX >= getX()) && (mouseX <= (getX() + getWidth())) && (mouseY >= getY())
+				&& (mouseY <= (getY() + getHeight()));
+	}
+
 	@Override
 	public void setup() {
 		super.setup();
@@ -69,10 +74,5 @@ public class ScrollTextLabel extends TextLabel {
 					.setHandleMouseWheel(false);
 			registerComponent(scrollBar);
 		}
-	}
-	
-	public boolean isUnderMouse(int mouseX, int mouseY) {
-		return (mouseX >= getX()) && (mouseX <= (getX() + getWidth())) && (mouseY >= getY())
-				&& (mouseY <= (getY() + getHeight()));
 	}
 }
