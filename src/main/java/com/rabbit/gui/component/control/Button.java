@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
-import com.rabbit.gui.GuiFoundation;
+import com.rabbit.gui.RabbitGui;
 import com.rabbit.gui.component.GuiWidget;
 import com.rabbit.gui.component.Shiftable;
 import com.rabbit.gui.layout.LayoutComponent;
@@ -240,7 +240,7 @@ public class Button extends GuiWidget implements Shiftable {
 			tlineWidth = TextRenderer.getFontRenderer().getStringWidth(line) > tlineWidth
 					? TextRenderer.getFontRenderer().getStringWidth(line) : tlineWidth;
 		}
-		int dWidth = GuiFoundation.proxy.getCurrentStage().width;
+		int dWidth = RabbitGui.proxy.getCurrentStage().width;
 		if (((tlineWidth + mouseX) > dWidth) && ((mouseX + 1) > (dWidth / 2))) {
 			// the button is on the right half of the screen
 			drawToLeft = true;

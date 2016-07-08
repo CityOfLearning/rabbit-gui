@@ -15,6 +15,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.google.common.collect.Maps;
+import com.rabbit.gui.RabbitGui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -54,12 +55,12 @@ public class TextureHelper {
 				}
 				dynamicImages.put(textureId,
 						new ImmutablePair<String, DynamicTexture>(textureLocation, new DynamicTexture(bufImg)));
-				System.out.println("Added Texture " + textureLocation + " to Dynamic Textures");
+				RabbitGui.logger.info("Added Texture " + textureLocation + " to Dynamic Textures");
 			} catch (MalformedURLException e) {
-				System.out.println("Adding Texture " + textureLocation + " to Static Textures");
+				RabbitGui.logger.info("Adding Texture " + textureLocation + " to Static Textures");
 				staticImages.put(textureId, new ResourceLocation(textureLocation));
 			} catch (IOException e) {
-				System.out.println("Adding Texture " + textureLocation + " to Static Textures 2");
+				RabbitGui.logger.info("Adding Texture " + textureLocation + " to Static Textures 2");
 				staticImages.put(textureId, new ResourceLocation(textureLocation));
 			}
 		}

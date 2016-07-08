@@ -164,14 +164,6 @@ public class DropDown<T> extends GuiWidget implements WidgetList<T>, Shiftable {
 
 		for (int index = 0; index < keys.size(); index++) {
 			String itemIdentifier = keys.get(index);
-			// int yPos = getY() + getHeight() + (getHeight() / 8) + (index *
-			// getHeight());
-			// boolean hoverSlot = (mouseX >= getX()) && (mouseX <= (getX() +
-			// getWidth())) && (mouseY >= yPos)
-			// && (mouseY <= (yPos + getHeight()));
-			// boolean selectedSlot = hoverSlot
-			// || (!hoverUnrolledList &&
-			// itemIdentifier.equalsIgnoreCase(this.getSelectedIdentifier()));
 
 			int slotPosY = ((getY() + (index * height)) - (int) ((height * scrollBar.getProgress() * content.size())
 					- (((unrollHeight - height) * (scrollBar.getProgress())) / 1)));
