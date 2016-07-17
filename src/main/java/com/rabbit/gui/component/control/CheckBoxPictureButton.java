@@ -97,4 +97,8 @@ public class CheckBoxPictureButton extends Button {
 		}
 		return clicked;
 	}
+
+	public void setToggle(boolean toggle) {
+		checkbox.setIsChecked(toggle);
+	}
 }

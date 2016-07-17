@@ -81,15 +81,8 @@ public class Picture extends GuiWidget {
 				// throw new RuntimeException("Can't get resource", ioex);
 			}
 		} else if (TextureHelper.isTextureDynamic(pictureUUID)) {
-			try {
-				BufferedImage image = ImageIO.read(new URL(TextureHelper.getDynamicTextureLocation(pictureUUID)));
-				setImageWidth(image.getWidth());
-				setImageHeight(image.getHeight());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
+			setImageWidth(TextureHelper.getDynamicTextureInfo(textureId).getLeft());
+			setImageHeight(TextureHelper.getDynamicTextureInfo(textureId).getRight());
 		}
 
 	}
@@ -147,15 +140,8 @@ public class Picture extends GuiWidget {
 				throw new RuntimeException("Can't get resource", ioex);
 			}
 		} else if (TextureHelper.isTextureDynamic(pictureUUID)) {
-			try {
-				BufferedImage image = ImageIO.read(new URL(textureLocation));
-				setImageWidth(image.getWidth());
-				setImageHeight(image.getHeight());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
+			setImageWidth(TextureHelper.getDynamicTextureInfo(pictureUUID).getLeft());
+			setImageHeight(TextureHelper.getDynamicTextureInfo(pictureUUID).getRight());
 		}
 	}
 

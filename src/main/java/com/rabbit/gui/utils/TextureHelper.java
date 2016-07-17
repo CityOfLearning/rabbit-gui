@@ -24,21 +24,28 @@ import net.minecraft.util.ResourceLocation;
 
 public class TextureHelper {
 	private static Map<UUID, Pair<String, DynamicTexture>> dynamicImages = Maps.newHashMap();
+	private static Map<UUID, Pair<Integer, Integer>> dynamicImageInfo = Maps.newHashMap();
 	private static Map<UUID, ResourceLocation> staticImages = Maps.newHashMap();
 	private static ResourceLocation defaultTexture = new ResourceLocation("Minecraft", "textures/items/barrier.png");
 
-	public static void addDynamicTexture(UUID textureId, URL textureLocation) {
-		try {
-			BufferedImage bufImg = ImageIO.read(textureLocation);
-			bufImg = trim(bufImg);
-			if ((bufImg.getWidth() > 128) || (bufImg.getHeight() > 128)) {
-				bufImg = resize(bufImg, bufImg.getWidth(), bufImg.getHeight());
-			}
-			dynamicImages.put(textureId,
-					new ImmutablePair<String, DynamicTexture>(textureLocation.getPath(), new DynamicTexture(bufImg)));
-		} catch (Exception e) {
-			// must not be a valid image
+	public static void addDynamicTexture(UUID textureId, URL textureLocation) throws IOException {
+		// this should cache the image
+		BufferedImage bufImg = ImageCacheHelper.fetchImage(textureLocation);
+		if (bufImg == null) {
+			throw new IOException();
 		}
+		bufImg = trim(bufImg);
+		if ((bufImg.getWidth() > 128) || (bufImg.getHeight() > 128)) {
+			if (bufImg.getWidth() != bufImg.getHeight()) {
+				bufImg = resize(bufImg, bufImg.getWidth(), bufImg.getHeight());
+			} else {
+				// resize a square image
+				bufImg = ImageCacheHelper.resizeImage(bufImg);
+			}
+		}
+		dynamicImageInfo.put(textureId, new ImmutablePair<Integer, Integer>(bufImg.getWidth(), bufImg.getHeight()));
+		dynamicImages.put(textureId,
+				new ImmutablePair<String, DynamicTexture>(textureLocation.getPath(), new DynamicTexture(bufImg)));
 	}
 
 	public static void addStaticTexture(UUID textureId, ResourceLocation texture) {
@@ -48,13 +55,7 @@ public class TextureHelper {
 	public static void addTexture(UUID textureId, String textureLocation) {
 		if ((textureLocation != null) && !textureLocation.isEmpty()) {
 			try {
-				BufferedImage bufImg = ImageIO.read(new URL(textureLocation));
-				bufImg = trim(bufImg);
-				if ((bufImg.getWidth() > 128) || (bufImg.getHeight() > 128)) {
-					bufImg = resize(bufImg, bufImg.getWidth(), bufImg.getHeight());
-				}
-				dynamicImages.put(textureId,
-						new ImmutablePair<String, DynamicTexture>(textureLocation, new DynamicTexture(bufImg)));
+				addDynamicTexture(textureId, new URL(textureLocation));
 				RabbitGui.logger.info("Added Texture " + textureLocation + " to Dynamic Textures");
 			} catch (MalformedURLException e) {
 				RabbitGui.logger.info("Adding Texture " + textureLocation + " to Static Textures");
@@ -81,6 +82,10 @@ public class TextureHelper {
 			return dynamicImages.get(textureId).getRight();
 		}
 		return null;
+	}
+
+	public static Pair<Integer, Integer> getDynamicTextureInfo(UUID textureId) {
+		return dynamicImageInfo.get(textureId);
 	}
 
 	public static String getDynamicTextureLocation(UUID textureId) {

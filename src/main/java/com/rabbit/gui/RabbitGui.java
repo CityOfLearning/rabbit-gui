@@ -6,7 +6,6 @@ import com.rabbit.gui.proxy.Proxy;
 import com.rabbit.gui.reference.MetaData;
 import com.rabbit.gui.reference.Reference;
 
-import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -19,7 +18,7 @@ public class RabbitGui {
 
 	@SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS, serverSide = Reference.SERVER_PROXY_CLASS)
 	public static Proxy proxy;
-	
+
 	public static Logger logger;
 
 	@Mod.Metadata(Reference.MOD_ID)
@@ -30,9 +29,9 @@ public class RabbitGui {
 		metadata = MetaData.init(metadata);
 		proxy.init();
 		logger.info("Rabbit Gui has been successfully initialized");
-		
+
 	}
-	
+
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		logger = event.getModLog();
