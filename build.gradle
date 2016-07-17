@@ -43,7 +43,7 @@ dependencies {
 }
 
 jar {	
-	from ('src/main/java/assets'){
+	from ('src/main/resources/assets'){
     	into 'assets'
     }
 	
