@@ -43,9 +43,6 @@ dependencies {
 }
 
 jar {	
-	from ('src/main/resources/assets'){
-    	into 'assets'
-    }
 	
     from (sourceSets.main.output) {
         setDuplicatesStrategy(DuplicatesStrategy.EXCLUDE)
