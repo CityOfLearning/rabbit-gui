@@ -15,6 +15,9 @@ public class StringEntry implements ListEntry {
 
 	@LayoutComponent
 	protected boolean isEnabled = true;
+	
+	@LayoutComponent
+	protected TextAlignment align = TextAlignment.CENTER;
 
 	/**
 	 * String which would be drawn in the center of the entry <br>
@@ -39,17 +42,38 @@ public class StringEntry implements ListEntry {
 	@Override
 	public void onDraw(DisplayList list, int posX, int posY, int width, int height, int mouseX, int mouseY) {
 		if (isEnabled()) {
-			TextRenderer.renderString(posX + (width / 2), (posY + (height / 2)) - 5,
-					TextRenderer.getFontRenderer().trimStringToWidth(title, width), TextAlignment.CENTER);
+			if(align == TextAlignment.CENTER){
+				TextRenderer.renderString(posX + (width / 2), (posY + (height / 2)) - 5,
+					TextRenderer.getFontRenderer().trimStringToWidth(title, width), align);
+			} else if(align == TextAlignment.LEFT){
+				TextRenderer.renderString(posX + 2, (posY + (height / 2)) - 5,
+						TextRenderer.getFontRenderer().trimStringToWidth(title, width), align);
+			} else if(align == TextAlignment.RIGHT){
+				TextRenderer.renderString(posX + width-2, (posY + (height / 2)) - 5,
+						TextRenderer.getFontRenderer().trimStringToWidth(title, width), align);
+			}
 		} else {
-			TextRenderer.renderString(posX + (width / 2), (posY + (height / 2)) - 5,
-					TextRenderer.getFontRenderer().trimStringToWidth(title, width), Color.gray, TextAlignment.CENTER);
+			if(align == TextAlignment.CENTER){
+				TextRenderer.renderString(posX + (width / 2), (posY + (height / 2)) - 5,
+					TextRenderer.getFontRenderer().trimStringToWidth(title, width), Color.gray, align);
+			} else if(align == TextAlignment.LEFT){
+				TextRenderer.renderString(posX + 2, (posY + (height / 2)) - 5,
+						TextRenderer.getFontRenderer().trimStringToWidth(title, width), Color.gray, align);
+			} else if(align == TextAlignment.RIGHT){
+				TextRenderer.renderString(posX + width-2, (posY + (height / 2)) - 5,
+						TextRenderer.getFontRenderer().trimStringToWidth(title, width), Color.gray, align);
+			}
 		}
 	}
 
 	@Override
 	public StringEntry setIsEnabled(boolean isEnabled) {
 		this.isEnabled = isEnabled;
+		return this;
+	}
+	
+	public StringEntry setTextAlignment(TextAlignment align){
+		this.align = align;
 		return this;
 	}
 }
