@@ -37,6 +37,7 @@ public class MultiTextbox extends TextBox {
 			if (isBackgroundVisible()) {
 				drawTextBoxBackground();
 			}
+			TextRenderer.getFontRenderer().setUnicodeFlag(drawUnicode);
 			int color = 0xFFFFFF;
 			boolean renderCursor = isFocused() && (((cursorCounter / 6) % 2) == 0);
 			int startLine = getStartLineY();
@@ -99,6 +100,7 @@ public class MultiTextbox extends TextBox {
 			scrollBar.setVisiblie(listHeight > (height - 4));
 			scrollBar.setHandleMouseWheel((listHeight > (height - 4)) && isUnderMouse(Mouse.getX(), Mouse.getY()));
 			scrollBar.setScrollerSize((getScrollerSize()));
+			TextRenderer.getFontRenderer().setUnicodeFlag(false);
 		}
 	}
 
@@ -128,8 +130,11 @@ public class MultiTextbox extends TextBox {
 	}
 
 	private int getStartLineY() {
-		float scrolled = scrollBar.scrolled;
-		return MathHelper.ceiling_double_int((scrolled * getHeight()) / TextRenderer.getFontRenderer().FONT_HEIGHT);
+		if (scrollBar != null) {
+			float scrolled = scrollBar.scrolled;
+			return MathHelper.ceiling_double_int((scrolled * getHeight()) / TextRenderer.getFontRenderer().FONT_HEIGHT);
+		}
+		return 0;
 	}
 
 	@Override
@@ -154,9 +159,12 @@ public class MultiTextbox extends TextBox {
 		boolean clicked = !overlap && isTextBoxUnderMouse(posX, posY);
 		setIsFocused(clicked);
 		if (isFocused() && (mouseButtonIndex == 0)) {
+			TextRenderer.getFontRenderer().setUnicodeFlag(drawUnicode);
 			int lenght = posX - getX();
-			String temp = TextRenderer.getFontRenderer().trimStringToWidth(text.substring(scrollOffset), getWidth());
-			setCursorPosition(TextRenderer.getFontRenderer().trimStringToWidth(temp, lenght).length() + scrollOffset);
+			String temp = TextRenderer.getFontRenderer()
+					.trimStringToWidth(text.substring(Math.max(0, Math.min(scrollOffset, text.length()))), getWidth());
+			setCursorPosition(TextRenderer.getFontRenderer().trimStringToWidth(temp, lenght).length()
+					+ Math.max(0, Math.min(scrollOffset, text.length())));
 			int x = posX - getX();
 			int y = ((posY - getY() - 4) / TextRenderer.getFontRenderer().FONT_HEIGHT) + getStartLineY();
 			cursorPos = 0;
@@ -194,6 +202,7 @@ public class MultiTextbox extends TextBox {
 			if (y >= lineCount) {
 				setCursorPosition(getText().length());
 			}
+			TextRenderer.getFontRenderer().setUnicodeFlag(false);
 		}
 		return clicked;
 	}

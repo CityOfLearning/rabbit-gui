@@ -46,6 +46,8 @@ public class TextBox extends GuiWidget implements Shiftable {
 
 	protected int scrollOffset;
 
+	protected boolean drawUnicode;
+
 	@LayoutComponent
 	protected int maxStringLength = 100;
 
@@ -114,28 +116,34 @@ public class TextBox extends GuiWidget implements Shiftable {
 		}
 	}
 
+	public boolean doesDrawUnicode() {
+		return drawUnicode;
+	}
+
 	protected void drawBox() {
 		if (isVisible()) {
 			if (isBackgroundVisible()) {
 				drawTextBoxBackground();
 			}
+			TextRenderer.getFontRenderer().setUnicodeFlag(drawUnicode);
 			int textColor = isEnabled() ? getEnabledColor() : getDisabledColor();
 			int cursorPosWithOffset = getCursorPosition() - scrollOffset;
 			int selEnd = selectionEnd - scrollOffset;
-			String text = TextRenderer.getFontRenderer().trimStringToWidth(this.text.substring(scrollOffset),
+			String drawText = TextRenderer.getFontRenderer().trimStringToWidth(
+					text.substring(Math.max(0, Math.min(scrollOffset, text.length()))),
 					isBackgroundVisible() ? getWidth() - 8 : getWidth());
-			boolean isCursorVisible = (cursorPosWithOffset >= 0) && (cursorPosWithOffset <= text.length());
+			boolean isCursorVisible = (cursorPosWithOffset >= 0) && (cursorPosWithOffset <= drawText.length());
 			boolean shouldRenderCursor = isFocused() && (((cursorCounter / 6) % 2) == 0) && isCursorVisible;
 			int firstTextX = isBackgroundVisible() ? getX() + 4 : getX();
 			int textY = isBackgroundVisible() ? getY() + ((getHeight() - 8) / 2) : getY();
 			int secondTextX = firstTextX;
 
-			if (selEnd > text.length()) {
-				selEnd = text.length();
+			if (selEnd > drawText.length()) {
+				selEnd = drawText.length();
 			}
 
-			if (text.length() > 0) {
-				String firstText = isCursorVisible ? text.substring(0, cursorPosWithOffset) : text;
+			if (drawText.length() > 0) {
+				String firstText = isCursorVisible ? drawText.substring(0, cursorPosWithOffset) : drawText;
 				secondTextX = TextRenderer.getFontRenderer().drawStringWithShadow(firstText, firstTextX, textY,
 						textColor);
 			}
@@ -150,9 +158,9 @@ public class TextBox extends GuiWidget implements Shiftable {
 				cursorX = --secondTextX;
 			}
 
-			if ((text.length() > 0) && isCursorVisible && (cursorPosWithOffset < text.length())) {
-				TextRenderer.getFontRenderer().drawStringWithShadow(text.substring(cursorPosWithOffset), secondTextX,
-						textY, textColor);
+			if ((drawText.length() > 0) && isCursorVisible && (cursorPosWithOffset < drawText.length())) {
+				TextRenderer.getFontRenderer().drawStringWithShadow(drawText.substring(cursorPosWithOffset),
+						secondTextX, textY, textColor);
 			}
 
 			if (shouldRenderCursor) {
@@ -161,15 +169,16 @@ public class TextBox extends GuiWidget implements Shiftable {
 							textY + 1 + TextRenderer.getFontRenderer().FONT_HEIGHT, CURSOR_COLOR);
 				} else {
 					TextRenderer.getFontRenderer().drawStringWithShadow("_", cursorX, textY, textColor);
+
 				}
 			}
 
 			if (selEnd != cursorPosWithOffset) {
-				int finishX = firstTextX + TextRenderer.getFontRenderer().getStringWidth(text.substring(0, selEnd));
+				int finishX = firstTextX + TextRenderer.getFontRenderer().getStringWidth(drawText.substring(0, selEnd));
 				renderSelectionRect(cursorX, textY - 1, finishX - 1,
 						textY + 1 + TextRenderer.getFontRenderer().FONT_HEIGHT);
 			}
-
+			TextRenderer.getFontRenderer().setUnicodeFlag(false);
 		}
 	}
 
@@ -316,8 +325,10 @@ public class TextBox extends GuiWidget implements Shiftable {
 		setIsFocused(clicked);
 		if (isFocused() && (mouseButtonIndex == 0)) {
 			int lenght = posX - getX();
+			TextRenderer.getFontRenderer().setUnicodeFlag(drawUnicode);
 			String temp = TextRenderer.getFontRenderer().trimStringToWidth(text.substring(scrollOffset), getWidth());
 			setCursorPosition(TextRenderer.getFontRenderer().trimStringToWidth(temp, lenght).length() + scrollOffset);
+			TextRenderer.getFontRenderer().setUnicodeFlag(false);
 		}
 		return clicked;
 	}
@@ -454,6 +465,11 @@ public class TextBox extends GuiWidget implements Shiftable {
 
 	public TextBox setDisabledColor(int color) {
 		disabledColor = color;
+		return this;
+	}
+
+	public TextBox setDrawUnicode(boolean drawUnicode) {
+		this.drawUnicode = drawUnicode;
 		return this;
 	}
 

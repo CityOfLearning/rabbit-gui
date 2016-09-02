@@ -2,6 +2,7 @@ package com.rabbit.gui.component.display;
 
 import com.rabbit.gui.component.GuiWidget;
 import com.rabbit.gui.layout.LayoutComponent;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -14,21 +15,21 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class EntityComponent extends GuiWidget {
 
 	EntityLiving entity;
-	
+
 	@LayoutComponent
-	int rotation =0;
-	
+	int rotation = 0;
+
 	@LayoutComponent
 	float zoom = 1;
 
 	public EntityComponent(int x, int y, int width, int height, EntityLiving entity) {
 		this(x, y, width, height, entity, 0, 1);
 	}
-	
+
 	public EntityComponent(int x, int y, int width, int height, EntityLiving entity, int rotation) {
 		this(x, y, width, height, entity, rotation, 1);
 	}
-	
+
 	public EntityComponent(int x, int y, int width, int height, EntityLiving entity, int rotation, float zoom) {
 		super(x, y, width, height);
 		this.entity = entity;
@@ -56,7 +57,6 @@ public class EntityComponent extends GuiWidget {
 		float f5 = entity.rotationYawHead;
 		float f6 = (x) - mouseX;
 		float f7 = (y) - (50.0f * scale * zoom) - mouseY;
-		int orientation = 0;
 		GlStateManager.rotate(135.0f, 0.0f, 1.0f, 0.0f);
 		GlStateManager.rotate(-135.0f, 0.0f, 1.0f, 0.0f);
 		GlStateManager.rotate(-(float) Math.atan(f7 / 40.0f) * 20.0f, 1.0f, 0.0f, 0.0f);

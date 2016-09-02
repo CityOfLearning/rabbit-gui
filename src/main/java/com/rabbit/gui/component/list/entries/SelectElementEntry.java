@@ -11,7 +11,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class SelectElementEntry <T> extends SelectListEntry {
+public class SelectElementEntry<T> extends SelectListEntry {
 
 	public static interface OnClickListener {
 		void onClick(SelectElementEntry entry, DisplayList list, int mouseX, int mouseY);

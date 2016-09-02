@@ -2,6 +2,7 @@ package com.rabbit.gui.component.control;
 
 import org.lwjgl.opengl.GL11;
 
+import com.rabbit.gui.component.GuiWidget;
 import com.rabbit.gui.component.display.Picture;
 import com.rabbit.gui.layout.LayoutComponent;
 import com.rabbit.gui.render.Renderer;
@@ -65,6 +66,13 @@ public class PictureButton extends Button {
 		}
 	}
 
+	@Override
+	public GuiWidget setHeight(int height) {
+		super.setHeight(height);
+		picture.setY(height - 2);
+		return this;
+	}
+
 	public PictureButton setPictureTexture(ResourceLocation res) {
 		picture.setImageTexture(res);
 		;
@@ -74,6 +82,27 @@ public class PictureButton extends Button {
 	public PictureButton setPictureTexture(String res) {
 		picture.setImageTexture(res);
 		;
+		return this;
+	}
+
+	@Override
+	public GuiWidget setWidth(int width) {
+		super.setWidth(width);
+		picture.setX(width - 2);
+		return this;
+	}
+
+	@Override
+	public GuiWidget setX(int x) {
+		super.setX(x);
+		picture.setX(x + 1);
+		return this;
+	}
+
+	@Override
+	public GuiWidget setY(int y) {
+		super.setY(y);
+		picture.setY(y + 1);
 		return this;
 	}
 
