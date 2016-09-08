@@ -1,7 +1,17 @@
-// For those who want the bleeding edge
+import com.amazonaws.auth.policy.Policy
+import com.amazonaws.auth.policy.Principal
+import com.amazonaws.auth.policy.Statement
+import com.amazonaws.auth.policy.actions.S3Actions
+import com.amazonaws.auth.policy.resources.S3BucketResource
+import com.amazonaws.auth.policy.resources.S3ObjectResource
+import com.amazonaws.services.s3.model.ObjectMetadata
+
+import jp.classmethod.aws.gradle.s3.AmazonS3FileUploadTask
+
 buildscript {
     repositories {
         jcenter()
+        mavenCentral()		
         maven {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
@@ -9,18 +19,37 @@ buildscript {
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+		classpath "jp.classmethod.aws:gradle-aws-plugin:0.+"
     }
 }
+
+repositories {
+    jcenter()
+		
+	maven { 
+		name = "jitpack"
+		url "https://jitpack.io" 
+	}
+}
+
 apply plugin: 'net.minecraftforge.gradle.forge'
-//we have to do this for jitpack
 apply plugin: 'maven'
+apply plugin: "jp.classmethod.aws.s3"
+
+aws {
+	profileName = "minecraft"
+	region = "us-east-1"
+}
+
+def myBucketName = 'broad-participation'
+
 
 version = "v1.3.1"
 group = 'com.github.CityOfLearning'
 archivesBaseName = "rabbit-gui"
 
 minecraft {
-    version = "1.8.9-11.15.1.1855"
+    version = "1.8.9-11.15.1.1902-1.8.9"
     runDir = "run"
     
     // the mappings can be changed at any time, and must be in the following format.
@@ -85,4 +114,30 @@ processResources
 
 reobfJar.doLast {
     ant.checksum file: tasks.jar.archivePath
+}
+
+task publish(dependsOn:['build', 'uploadJar', 'uploadHash']) {
+
+}
+
+task uploadJar(type: AmazonS3FileUploadTask) {
+	file file('./build/libs/'+archivesBaseName +'-' +version+'.jar') // must be a file
+	bucketName myBucketName
+	key archivesBaseName + '.jar'
+	overwrite true
+	
+	def m = new ObjectMetadata()
+	m.setCacheControl("no-cache, no-store")
+	objectMetadata = m
+}
+
+task uploadHash(type: AmazonS3FileUploadTask) {
+	file file('./build/libs/'+archivesBaseName +'-' +version+'.jar.MD5') // must be a file
+	bucketName myBucketName
+	key archivesBaseName + '.MD5'
+	overwrite true
+	
+	def m = new ObjectMetadata()
+	m.setCacheControl("no-cache, no-store")
+	objectMetadata = m
 }
