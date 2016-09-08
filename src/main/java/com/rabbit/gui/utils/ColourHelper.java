@@ -1,5 +1,9 @@
 package com.rabbit.gui.utils;
 
+import java.awt.Color;
+
+import net.minecraft.client.renderer.GlStateManager;
+
 public class ColourHelper {
 	/**
 	 * Blends given int colours
@@ -228,5 +232,30 @@ public class ColourHelper {
 		final float g = (colour >> 8) & 255;
 		final float b = colour & 255;
 		return RGB(r * scale, g * scale, b * scale);
+	}
+	
+	/**
+	 * Evaluates rgb from given color and bind it to GL
+	 *
+	 * @param color
+	 *            - awt color
+	 */
+	public static void glColorAWT(Color color) {
+		glColorRGB(color.getRGB());
+	}
+
+	/**
+	 * Evaluates red, green, blue and alpha from given color and binds them to
+	 * GL
+	 *
+	 * @param rgb
+	 *            - rgb color
+	 */
+	public static void glColorRGB(int rgb) {
+		float alpha = ((rgb >> 24) & 255) / 255.0F;
+		float red = ((rgb >> 16) & 255) / 255.0F;
+		float green = ((rgb >> 8) & 255) / 255.0F;
+		float blue = (rgb & 255) / 255.0F;
+		GlStateManager.color(red, green, blue, alpha);
 	}
 }

@@ -6,6 +6,8 @@ import java.util.stream.IntStream;
 
 import org.lwjgl.opengl.GL11;
 
+import com.rabbit.gui.utils.ColourHelper;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -119,7 +121,7 @@ public class Renderer {
 			int color) {
 		GL11.glPushMatrix();
 		GlStateManager.disableTexture2D();
-		glColorRGB(color);
+		ColourHelper.glColorRGB(color);
 		GL11.glBegin(GL11.GL_TRIANGLE_FAN);
 		GL11.glVertex2d(xCenter, yCenter);
 		for (double i = startDegrees; i <= finishDegrees; i += 0.05) {
@@ -158,10 +160,10 @@ public class Renderer {
 		GlStateManager.shadeModel(GL11.GL_SMOOTH);
 
 		GL11.glBegin(GL11.GL_QUADS);
-		glColorRGB(firstColor);
+		ColourHelper.glColorRGB(firstColor);
 		GL11.glVertex2d(xBot, yTop);
 		GL11.glVertex2d(xTop, yTop);
-		glColorRGB(secondColor);
+		ColourHelper.glColorRGB(secondColor);
 		GL11.glVertex2d(xTop, yBot);
 		GL11.glVertex2d(xBot, yBot);
 		GL11.glEnd();
@@ -294,7 +296,7 @@ public class Renderer {
 
 	public static void drawLine(int fromX, int fromY, int toX, int toY, Color color, float width) {
 		GL11.glPushMatrix();
-		glColorAWT(color);
+		ColourHelper.glColorAWT(color);
 		GlStateManager.disableTexture2D();
 		GL11.glLineWidth(width);
 		GL11.glBegin(GL11.GL_LINE_STRIP);
@@ -324,7 +326,7 @@ public class Renderer {
 	 */
 	public static void drawLine(int fromX, int fromY, int toX, int toY, int color, float width) {
 		GL11.glPushMatrix();
-		glColorRGB(color);
+		ColourHelper.glColorRGB(color);
 		GlStateManager.disableTexture2D();
 		GL11.glLineWidth(width);
 		GL11.glBegin(GL11.GL_LINE_STRIP);
@@ -388,7 +390,7 @@ public class Renderer {
 		GlStateManager.enableBlend();
 		GlStateManager.disableTexture2D();
 		GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-		glColorRGB(color);
+		ColourHelper.glColorRGB(color);
 		renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
 		renderer.pos(xTop, yBot, 0.0D).endVertex();
 		renderer.pos(xBot, yBot, 0.0D).endVertex();
@@ -417,7 +419,7 @@ public class Renderer {
 		GlStateManager.disableTexture2D();
 		specialGL.run();
 		GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-		glColorRGB(color);
+		ColourHelper.glColorRGB(color);
 		renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
 		renderer.pos(xTop, yBot, 0.0D).endVertex();
 		renderer.pos(xBot, yBot, 0.0D).endVertex();
@@ -540,7 +542,7 @@ public class Renderer {
 		GlStateManager.enableBlend();
 		GlStateManager.disableTexture2D();
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		glColorRGB(color);
+		ColourHelper.glColorRGB(color);
 		Tessellator tessellator = Tessellator.getInstance();
 		WorldRenderer renderer = tessellator.getWorldRenderer();
 		renderer.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION);
@@ -573,31 +575,6 @@ public class Renderer {
 
 	public static RenderItem getRenderItem() {
 		return Minecraft.getMinecraft().getRenderItem();
-	}
-
-	/**
-	 * Evaluates rgb from given color and bind it to GL
-	 *
-	 * @param color
-	 *            - awt color
-	 */
-	public static void glColorAWT(Color color) {
-		glColorRGB(color.getRGB());
-	}
-
-	/**
-	 * Evaluates red, green, blue and alpha from given color and binds them to
-	 * GL
-	 *
-	 * @param rgb
-	 *            - rgb color
-	 */
-	public static void glColorRGB(int rgb) {
-		float alpha = ((rgb >> 24) & 255) / 255.0F;
-		float red = ((rgb >> 16) & 255) / 255.0F;
-		float green = ((rgb >> 8) & 255) / 255.0F;
-		float blue = (rgb & 255) / 255.0F;
-		GlStateManager.color(red, green, blue, alpha);
 	}
 
 	/****************
