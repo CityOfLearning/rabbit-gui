@@ -1,9 +1,14 @@
 package com.rabbit.gui.proxy;
 
+import com.rabbit.gui.RabbitGui;
 import com.rabbit.gui.base.Stage;
+import com.rabbit.gui.component.display.entity.DisplayEntity;
+import com.rabbit.gui.component.display.entity.DisplayEntityRenderer;
 import com.rabbit.gui.show.IShow;
 
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
 
 public class Client implements Proxy {
 
@@ -37,7 +42,6 @@ public class Client implements Proxy {
 	@Override
 	public void init() {
 		// TODO Auto-generated method stub
-
 	}
 
 	/**
@@ -46,5 +50,16 @@ public class Client implements Proxy {
 	@Override
 	public void renderGUI() {
 		// Render GUI when on call from client
+	}
+
+	@Override
+	public void preInit() {
+		RenderingRegistry.registerEntityRenderingHandler(DisplayEntity.class, new DisplayEntityRenderer());		
+	}
+
+	@Override
+	public void postInit() {
+		// TODO Auto-generated method stub
+		
 	}
 }

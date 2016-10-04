@@ -32,4 +32,16 @@ public class Server implements Proxy {
 
 	}
 
+	@Override
+	public void preInit() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void postInit() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

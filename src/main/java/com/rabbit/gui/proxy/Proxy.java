@@ -9,6 +9,10 @@ public interface Proxy {
 	public Stage getCurrentStage();
 
 	public void init();
+	
+	public void preInit();
+	
+	public void postInit();
 
 	public void renderGUI();
 }
