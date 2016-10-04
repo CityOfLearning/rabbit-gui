@@ -26,6 +26,7 @@ public class TextureHelper {
 	private static Map<UUID, Pair<String, DynamicTexture>> dynamicImages = Maps.newHashMap();
 	private static Map<UUID, Pair<Integer, Integer>> dynamicImageInfo = Maps.newHashMap();
 	private static Map<UUID, ResourceLocation> staticImages = Maps.newHashMap();
+	private static Map<UUID, Pair<Integer, Integer>> ImageSizes = Maps.newHashMap();
 	private static ResourceLocation defaultTexture = new ResourceLocation("Minecraft", "textures/items/barrier.png");
 
 	public static void addDynamicTexture(UUID textureId, URL textureLocation) throws IOException {
