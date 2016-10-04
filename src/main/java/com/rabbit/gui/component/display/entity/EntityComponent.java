@@ -3,7 +3,6 @@ package com.rabbit.gui.component.display.entity;
 import org.lwjgl.input.Mouse;
 
 import com.rabbit.gui.component.GuiWidget;
-import com.rabbit.gui.component.IGui;
 import com.rabbit.gui.layout.LayoutComponent;
 
 import net.minecraft.client.Minecraft;
@@ -19,8 +18,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class EntityComponent extends GuiWidget {
 
-	EntityLivingBase  entity;
+	EntityLivingBase entity;
 	boolean dragging;
+	boolean canRotate;
 
 	@LayoutComponent
 	float rotation = 0;
@@ -37,37 +37,44 @@ public class EntityComponent extends GuiWidget {
 	}
 
 	public EntityComponent(int x, int y, int width, int height, EntityLiving entity, int rotation, float zoom) {
+		this(x, y, width, height, entity, rotation, zoom, true);
+	}
+
+	public EntityComponent(int x, int y, int width, int height, EntityLiving entity, int rotation, float zoom,
+			boolean canRotate) {
 		super(x, y, width, height);
 		this.entity = entity;
 		this.rotation = rotation;
 		this.zoom = zoom;
+		this.canRotate = canRotate;
 	}
-	
+
 	@Override
 	public void onDraw(int mouseX, int mouseY, float partialTicks) {
 		super.onDraw(mouseX, mouseY, partialTicks);
-		GlStateManager.pushMatrix();
-		GlStateManager.resetColor();
 		GlStateManager.enableColorMaterial();
-		GlStateManager.translate(x, y, 75.0f);
-		float scale = 1.0f;
-		if (entity.height > 2.4) {
-			scale = 2.0f / entity.height;
-		}
-		GlStateManager.scale(-30.0f * scale * zoom, 30.0f * scale * zoom, 30.0f * scale * zoom);
-		GlStateManager.rotate(180.0f, 0.0f, 0.0f, 1.0f);
+		GlStateManager.enableTexture2D();
+		GlStateManager.enableBlend();
+		GlStateManager.color(1, 1, 1, 1);
+		GlStateManager.pushMatrix();
+		GlStateManager.translate(x, y, 50.0F);
+		GlStateManager.scale(-30.0f * zoom, 30.0f * zoom, 30.0f * zoom);
+		GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
 		RenderHelper.enableStandardItemLighting();
 		entity.renderYawOffset = rotation;
 		entity.rotationYawHead = entity.renderYawOffset;
-		Minecraft.getMinecraft().getRenderManager().renderEntityWithPosYaw(entity, 0.0, 0.0, 0.0, 0.0f, 1.0f);
+		RenderManager rendermanager = Minecraft.getMinecraft().getRenderManager();
+		rendermanager.setRenderShadow(false);
+		rendermanager.renderEntityWithPosYaw(entity, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F);
+		rendermanager.setRenderShadow(true);
+		GlStateManager.popMatrix();
 		RenderHelper.disableStandardItemLighting();
 		GlStateManager.disableRescaleNormal();
 		GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
 		GlStateManager.disableTexture2D();
 		GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
-		GlStateManager.popMatrix();
 	}
-	
+
 	@Override
 	public boolean onMouseClicked(int posX, int posY, int mouseButtonIndex, boolean overlap) {
 		super.onMouseClicked(posX, posY, mouseButtonIndex, overlap);
@@ -82,8 +89,8 @@ public class EntityComponent extends GuiWidget {
 	@Override
 	public void onMouseInput() {
 		super.onMouseInput();
-		if(dragging){
-			rotation -= Mouse.getEventDX() *.5;
+		if (canRotate && dragging) {
+			rotation -= Mouse.getEventDX() * .5;
 		}
 	}
 

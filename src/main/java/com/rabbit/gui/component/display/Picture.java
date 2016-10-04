@@ -102,14 +102,16 @@ public class Picture extends GuiWidget {
 	}
 
 	private void renderPicture() {
-		GL11.glPushMatrix();
-		GL11.glColor4f(1, 1, 1, 1);
+		GlStateManager.pushMatrix();
+		GlStateManager.resetColor();
+		GlStateManager.color(1, 1, 1, 1);
 		GlStateManager.enableTexture2D();
 		GlStateManager.enableBlend();
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		TextureHelper.bindTexture(pictureUUID);
 		Renderer.drawScaledTexturedRect(getX(), getY(), getWidth(), getHeight());
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 
 	public void setImageHeight(int imageHeight) {
