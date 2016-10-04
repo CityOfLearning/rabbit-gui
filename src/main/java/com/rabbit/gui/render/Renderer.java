@@ -583,6 +583,109 @@ public class Renderer {
 	 *
 	 ****************/
 
+	public static void renderChatBubble(int xPos, int yPos, int width, int height, List<String> lines) {
+		FontRenderer font = Minecraft.getMinecraft().fontRendererObj;
+		GlStateManager.pushMatrix();
+		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+		GlStateManager.depthMask(false);
+		GlStateManager.disableLighting();
+		GlStateManager.enableBlend();
+		int black = -16777216;
+		int white = -1140850689;
+		GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+		GlStateManager.disableTexture2D();
+		drawRect(xPos - 2, yPos - 2, xPos + width + 2, yPos + height + 1, white);
+		GlStateManager.translate(0, 0, -0.1);
+		drawRect(xPos - 1, yPos - 3, xPos + width + 1, (yPos + height) - 2, black);
+		drawRect(xPos - 1, yPos + 2, (xPos + width) - 1, yPos + height + 1, black);
+		drawRect(xPos + 3, yPos + 2, xPos + width + 1, yPos + height + 1, black);
+		drawRect(xPos - 3, yPos - 1, (xPos + width) - 2, yPos + height, black);
+		drawRect(xPos + 3, yPos - 1, xPos + width + 2, yPos + height, black);
+		drawRect(xPos - 2, yPos - 2, (xPos + width) - 1, (yPos + height) - 1, black);
+		drawRect(xPos + 2, yPos - 2, xPos + width + 1, (yPos + height) - 1, black);
+		drawRect(xPos - 2, yPos + 1, (xPos + width) - 1, yPos + height, black);
+		drawRect(xPos + 2, yPos + 1, xPos + width + 1, yPos + height, black);
+		GlStateManager.translate(0, 0, 0.1);
+		drawRect(xPos, yPos + 1, xPos + width + 3, yPos + height + 4, white);
+		drawRect(xPos - 1, yPos + 4, xPos + width + 1, yPos + height + 5, white);
+		GlStateManager.translate(0, 0, -0.1);
+		drawRect(xPos - 1, yPos + 1, xPos + width, yPos + height + 4, black);
+		drawRect(xPos + 3, yPos + 1, xPos + width + 4, yPos + height + 3, black);
+		drawRect(xPos + 2, yPos + 3, xPos + width + 3, yPos + height + 4, black);
+		drawRect(xPos + 1, yPos + 4, xPos + width + 2, yPos + height + 5, black);
+		drawRect(xPos - 2, yPos + 4, (xPos + width) - 1, yPos + height + 5, black);
+		drawRect(xPos - 2, yPos + 5, xPos + width + 1, yPos + height + 6, black);
+		GlStateManager.translate(0, 0, 0.1);
+		GlStateManager.enableTexture2D();
+		GlStateManager.depthMask(true);
+		int index = 0;
+		for (String message : lines) {
+			// none of the shadows look good...
+			Minecraft.getMinecraft().fontRendererObj.drawString(message, (float) 5 + xPos,
+					5 + yPos + (index * font.FONT_HEIGHT), black, false);
+			++index;
+		}
+		GlStateManager.enableLighting();
+		GlStateManager.disableBlend();
+		GlStateManager.enableDepth();
+		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+		GlStateManager.popMatrix();
+	}
+
+	/**
+	 * Renders the specified text to the screen, center-aligned. Args :
+	 * renderer, string, x, y, color
+	 */
+	public static void vdrawCenteredString(FontRenderer fontRendererIn, String text, int x, int y, int color) {
+		fontRendererIn.drawStringWithShadow(text, x - (fontRendererIn.getStringWidth(text) / 2), y, color);
+	}
+
+	/**
+	 * Draws a rectangle with a vertical gradient between the specified colors
+	 * (ARGB format). Args : x1, y1, x2, y2, topColor, bottomColor
+	 */
+	protected static void vdrawGradientRect(int left, int top, int right, int bottom, int startColor, int endColor,
+			int z) {
+		float f = ((startColor >> 24) & 255) / 255.0F;
+		float f1 = ((startColor >> 16) & 255) / 255.0F;
+		float f2 = ((startColor >> 8) & 255) / 255.0F;
+		float f3 = (startColor & 255) / 255.0F;
+		float f4 = ((endColor >> 24) & 255) / 255.0F;
+		float f5 = ((endColor >> 16) & 255) / 255.0F;
+		float f6 = ((endColor >> 8) & 255) / 255.0F;
+		float f7 = (endColor & 255) / 255.0F;
+		GlStateManager.disableTexture2D();
+		GlStateManager.enableBlend();
+		GlStateManager.disableAlpha();
+		GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+		GlStateManager.shadeModel(7425);
+		Tessellator tessellator = Tessellator.getInstance();
+		WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+		worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
+		worldrenderer.pos(right, top, z).color(f1, f2, f3, f).endVertex();
+		worldrenderer.pos(left, top, z).color(f1, f2, f3, f).endVertex();
+		worldrenderer.pos(left, bottom, z).color(f5, f6, f7, f4).endVertex();
+		worldrenderer.pos(right, bottom, z).color(f5, f6, f7, f4).endVertex();
+		tessellator.draw();
+		GlStateManager.shadeModel(7424);
+		GlStateManager.disableBlend();
+		GlStateManager.enableAlpha();
+		GlStateManager.enableTexture2D();
+	}
+
+	/**
+	 * Draw a 1 pixel wide horizontal line. Args: x1, x2, y, color
+	 */
+	protected static void vdrawHorizontalLine(int startX, int endX, int y, int color) {
+		if (endX < startX) {
+			int i = startX;
+			startX = endX;
+			endX = i;
+		}
+
+		drawRect(startX, y, endX + 1, y + 1, color);
+	}
+
 	/**
 	 * Draws a textured rectangle at z = 0. Args: x, y, u, v, width, height,
 	 * textureWidth, textureHeight
@@ -657,63 +760,10 @@ public class Renderer {
 	}
 
 	/**
-	 * Renders the specified text to the screen, center-aligned. Args :
-	 * renderer, string, x, y, color
-	 */
-	public void vdrawCenteredString(FontRenderer fontRendererIn, String text, int x, int y, int color) {
-		fontRendererIn.drawStringWithShadow(text, x - (fontRendererIn.getStringWidth(text) / 2), y, color);
-	}
-
-	/**
-	 * Draws a rectangle with a vertical gradient between the specified colors
-	 * (ARGB format). Args : x1, y1, x2, y2, topColor, bottomColor
-	 */
-	protected void vdrawGradientRect(int left, int top, int right, int bottom, int startColor, int endColor, int z) {
-		float f = ((startColor >> 24) & 255) / 255.0F;
-		float f1 = ((startColor >> 16) & 255) / 255.0F;
-		float f2 = ((startColor >> 8) & 255) / 255.0F;
-		float f3 = (startColor & 255) / 255.0F;
-		float f4 = ((endColor >> 24) & 255) / 255.0F;
-		float f5 = ((endColor >> 16) & 255) / 255.0F;
-		float f6 = ((endColor >> 8) & 255) / 255.0F;
-		float f7 = (endColor & 255) / 255.0F;
-		GlStateManager.disableTexture2D();
-		GlStateManager.enableBlend();
-		GlStateManager.disableAlpha();
-		GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-		GlStateManager.shadeModel(7425);
-		Tessellator tessellator = Tessellator.getInstance();
-		WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-		worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-		worldrenderer.pos(right, top, z).color(f1, f2, f3, f).endVertex();
-		worldrenderer.pos(left, top, z).color(f1, f2, f3, f).endVertex();
-		worldrenderer.pos(left, bottom, z).color(f5, f6, f7, f4).endVertex();
-		worldrenderer.pos(right, bottom, z).color(f5, f6, f7, f4).endVertex();
-		tessellator.draw();
-		GlStateManager.shadeModel(7424);
-		GlStateManager.disableBlend();
-		GlStateManager.enableAlpha();
-		GlStateManager.enableTexture2D();
-	}
-
-	/**
-	 * Draw a 1 pixel wide horizontal line. Args: x1, x2, y, color
-	 */
-	protected void vdrawHorizontalLine(int startX, int endX, int y, int color) {
-		if (endX < startX) {
-			int i = startX;
-			startX = endX;
-			endX = i;
-		}
-
-		drawRect(startX, y, endX + 1, y + 1, color);
-	}
-
-	/**
 	 * Renders the specified text to the screen. Args : renderer, string, x, y,
 	 * color
 	 */
-	public void vdrawString(FontRenderer fontRendererIn, String text, int x, int y, int color) {
+	public static void vdrawString(FontRenderer fontRendererIn, String text, int x, int y, int color) {
 		fontRendererIn.drawStringWithShadow(text, x, y, color);
 	}
 
@@ -721,7 +771,8 @@ public class Renderer {
 	 * Draws a textured rectangle using the texture currently bound to the
 	 * TextureManager
 	 */
-	public void vdrawTexturedModalRect(float xCoord, float yCoord, int zCoord, int minU, int minV, int maxU, int maxV) {
+	public static void vdrawTexturedModalRect(float xCoord, float yCoord, int zCoord, int minU, int minV, int maxU,
+			int maxV) {
 		float f = 0.00390625F;
 		float f1 = 0.00390625F;
 		Tessellator tessellator = Tessellator.getInstance();
@@ -738,7 +789,7 @@ public class Renderer {
 	 * Draws a textured rectangle at the stored z-value. Args: x, y, u, v,
 	 * width, height
 	 */
-	public void vdrawTexturedModalRect(int x, int y, int z, int textureX, int textureY, int width, int height) {
+	public static void vdrawTexturedModalRect(int x, int y, int z, int textureX, int textureY, int width, int height) {
 		float f = 0.00390625F;
 		float f1 = 0.00390625F;
 		Tessellator tessellator = Tessellator.getInstance();
@@ -755,7 +806,7 @@ public class Renderer {
 	 * Draws a texture rectangle using the texture currently bound to the
 	 * TextureManager
 	 */
-	public void vdrawTexturedModalRect(int xCoord, int yCoord, int zCoord, TextureAtlasSprite textureSprite,
+	public static void vdrawTexturedModalRect(int xCoord, int yCoord, int zCoord, TextureAtlasSprite textureSprite,
 			int widthIn, int heightIn) {
 		Tessellator tessellator = Tessellator.getInstance();
 		WorldRenderer worldrenderer = tessellator.getWorldRenderer();
@@ -774,7 +825,7 @@ public class Renderer {
 	/**
 	 * Draw a 1 pixel wide vertical line. Args : x, y1, y2, color
 	 */
-	protected void vdrawVerticalLine(int x, int startY, int endY, int color) {
+	protected static void vdrawVerticalLine(int x, int startY, int endY, int color) {
 		if (endY < startY) {
 			int i = startY;
 			startY = endY;
