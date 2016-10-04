@@ -258,4 +258,14 @@ public class ColourHelper {
 		float blue = (rgb & 255) / 255.0F;
 		GlStateManager.color(red, green, blue, alpha);
 	}
+	
+	/**
+	 * Evaluates rgb from given color and bind it to GL
+	 *
+	 * @param color
+	 *            - awt color
+	 */
+	public static int AWTColor2RGBInt(Color color) {
+		return RGB(color.getRed(), color.getGreen() ,color.getBlue());
+	}
 }
