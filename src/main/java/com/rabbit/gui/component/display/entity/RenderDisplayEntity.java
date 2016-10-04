@@ -11,7 +11,7 @@ public class RenderDisplayEntity extends RenderLiving {
 		super(rendermanagerIn, modelDynRobot, shadowSize);
 	}
 
-	//this is the hitch here we need to mutate the texture 
+	// this is the hitch here we need to mutate the texture
 	@Override
 	protected ResourceLocation getEntityTexture(Entity par1Entity) {
 		return ((DisplayEntity) par1Entity).getTexture();

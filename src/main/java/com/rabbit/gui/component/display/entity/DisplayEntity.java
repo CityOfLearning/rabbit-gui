@@ -13,12 +13,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 public class DisplayEntity extends EntityCreature {
-	
-	//this entity is only for rendering
-	
+
+	// this entity is only for rendering
+
 	private ResourceLocation texture = new ResourceLocation("textures/entity/steve.png");
 	private int textureHeight = 64;
-	
+
 	public DisplayEntity(World worldIn) {
 		super(worldIn);
 		tasks.addTask(1, new EntityAILookIdle(this));
@@ -28,15 +28,18 @@ public class DisplayEntity extends EntityCreature {
 		return texture;
 	}
 
+	public int getTextureHeight() {
+		return textureHeight;
+	}
+
 	public void setTexture(ResourceLocation texture) {
 		this.texture = texture;
 		InputStream inputstream = null;
 		try {
-			IResource iresource = Minecraft.getMinecraft().getResourceManager()
-					.getResource(texture);
+			IResource iresource = Minecraft.getMinecraft().getResourceManager().getResource(texture);
 			inputstream = iresource.getInputStream();
 			BufferedImage bufferedimage = TextureUtil.readBufferedImage(inputstream);
-			this.setTextureHeight(bufferedimage.getHeight());
+			setTextureHeight(bufferedimage.getHeight());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -50,11 +53,7 @@ public class DisplayEntity extends EntityCreature {
 				}
 			}
 		}
-		
-	}
 
-	public int getTextureHeight() {
-		return textureHeight;
 	}
 
 	public void setTextureHeight(int textureHeight) {

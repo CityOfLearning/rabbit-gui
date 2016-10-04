@@ -13,15 +13,26 @@ import net.minecraft.client.renderer.GlStateManager;
  * entry slot
  */
 public class ButtonEntry extends Button implements ListEntry {
-	
-	
+
 	public ButtonEntry(String text) {
 		super(0, 0, 0, 0, text);
 	}
-	
+
 	public ButtonEntry(String text, ButtonClickListener listener) {
 		super(0, 0, 0, 0, text);
 		super.setClickListener(listener);
+	}
+
+	@Override
+	public void onClick(DisplayList list, int mouseX, int mouseY) {
+		if (isEnabled) {
+			if (super.getClickListener() != null) {
+				super.onMouseClicked(mouseX, mouseY, 1, false);
+			}
+		} else {
+			setSelected(false);
+		}
+
 	}
 
 	@Override
@@ -63,7 +74,6 @@ public class ButtonEntry extends Button implements ListEntry {
 			}
 			TextRenderer.renderString(getX() + (getWidth() / 2), (getY() + (getHeight() / 2)) - 4, getText(),
 					TextAlignment.CENTER);
-			endRender();
 			GlStateManager.popMatrix();
 		}
 	}
@@ -72,17 +82,5 @@ public class ButtonEntry extends Button implements ListEntry {
 	public ButtonEntry setIsEnabled(boolean isEnabled) {
 		this.isEnabled = isEnabled;
 		return this;
-	}
-	
-	@Override
-	public void onClick(DisplayList list, int mouseX, int mouseY) {
-		if (isEnabled) {
-			if (super.getClickListener() != null) {
-				super.onMouseClicked(mouseX, mouseY, 1, false);
-			}
-		} else {
-			setSelected(false);
-		}
-
 	}
 }

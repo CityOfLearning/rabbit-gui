@@ -23,6 +23,18 @@ public class Server implements Proxy {
 
 	}
 
+	@Override
+	public void postInit() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void preInit() {
+		// TODO Auto-generated method stub
+
+	}
+
 	/**
 	 * @see forge.reference.proxy.Proxy#renderGUI()
 	 */
@@ -30,18 +42,6 @@ public class Server implements Proxy {
 	public void renderGUI() {
 		// Actions on render GUI for the server (logging)
 
-	}
-
-	@Override
-	public void preInit() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void postInit() {
-		// TODO Auto-generated method stub
-		
 	}
 
 }
