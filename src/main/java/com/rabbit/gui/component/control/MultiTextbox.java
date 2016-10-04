@@ -8,6 +8,7 @@ import org.lwjgl.input.Mouse;
 import com.rabbit.gui.render.Renderer;
 import com.rabbit.gui.render.TextRenderer;
 
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -34,11 +35,12 @@ public class MultiTextbox extends TextBox {
 	@Override
 	protected void drawBox() {
 		if (isVisible()) {
+			GlStateManager.pushMatrix();
 			if (isBackgroundVisible()) {
 				drawTextBoxBackground();
 			}
 			TextRenderer.getFontRenderer().setUnicodeFlag(drawUnicode);
-			int color = 0xFFFFFF;
+			int color = isEnabled ? getEnabledColor() : getDisabledColor();
 			boolean renderCursor = isFocused() && (((cursorCounter / 6) % 2) == 0);
 			int startLine = getStartLineY();
 			int maxLineAmount = (height / TextRenderer.getFontRenderer().FONT_HEIGHT) + startLine;
@@ -100,6 +102,8 @@ public class MultiTextbox extends TextBox {
 			scrollBar.setVisiblie(listHeight > (height - 4));
 			scrollBar.setHandleMouseWheel((listHeight > (height - 4)) && isUnderMouse(Mouse.getX(), Mouse.getY()));
 			scrollBar.setScrollerSize((getScrollerSize()));
+			GlStateManager.resetColor();
+			GlStateManager.popMatrix();
 			TextRenderer.getFontRenderer().setUnicodeFlag(false);
 		}
 	}

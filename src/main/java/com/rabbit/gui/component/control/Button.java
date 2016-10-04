@@ -15,6 +15,7 @@ import com.rabbit.gui.render.TextRenderer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -88,8 +89,8 @@ public class Button extends GuiWidget implements Shiftable {
 	}
 
 	protected void endRender() {
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		GL11.glDisable(GL11.GL_BLEND);
+		GlStateManager.resetColor();
+		GlStateManager.disableBlend();
 	}
 
 	public ResourceLocation getButtonTexture() {
@@ -130,6 +131,7 @@ public class Button extends GuiWidget implements Shiftable {
 	@Override
 	public void onDraw(int mouseX, int mouseY, float partialTicks) {
 		if (isVisible()) {
+			GlStateManager.pushMatrix();
 			prepareRender();
 			if (!isEnabled()) {
 				drawButton(DISABLED_STATE);
@@ -153,6 +155,8 @@ public class Button extends GuiWidget implements Shiftable {
 			}
 			TextRenderer.renderString(getX() + (getWidth() / 2), (getY() + (getHeight() / 2)) - 4, getText(),
 					TextAlignment.CENTER);
+			endRender();
+			GlStateManager.popMatrix();
 		}
 	}
 
@@ -175,10 +179,10 @@ public class Button extends GuiWidget implements Shiftable {
 
 	protected void prepareRender() {
 		Minecraft.getMinecraft().getTextureManager().bindTexture(getButtonTexture());
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		GL11.glEnable(GL11.GL_BLEND);
-		OpenGlHelper.glBlendFunc(770, 771, 1, 0);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GlStateManager.resetColor();
+		GlStateManager.enableBlend();
+		GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 	}
 
 	/**

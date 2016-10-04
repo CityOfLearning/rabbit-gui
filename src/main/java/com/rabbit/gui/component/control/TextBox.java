@@ -11,6 +11,7 @@ import com.rabbit.gui.render.TextRenderer;
 import com.rabbit.gui.utils.ControlCharacters;
 
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -122,9 +123,11 @@ public class TextBox extends GuiWidget implements Shiftable {
 
 	protected void drawBox() {
 		if (isVisible()) {
+			GlStateManager.pushMatrix();
 			if (isBackgroundVisible()) {
 				drawTextBoxBackground();
 			}
+			GlStateManager.resetColor();
 			TextRenderer.getFontRenderer().setUnicodeFlag(drawUnicode);
 			int textColor = isEnabled() ? getEnabledColor() : getDisabledColor();
 			int cursorPosWithOffset = getCursorPosition() - scrollOffset;
@@ -178,6 +181,8 @@ public class TextBox extends GuiWidget implements Shiftable {
 				renderSelectionRect(cursorX, textY - 1, finishX - 1,
 						textY + 1 + TextRenderer.getFontRenderer().FONT_HEIGHT);
 			}
+			GlStateManager.resetColor();
+			GlStateManager.popMatrix();
 			TextRenderer.getFontRenderer().setUnicodeFlag(false);
 		}
 	}
