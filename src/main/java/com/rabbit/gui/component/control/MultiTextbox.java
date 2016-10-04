@@ -135,7 +135,7 @@ public class MultiTextbox extends TextBox {
 
 	private int getStartLineY() {
 		if (scrollBar != null) {
-			float scrolled = scrollBar.scrolled;
+			float scrolled = scrollBar.getScrolledAmt();
 			return MathHelper.ceiling_double_int((scrolled * getHeight()) / TextRenderer.getFontRenderer().FONT_HEIGHT);
 		}
 		return 0;
@@ -160,7 +160,7 @@ public class MultiTextbox extends TextBox {
 
 	@Override
 	protected boolean handleMouseClick(int posX, int posY, int mouseButtonIndex, boolean overlap) {
-		boolean clicked = !overlap && isTextBoxUnderMouse(posX, posY);
+		boolean clicked = isEnabled() && !overlap && isTextBoxUnderMouse(posX, posY);
 		setIsFocused(clicked);
 		if (isFocused() && (mouseButtonIndex == 0)) {
 			TextRenderer.getFontRenderer().setUnicodeFlag(drawUnicode);
