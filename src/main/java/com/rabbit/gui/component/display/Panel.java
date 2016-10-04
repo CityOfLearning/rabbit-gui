@@ -22,6 +22,8 @@ public class Panel extends GuiWidget {
 
 	public Panel(int xPos, int yPos, int width, int height) {
 		super(xPos, yPos, width, height);
+		isDragging = false;
+		isResizing = false;
 	}
 
 	public void movePanel(int newX, int newY) {
@@ -64,7 +66,7 @@ public class Panel extends GuiWidget {
 		super.onMouseClicked(posX, posY, mouseButtonIndex, overlap);
 		// is it in the upper left corner
 		isDragging = !overlap && Geometry.isDotInArea(x + 5, y, width - 5, 10, posX, posY);
-		isResizing = !overlap && Geometry.isDotInArea(x, y + 10, 5, height - 10, posX, posY);
+		//isResizing = !overlap && Geometry.isDotInArea(x, y + 10, 5, height - 10, posX, posY);
 		if (isDragging) {
 			dragXDelta = posX - x;
 			dragYDelta = posY - y;
