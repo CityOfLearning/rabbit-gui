@@ -19,11 +19,13 @@ public class Panel extends GuiWidget {
 	private boolean isResizing;
 	private int dragXDelta, dragYDelta;
 	private int resizeXPos;
+	private boolean isVisible;
 
 	public Panel(int xPos, int yPos, int width, int height) {
 		super(xPos, yPos, width, height);
 		isDragging = false;
 		isResizing = false;
+		isVisible = true;
 	}
 
 	public void movePanel(int newX, int newY) {
@@ -42,18 +44,20 @@ public class Panel extends GuiWidget {
 
 	@Override
 	public void onDraw(int xMouse, int yMouse, float partialTicks) {
-		if (isDragging) {
-			movePanel(xMouse - dragXDelta, yMouse - dragYDelta);
+		if (isVisible) {
+			if (isDragging) {
+				movePanel(xMouse - dragXDelta, yMouse - dragYDelta);
+			}
+			if (isResizing) {
+				movePanel(xMouse - dragXDelta, y);
+				resize(width + (resizeXPos - xMouse), height);
+				resizeXPos = xMouse;
+				// movePanel(xMouse - dragXDelta, yMouse - dragYDelta);
+				// setSize(width + (resizeXPos-xMouse), height + (resizeYPos -
+				// yMouse));
+			}
+			panelComponents.forEach(com -> com.onDraw(xMouse, yMouse, partialTicks));
 		}
-		if (isResizing) {
-			movePanel(xMouse - dragXDelta, y);
-			resize(width + (resizeXPos - xMouse), height);
-			resizeXPos = xMouse;
-			// movePanel(xMouse - dragXDelta, yMouse - dragYDelta);
-			// setSize(width + (resizeXPos-xMouse), height + (resizeYPos -
-			// yMouse));
-		}
-		panelComponents.forEach(com -> com.onDraw(xMouse, yMouse, partialTicks));
 	}
 
 	@Override
@@ -63,28 +67,33 @@ public class Panel extends GuiWidget {
 
 	@Override
 	public boolean onMouseClicked(int posX, int posY, int mouseButtonIndex, boolean overlap) {
-		super.onMouseClicked(posX, posY, mouseButtonIndex, overlap);
-		// is it in the upper left corner
-		isDragging = !overlap && Geometry.isDotInArea(x + 5, y, width - 5, 10, posX, posY);
-		// isResizing = !overlap && Geometry.isDotInArea(x, y + 10, 5, height -
-		// 10, posX, posY);
-		if (isDragging) {
-			dragXDelta = posX - x;
-			dragYDelta = posY - y;
-		}
-		if (isResizing) {
-			dragXDelta = posX - x;
-			dragYDelta = posY - y;
-			resizeXPos = posX;
-		}
+		if (isVisible) {
+			super.onMouseClicked(posX, posY, mouseButtonIndex, overlap);
 
-		panelComponents.forEach(com -> {
-			if (com.onMouseClicked(posX, posY, mouseButtonIndex, overlap)) {
-				isDragging = isResizing = false;
+			// is it in the upper left corner
+			isDragging = !overlap && Geometry.isDotInArea(x + 5, y, width - 5, 10, posX, posY);
+			// isResizing = !overlap && Geometry.isDotInArea(x, y + 10, 5,
+			// height -
+			// 10, posX, posY);
+			if (isDragging) {
+				dragXDelta = posX - x;
+				dragYDelta = posY - y;
 			}
-		});
+			if (isResizing) {
+				dragXDelta = posX - x;
+				dragYDelta = posY - y;
+				resizeXPos = posX;
+			}
 
-		return isDragging | isResizing;
+			panelComponents.forEach(com -> {
+				if (com.onMouseClicked(posX, posY, mouseButtonIndex, overlap)) {
+					isDragging = isResizing = false;
+				}
+			});
+
+			return isDragging | isResizing;
+		}
+		return super.onMouseClicked(posX, posY, mouseButtonIndex, overlap);
 	}
 
 	@Override
@@ -95,12 +104,14 @@ public class Panel extends GuiWidget {
 	@Override
 	public void onMouseRelease(int mouseX, int mouseY) {
 		super.onMouseRelease(mouseX, mouseY);
-		panelComponents.forEach(com -> com.onMouseRelease(mouseX, mouseY));
-		if (isDragging) {
-			isDragging = false;
-		}
-		if (isResizing) {
-			isResizing = false;
+		if (isVisible) {
+			panelComponents.forEach(com -> com.onMouseRelease(mouseX, mouseY));
+			if (isDragging) {
+				isDragging = false;
+			}
+			if (isResizing) {
+				isResizing = false;
+			}
 		}
 	}
 
@@ -143,5 +154,10 @@ public class Panel extends GuiWidget {
 	@Override
 	public void setup() {
 		panelComponents.forEach(com -> com.setup());
+	}
+
+	public Panel setVisible(boolean state) {
+		isVisible = state;
+		return this;
 	}
 }
