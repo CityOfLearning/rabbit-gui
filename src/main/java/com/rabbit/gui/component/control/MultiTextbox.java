@@ -3,12 +3,16 @@ package com.rabbit.gui.component.control;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import com.rabbit.gui.render.Renderer;
 import com.rabbit.gui.render.TextRenderer;
+import com.rabbit.gui.utils.ControlCharacters;
 
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -146,16 +150,72 @@ public class MultiTextbox extends TextBox {
 		if (!isFocused()) {
 			return;
 		}
-		String originalText = getText();
-		if ((typedChar == 13) || (typedChar == 10)) {
-			setText(originalText.substring(0, getCursorPosition()) + typedChar
-					+ originalText.substring(getCursorPosition()));
-		}
 
 		boolean isSpecialCharCombination = handleSpecialCharComb(typedChar, typedIndex);
 		if (!isSpecialCharCombination) {
 			handleInput(typedChar, typedIndex);
 		}
+	}
+
+	@Override
+	protected boolean handleInput(char typedChar, int typedKeyIndex) {
+		String originalText = getText();
+		if (typedKeyIndex == Keyboard.KEY_RETURN) {
+			setText(originalText.substring(0, getCursorPosition()) + "\n"
+					+ originalText.substring(getCursorPosition()));
+			setCursorPosition(getCursorPosition() + 1);
+		}
+		return super.handleInput(typedChar, typedKeyIndex);
+	}
+	
+	@Override
+	protected boolean handleSpecialCharComb(char typedChar, int typedIndex) {
+		switch (typedChar) {
+		case 1:
+			setCursorPosition(getText().length());
+			setSelectionPos(0);
+			return true;
+		case ControlCharacters.CtrlC:
+			GuiScreen.setClipboardString(getSelectedText());
+			return true;
+		case ControlCharacters.CtrlV:
+			if (isEnabled()) {
+				pushText(GuiScreen.getClipboardString());
+			}
+			return true;
+		case ControlCharacters.CtrlX:
+			GuiScreen.setClipboardString(getSelectedText());
+			if (isEnabled()) {
+				pushText("");
+			}
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public void pushText(String text) {
+		String result = "";
+		int i = getCursorPosition() < selectionEnd ? getCursorPosition() : selectionEnd;
+		int j = getCursorPosition() < selectionEnd ? selectionEnd : getCursorPosition();
+		int k = getMaxLength() - getText().length() - (i - selectionEnd);
+
+		if (getText().length() > 0) {
+			result += getText().substring(0, i);
+		}
+		int end = 0;
+		if (k < text.length()) {
+			result = result + text.substring(0, k);
+			end = k;
+		} else {
+			result = result + text;
+			end = text.length();
+		}
+		if ((getText().length() > 0) && (j < getText().length())) {
+			result = result + getText().substring(j);
+		}
+		setTextWithEvent(result);
+		moveCursorBy((i - selectionEnd) + end);
 	}
 
 	@Override
