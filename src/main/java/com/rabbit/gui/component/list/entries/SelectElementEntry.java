@@ -27,6 +27,10 @@ public class SelectElementEntry<T> extends SelectListEntry {
 	private final String title;
 	private final T entryValue;
 
+
+	@LayoutComponent
+	protected TextAlignment align = TextAlignment.CENTER;
+
 	@LayoutComponent
 	private Color color;
 
@@ -86,18 +90,43 @@ public class SelectElementEntry<T> extends SelectListEntry {
 	@Override
 	public void onDraw(DisplayList list, int posX, int posY, int width, int height, int mouseX, int mouseY) {
 		super.onDraw(list, posX, posY, width, height, mouseX, mouseY);
-		if (isEnabled) {
-			TextRenderer.renderString(posX + (width / 2), (posY + (height / 2)) - 5,
-					TextRenderer.getFontRenderer().trimStringToWidth(title, width), color, TextAlignment.CENTER);
+		if (isEnabled()) {
+			if (align == TextAlignment.CENTER) {
+				TextRenderer.renderString(posX + (width / 2), (posY + (height / 2)) - 5,
+						TextRenderer.getFontRenderer().trimStringToWidth(title, width), align);
+			} else if (align == TextAlignment.LEFT) {
+				TextRenderer.renderString(posX + 2, (posY + (height / 2)) - 5,
+						TextRenderer.getFontRenderer().trimStringToWidth(title, width), align);
+			} else if (align == TextAlignment.RIGHT) {
+				TextRenderer.renderString((posX + width) - 2, (posY + (height / 2)) - 5,
+						TextRenderer.getFontRenderer().trimStringToWidth(title, width), align);
+			}
 		} else {
-			TextRenderer.renderString(posX + (width / 2), (posY + (height / 2)) - 5,
-					TextRenderer.getFontRenderer().trimStringToWidth(title, width), Color.GRAY, TextAlignment.CENTER);
+			if (align == TextAlignment.CENTER) {
+				TextRenderer.renderString(posX + (width / 2), (posY + (height / 2)) - 5,
+						TextRenderer.getFontRenderer().trimStringToWidth(title, width), Color.gray, align);
+			} else if (align == TextAlignment.LEFT) {
+				TextRenderer.renderString(posX + 2, (posY + (height / 2)) - 5,
+						TextRenderer.getFontRenderer().trimStringToWidth(title, width), Color.gray, align);
+			} else if (align == TextAlignment.RIGHT) {
+				TextRenderer.renderString((posX + width) - 2, (posY + (height / 2)) - 5,
+						TextRenderer.getFontRenderer().trimStringToWidth(title, width), Color.gray, align);
+			}
 		}
 	}
 
 	@Override
 	public SelectElementEntry<T> setIsEnabled(boolean isEnabled) {
 		this.isEnabled = isEnabled;
+		return this;
+	}
+
+	public TextAlignment getAlignment() {
+		return align;
+	}
+
+	public SelectElementEntry<T> setAlignment(TextAlignment align) {
+		this.align = align;
 		return this;
 	}
 }
