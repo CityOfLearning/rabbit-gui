@@ -18,6 +18,8 @@ public class PictureButton extends Button {
 
 	private Picture picture;
 
+	private boolean drawButton;
+
 	/** Dummy constructor. Used in layout */
 	public PictureButton() {
 		super();
@@ -39,10 +41,14 @@ public class PictureButton extends Button {
 			GL11.glPushMatrix();
 			prepareRender();
 			if (!isEnabled()) {
-				drawButton(DISABLED_STATE);
+				if (drawButton) {
+					drawButton(DISABLED_STATE);
+				}
 				picture.onDraw(mouseX, mouseY, partialTicks);
 			} else if (isButtonUnderMouse(mouseX, mouseY)) {
-				drawButton(HOVER_STATE);
+				if (drawButton) {
+					drawButton(HOVER_STATE);
+				}
 				picture.onDraw(mouseX, mouseY, partialTicks);
 				if (drawHoverText) {
 					verifyHoverText(mouseX, mouseY);
@@ -58,12 +64,19 @@ public class PictureButton extends Button {
 					}
 				}
 			} else {
-				drawButton(IDLE_STATE);
+				if (drawButton) {
+					drawButton(IDLE_STATE);
+				}
 				picture.onDraw(mouseX, mouseY, partialTicks);
 			}
 			endRender();
 			GL11.glPopMatrix();
 		}
+	}
+
+	@Override
+	public void setup() {
+		registerComponent(picture);
 	}
 
 	@Override
@@ -106,4 +119,8 @@ public class PictureButton extends Button {
 		return this;
 	}
 
+	public PictureButton setDrawsButton(boolean state) {
+		drawButton = state;
+		return this;
+	}
 }
