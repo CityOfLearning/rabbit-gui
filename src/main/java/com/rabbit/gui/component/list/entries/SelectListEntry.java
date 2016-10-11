@@ -7,7 +7,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public abstract class SelectListEntry implements ListEntry {
+public abstract class SelectListEntry<T> implements ListEntry {
 
 	protected boolean selected = false;
 
@@ -31,4 +31,8 @@ public abstract class SelectListEntry implements ListEntry {
 	public void setSelected(boolean selected) {
 		this.selected = selected;
 	}
+	
+	public abstract String getTitle();
+	
+	public abstract T getValue();
 }
