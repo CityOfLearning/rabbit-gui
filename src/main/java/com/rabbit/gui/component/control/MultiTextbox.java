@@ -6,6 +6,7 @@ import java.util.List;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
+import com.rabbit.gui.component.GuiWidget;
 import com.rabbit.gui.render.Renderer;
 import com.rabbit.gui.render.TextRenderer;
 import com.rabbit.gui.utils.ControlCharacters;
@@ -20,20 +21,22 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class MultiTextbox extends TextBox {
 
-	private ScrollBar scrollBar;
+	protected ScrollBar scrollBar;
 
-	protected int maxStringLenght = 1000;
+	protected int maxStringLength = 1000;
 
-	private int listHeight;
+	protected int listHeight;
 
 	public MultiTextbox(int xPos, int yPos, int width, int height) {
 		super(xPos, yPos, width, height);
 		listHeight = height;
+		scrollBar = new ScrollBar(getX() + getWidth()-5, getY(), 10, getHeight(), 20).setVisiblie(false);
 	}
 
 	public MultiTextbox(int xPos, int yPos, int width, int height, String initialText) {
 		super(xPos, yPos, width, height, initialText);
 		listHeight = height;
+		scrollBar = new ScrollBar(getX() + getWidth()-5, getY(), 10, getHeight(), 20).setVisiblie(false);
 	}
 
 	@Override
@@ -130,14 +133,14 @@ public class MultiTextbox extends TextBox {
 
 	@Override
 	public int getMaxLength() {
-		return maxStringLenght;
+		return maxStringLength;
 	}
 
-	private int getScrollerSize() {
+	protected int getScrollerSize() {
 		return (int) (((1F * height) / listHeight) * (height - 4));
 	}
 
-	private int getStartLineY() {
+	public int getStartLineY() {
 		if (scrollBar != null) {
 			float scrolled = scrollBar.getScrolledAmt();
 			return MathHelper.ceiling_double_int((scrolled * getHeight()) / TextRenderer.getFontRenderer().FONT_HEIGHT);
@@ -161,13 +164,13 @@ public class MultiTextbox extends TextBox {
 	protected boolean handleInput(char typedChar, int typedKeyIndex) {
 		String originalText = getText();
 		if (typedKeyIndex == Keyboard.KEY_RETURN) {
-			setText(originalText.substring(0, getCursorPosition()) + "\n"
+			setTextWithEvent(originalText.substring(0, getCursorPosition()) + "\n"
 					+ originalText.substring(getCursorPosition()));
 			setCursorPosition(getCursorPosition() + 1);
 		}
 		return super.handleInput(typedChar, typedKeyIndex);
 	}
-	
+
 	@Override
 	protected boolean handleSpecialCharComb(char typedChar, int typedIndex) {
 		switch (typedChar) {
@@ -192,7 +195,7 @@ public class MultiTextbox extends TextBox {
 		}
 		return false;
 	}
-	
+
 	@Override
 	public void pushText(String text) {
 		String result = "";
@@ -278,8 +281,22 @@ public class MultiTextbox extends TextBox {
 
 	@Override
 	public void setup() {
-		registerComponent(
-				scrollBar = new ScrollBar(getX() + getWidth(), getY(), 15, getHeight(), 20).setVisiblie(false));
+		scrollBar.setX(getX() + getWidth() - scrollBar.getWidth()/2);
+		registerComponent(scrollBar);
+
 	}
 
+	@Override
+	public GuiWidget setX(int x) {
+		super.setX(x);
+		scrollBar.setX(x + getWidth() - scrollBar.getWidth()/2);
+		return this;
+	}
+
+	@Override
+	public GuiWidget setY(int y) {
+		super.setY(y);
+		scrollBar.setY(y);
+		return this;
+	}
 }
