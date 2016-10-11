@@ -5,6 +5,8 @@ import java.util.List;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import com.rabbit.gui.component.GuiWidget;
+import com.rabbit.gui.component.control.MultiTextbox;
 import com.rabbit.gui.component.control.ScrollBar;
 import com.rabbit.gui.render.TextAlignment;
 import com.rabbit.gui.render.TextRenderer;
@@ -74,5 +76,19 @@ public class ScrollTextLabel extends TextLabel {
 					.setHandleMouseWheel(false);
 			registerComponent(scrollBar);
 		}
+	}
+	
+	@Override
+	public GuiWidget setX(int x) {
+		super.setX(x);
+		scrollBar.setX(x);
+		return this;
+	}
+
+	@Override
+	public GuiWidget setY(int y) {
+		super.setY(y);
+		scrollBar.setY(y);
+		return this;
 	}
 }

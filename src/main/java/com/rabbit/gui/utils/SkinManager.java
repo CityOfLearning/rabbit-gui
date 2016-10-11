@@ -69,7 +69,7 @@ public class SkinManager {
 	}
 
 	public static boolean hasSkinTexture(EntityPlayer player) {
-		return playerSkin.containsKey(player.getDisplayNameString());
+		return playerSkin.containsKey(player.getName());
 	}
 
 	public static boolean hasSkinTexture(String player) {
