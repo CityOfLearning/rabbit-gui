@@ -2,6 +2,8 @@ package com.rabbit.gui.proxy;
 
 import com.rabbit.gui.base.Stage;
 import com.rabbit.gui.component.display.entity.DisplayEntity;
+import com.rabbit.gui.component.display.entity.DisplayEntityHead;
+import com.rabbit.gui.component.display.entity.DisplayEntityHeadRenderer;
 import com.rabbit.gui.component.display.entity.DisplayEntityRenderer;
 import com.rabbit.gui.show.IShow;
 
@@ -51,6 +53,7 @@ public class Client implements Proxy {
 	@Override
 	public void preInit() {
 		RenderingRegistry.registerEntityRenderingHandler(DisplayEntity.class, new DisplayEntityRenderer());
+		RenderingRegistry.registerEntityRenderingHandler(DisplayEntityHead.class, new DisplayEntityHeadRenderer());
 	}
 
 	/**
