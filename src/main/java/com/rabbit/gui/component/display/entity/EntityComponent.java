@@ -4,13 +4,11 @@ import org.lwjgl.input.Mouse;
 
 import com.rabbit.gui.component.GuiWidget;
 import com.rabbit.gui.layout.LayoutComponent;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -28,19 +26,19 @@ public class EntityComponent extends GuiWidget {
 	@LayoutComponent
 	float zoom = 1;
 
-	public EntityComponent(int x, int y, int width, int height, EntityLiving entity) {
+	public EntityComponent(int x, int y, int width, int height, EntityLivingBase entity) {
 		this(x, y, width, height, entity, 0, 1);
 	}
 
-	public EntityComponent(int x, int y, int width, int height, EntityLiving entity, int rotation) {
+	public EntityComponent(int x, int y, int width, int height, EntityLivingBase entity, int rotation) {
 		this(x, y, width, height, entity, rotation, 1);
 	}
 
-	public EntityComponent(int x, int y, int width, int height, EntityLiving entity, int rotation, float zoom) {
+	public EntityComponent(int x, int y, int width, int height, EntityLivingBase entity, int rotation, float zoom) {
 		this(x, y, width, height, entity, rotation, zoom, true);
 	}
 
-	public EntityComponent(int x, int y, int width, int height, EntityLiving entity, int rotation, float zoom,
+	public EntityComponent(int x, int y, int width, int height, EntityLivingBase entity, int rotation, float zoom,
 			boolean canRotate) {
 		super(x, y, width, height);
 		this.entity = entity;
@@ -59,6 +57,9 @@ public class EntityComponent extends GuiWidget {
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x, y, 50.0F);
 		GlStateManager.scale(-30.0f * zoom, 30.0f * zoom, 30.0f * zoom);
+		//this flips the model along the z axis so it flips the up vs down
+		//which is annoying because it draws the component in the opposite manner
+		//as other components in the rabbit library...
 		GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
 		RenderHelper.enableStandardItemLighting();
 		entity.renderYawOffset = rotation;
@@ -74,7 +75,7 @@ public class EntityComponent extends GuiWidget {
 		GlStateManager.disableTexture2D();
 		GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
 	}
-
+	
 	@Override
 	public boolean onMouseClicked(int posX, int posY, int mouseButtonIndex, boolean overlap) {
 		super.onMouseClicked(posX, posY, mouseButtonIndex, overlap);
