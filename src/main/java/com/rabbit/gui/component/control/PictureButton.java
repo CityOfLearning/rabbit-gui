@@ -23,16 +23,19 @@ public class PictureButton extends Button {
 	/** Dummy constructor. Used in layout */
 	public PictureButton() {
 		super();
+		drawButton = true;
 	}
 
 	public PictureButton(int xPos, int yPos, int width, int height, ResourceLocation texture) {
 		super(xPos, yPos, width, height, "");
 		picture = new Picture(xPos + 1, yPos + 1, width - 2, height - 2, texture);
+		drawButton = true;
 	}
 
 	public PictureButton(int xPos, int yPos, int width, int height, String texture) {
 		super(xPos, yPos, width, height, "");
 		picture = new Picture(xPos + 1, yPos + 1, width - 2, height - 2, texture);
+		drawButton = true;
 	}
 
 	@Override
@@ -74,9 +77,9 @@ public class PictureButton extends Button {
 		}
 	}
 
-	@Override
-	public void setup() {
-		registerComponent(picture);
+	public PictureButton setDrawsButton(boolean state) {
+		drawButton = state;
+		return this;
 	}
 
 	@Override
@@ -99,6 +102,11 @@ public class PictureButton extends Button {
 	}
 
 	@Override
+	public void setup() {
+		registerComponent(picture);
+	}
+
+	@Override
 	public GuiWidget setWidth(int width) {
 		super.setWidth(width);
 		picture.setX(width - 2);
@@ -116,11 +124,6 @@ public class PictureButton extends Button {
 	public GuiWidget setY(int y) {
 		super.setY(y);
 		picture.setY(y + 1);
-		return this;
-	}
-
-	public PictureButton setDrawsButton(boolean state) {
-		drawButton = state;
 		return this;
 	}
 }

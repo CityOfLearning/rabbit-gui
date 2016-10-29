@@ -33,6 +33,10 @@ public class ToggleButton extends Button {
 		this.toggle = toggle;
 	}
 
+	public boolean getToggleState() {
+		return toggle;
+	}
+
 	@Override
 	public void onDraw(int mouseX, int mouseY, float partialTicks) {
 		if (isVisible()) {
