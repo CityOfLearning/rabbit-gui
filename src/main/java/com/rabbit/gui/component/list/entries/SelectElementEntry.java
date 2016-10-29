@@ -27,7 +27,6 @@ public class SelectElementEntry<T> extends SelectListEntry {
 	private final String title;
 	private final T entryValue;
 
-
 	@LayoutComponent
 	protected TextAlignment align = TextAlignment.CENTER;
 
@@ -58,10 +57,16 @@ public class SelectElementEntry<T> extends SelectListEntry {
 		this(value, title, Color.WHITE, listener);
 	}
 
+	public TextAlignment getAlignment() {
+		return align;
+	}
+
+	@Override
 	public String getTitle() {
 		return title;
 	}
 
+	@Override
 	public T getValue() {
 		return this.entryValue;
 	}
@@ -115,18 +120,14 @@ public class SelectElementEntry<T> extends SelectListEntry {
 		}
 	}
 
-	@Override
-	public SelectElementEntry<T> setIsEnabled(boolean isEnabled) {
-		this.isEnabled = isEnabled;
+	public SelectElementEntry<T> setAlignment(TextAlignment align) {
+		this.align = align;
 		return this;
 	}
 
-	public TextAlignment getAlignment() {
-		return align;
-	}
-
-	public SelectElementEntry<T> setAlignment(TextAlignment align) {
-		this.align = align;
+	@Override
+	public SelectElementEntry<T> setIsEnabled(boolean isEnabled) {
+		this.isEnabled = isEnabled;
 		return this;
 	}
 }

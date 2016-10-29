@@ -11,6 +11,10 @@ public abstract class SelectListEntry<T> implements ListEntry {
 
 	protected boolean selected = false;
 
+	public abstract String getTitle();
+
+	public abstract T getValue();
+
 	public boolean isSelected() {
 		return selected;
 	}
@@ -31,8 +35,4 @@ public abstract class SelectListEntry<T> implements ListEntry {
 	public void setSelected(boolean selected) {
 		this.selected = selected;
 	}
-	
-	public abstract String getTitle();
-	
-	public abstract T getValue();
 }

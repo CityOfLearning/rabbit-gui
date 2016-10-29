@@ -28,7 +28,7 @@ public class SelectStringEntry extends SelectListEntry {
 
 	@LayoutComponent
 	private Color color;
-	
+
 	@LayoutComponent
 	protected TextAlignment align = TextAlignment.CENTER;
 
@@ -55,7 +55,13 @@ public class SelectStringEntry extends SelectListEntry {
 		this(title, Color.WHITE, listener);
 	}
 
+	@Override
 	public String getTitle() {
+		return title;
+	}
+
+	@Override
+	public String getValue() {
 		return title;
 	}
 
@@ -83,7 +89,7 @@ public class SelectStringEntry extends SelectListEntry {
 	@Override
 	public void onDraw(DisplayList list, int posX, int posY, int width, int height, int mouseX, int mouseY) {
 		super.onDraw(list, posX, posY, width, height, mouseX, mouseY);
-		
+
 		if (isEnabled()) {
 			if (align == TextAlignment.CENTER) {
 				TextRenderer.renderString(posX + (width / 2), (posY + (height / 2)) - 5,
@@ -114,14 +120,9 @@ public class SelectStringEntry extends SelectListEntry {
 		this.isEnabled = isEnabled;
 		return this;
 	}
-	
+
 	public SelectStringEntry setTextAlignment(TextAlignment align) {
 		this.align = align;
 		return this;
-	}
-
-	@Override
-	public String getValue() {
-		return title;
 	}
 }
