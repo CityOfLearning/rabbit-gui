@@ -3,6 +3,7 @@ package com.rabbit.gui.component.display;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.rabbit.gui.component.GuiWidget;
 import com.rabbit.gui.component.IGui;
 import com.rabbit.gui.component.control.Button;
@@ -22,10 +23,14 @@ public class Panel extends GuiWidget {
 	private boolean isVisible;
 
 	public Panel(int xPos, int yPos, int width, int height) {
+		this(xPos, yPos, width, height, true);
+	}
+	
+	public Panel(int xPos, int yPos, int width, int height, boolean visible) {
 		super(xPos, yPos, width, height);
 		isDragging = false;
 		isResizing = false;
-		isVisible = true;
+		isVisible = visible;
 	}
 
 	public void movePanel(int newX, int newY) {
@@ -71,9 +76,11 @@ public class Panel extends GuiWidget {
 			super.onMouseClicked(posX, posY, mouseButtonIndex, overlap);
 
 			// is it in the upper left corner
-//			isDragging = !overlap && Geometry.isDotInArea(x + 5, y, width - 5, 10, posX, posY);
+			// isDragging = !overlap && Geometry.isDotInArea(x + 5, y, width -
+			// 5, 10, posX, posY);
 			isDragging = !overlap && Geometry.isDotInArea(x, y + 10, 5, height - 10, posX, posY);
-//			isResizing = !overlap && Geometry.isDotInArea(x, y + 10, 5, height - 10, posX, posY);
+			// isResizing = !overlap && Geometry.isDotInArea(x, y + 10, 5,
+			// height - 10, posX, posY);
 			if (isDragging) {
 				dragXDelta = posX - x;
 				dragYDelta = posY - y;
@@ -157,6 +164,11 @@ public class Panel extends GuiWidget {
 
 	public Panel setVisible(boolean state) {
 		isVisible = state;
+		return this;
+	}
+	
+	public Panel reverseComponents(){
+		panelComponents = Lists.reverse(panelComponents);
 		return this;
 	}
 }
