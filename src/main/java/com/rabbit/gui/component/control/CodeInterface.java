@@ -11,6 +11,7 @@ import com.rabbit.gui.component.display.Shape;
 import com.rabbit.gui.component.display.ShapeType;
 import com.rabbit.gui.render.Renderer;
 import com.rabbit.gui.render.TextRenderer;
+
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -32,6 +33,13 @@ public class CodeInterface extends MultiTextbox {
 	public CodeInterface(int xPos, int yPos, int width, int height, String initialText) {
 		super(xPos, yPos, width, height, initialText);
 		errorBox = new Shape(0, 0, getWidth(), 0, ShapeType.RECT, Color.red);
+	}
+
+	public void clearError() {
+		errLine = -1;
+		errCode = "";
+		errorBox.setHeight(0);
+		hasError = false;
 	}
 
 	@Override
@@ -56,8 +64,8 @@ public class CodeInterface extends MultiTextbox {
 				char[] chars = wholeLine.toCharArray();
 				for (char c : chars) {
 					if (TextRenderer.getFontRenderer().getStringWidth(line + c) > maxWidth) {
-						if (hasError && Math.abs(lineCount - errLine) <= 1) {
-							if (!errCode.isEmpty() && wholeLine.contains(errCode) && lineCount != errLine) {
+						if (hasError && (Math.abs(lineCount - errLine) <= 1)) {
+							if (!errCode.isEmpty() && wholeLine.contains(errCode) && (lineCount != errLine)) {
 								errLine = lineCount;
 								errorBox.setY(getY() + 4
 										+ ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT));
@@ -95,11 +103,11 @@ public class CodeInterface extends MultiTextbox {
 					line += c;
 				}
 				if ((lineCount >= startLine) && (lineCount < maxLineAmount)) {
-					if (hasError && Math.abs(lineCount - errLine) <= 1) {
+					if (hasError && (Math.abs(lineCount - errLine) <= 1)) {
 						// its possible the code error is empty because the way
 						// python shell
 						// reports its errors...
-						if (!errCode.isEmpty() && wholeLine.contains(errCode) && lineCount != errLine) {
+						if (!errCode.isEmpty() && wholeLine.contains(errCode) && (lineCount != errLine)) {
 							errLine = lineCount;
 							errorBox.setY(getY() + 4
 									+ ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT));
@@ -137,37 +145,30 @@ public class CodeInterface extends MultiTextbox {
 		}
 	}
 
+	@Override
+	protected boolean handleInput(char typedChar, int typedKeyIndex) {
+		getText();
+		if (hasError && (typedKeyIndex == Keyboard.KEY_RETURN)) {
+			errLine++;
+		}
+		return super.handleInput(typedChar, typedKeyIndex);
+	}
+
 	public void notifyError(int line, String code, String error) {
 		errLine = line;
 		// code can be empty
-		if (code != null && !code.isEmpty()) {
+		if ((code != null) && !code.isEmpty()) {
 			errCode = code.trim();
-		} else if(error.contains("NameError")){
+		} else if (error.contains("NameError")) {
 			try {
 				errCode = getLines().get(errLine);
 			} catch (Exception e) {
 				// index out of bounds
 			}
 		}
- 		if (errLine >= 0) {
+		if (errLine >= 0) {
 			hasError = true;
 		}
-	}
-
-	@Override
-	protected boolean handleInput(char typedChar, int typedKeyIndex) {
-		String originalText = getText();
-		if (hasError && typedKeyIndex == Keyboard.KEY_RETURN) {
-			errLine++;
-		}
-		return super.handleInput(typedChar, typedKeyIndex);
-	}
-
-	public void clearError() {
-		errLine = -1;
-		errCode = "";
-		errorBox.setHeight(0);
-		hasError = false;
 	}
 
 	@Override
