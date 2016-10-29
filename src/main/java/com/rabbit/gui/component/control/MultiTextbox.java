@@ -13,7 +13,6 @@ import com.rabbit.gui.utils.ControlCharacters;
 
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -30,13 +29,13 @@ public class MultiTextbox extends TextBox {
 	public MultiTextbox(int xPos, int yPos, int width, int height) {
 		super(xPos, yPos, width, height);
 		listHeight = height;
-		scrollBar = new ScrollBar(getX() + getWidth()-5, getY(), 10, getHeight(), 20).setVisiblie(false);
+		scrollBar = new ScrollBar((getX() + getWidth()) - 5, getY(), 10, getHeight(), 20).setVisiblie(false);
 	}
 
 	public MultiTextbox(int xPos, int yPos, int width, int height, String initialText) {
 		super(xPos, yPos, width, height, initialText);
 		listHeight = height;
-		scrollBar = new ScrollBar(getX() + getWidth()-5, getY(), 10, getHeight(), 20).setVisiblie(false);
+		scrollBar = new ScrollBar((getX() + getWidth()) - 5, getY(), 10, getHeight(), 20).setVisiblie(false);
 	}
 
 	@Override
@@ -149,18 +148,6 @@ public class MultiTextbox extends TextBox {
 	}
 
 	@Override
-	protected void handleKey(char typedChar, int typedIndex) {
-		if (!isFocused()) {
-			return;
-		}
-
-		boolean isSpecialCharCombination = handleSpecialCharComb(typedChar, typedIndex);
-		if (!isSpecialCharCombination) {
-			handleInput(typedChar, typedIndex);
-		}
-	}
-
-	@Override
 	protected boolean handleInput(char typedChar, int typedKeyIndex) {
 		String originalText = getText();
 		if (typedKeyIndex == Keyboard.KEY_RETURN) {
@@ -172,53 +159,15 @@ public class MultiTextbox extends TextBox {
 	}
 
 	@Override
-	protected boolean handleSpecialCharComb(char typedChar, int typedIndex) {
-		switch (typedChar) {
-		case 1:
-			setCursorPosition(getText().length());
-			setSelectionPos(0);
-			return true;
-		case ControlCharacters.CtrlC:
-			GuiScreen.setClipboardString(getSelectedText());
-			return true;
-		case ControlCharacters.CtrlV:
-			if (isEnabled()) {
-				pushText(GuiScreen.getClipboardString());
-			}
-			return true;
-		case ControlCharacters.CtrlX:
-			GuiScreen.setClipboardString(getSelectedText());
-			if (isEnabled()) {
-				pushText("");
-			}
-			return true;
+	protected void handleKey(char typedChar, int typedIndex) {
+		if (!isFocused()) {
+			return;
 		}
-		return false;
-	}
 
-	@Override
-	public void pushText(String text) {
-		String result = "";
-		int i = getCursorPosition() < selectionEnd ? getCursorPosition() : selectionEnd;
-		int j = getCursorPosition() < selectionEnd ? selectionEnd : getCursorPosition();
-		int k = getMaxLength() - getText().length() - (i - selectionEnd);
-
-		if (getText().length() > 0) {
-			result += getText().substring(0, i);
+		boolean isSpecialCharCombination = handleSpecialCharComb(typedChar, typedIndex);
+		if (!isSpecialCharCombination) {
+			handleInput(typedChar, typedIndex);
 		}
-		int end = 0;
-		if (k < text.length()) {
-			result = result + text.substring(0, k);
-			end = k;
-		} else {
-			result = result + text;
-			end = text.length();
-		}
-		if ((getText().length() > 0) && (j < getText().length())) {
-			result = result + getText().substring(j);
-		}
-		setTextWithEvent(result);
-		moveCursorBy((i - selectionEnd) + end);
 	}
 
 	@Override
@@ -274,14 +223,64 @@ public class MultiTextbox extends TextBox {
 		return clicked;
 	}
 
+	@Override
+	protected boolean handleSpecialCharComb(char typedChar, int typedIndex) {
+		switch (typedChar) {
+		case 1:
+			setCursorPosition(getText().length());
+			setSelectionPos(0);
+			return true;
+		case ControlCharacters.CtrlC:
+			GuiScreen.setClipboardString(getSelectedText());
+			return true;
+		case ControlCharacters.CtrlV:
+			if (isEnabled()) {
+				pushText(GuiScreen.getClipboardString());
+			}
+			return true;
+		case ControlCharacters.CtrlX:
+			GuiScreen.setClipboardString(getSelectedText());
+			if (isEnabled()) {
+				pushText("");
+			}
+			return true;
+		}
+		return false;
+	}
+
 	public boolean isUnderMouse(int mouseX, int mouseY) {
 		return (mouseX >= getX()) && (mouseX <= (getX() + getWidth())) && (mouseY >= getY())
 				&& (mouseY <= (getY() + getHeight()));
 	}
 
 	@Override
+	public void pushText(String text) {
+		String result = "";
+		int i = getCursorPosition() < selectionEnd ? getCursorPosition() : selectionEnd;
+		int j = getCursorPosition() < selectionEnd ? selectionEnd : getCursorPosition();
+		int k = getMaxLength() - getText().length() - (i - selectionEnd);
+
+		if (getText().length() > 0) {
+			result += getText().substring(0, i);
+		}
+		int end = 0;
+		if (k < text.length()) {
+			result = result + text.substring(0, k);
+			end = k;
+		} else {
+			result = result + text;
+			end = text.length();
+		}
+		if ((getText().length() > 0) && (j < getText().length())) {
+			result = result + getText().substring(j);
+		}
+		setTextWithEvent(result);
+		moveCursorBy((i - selectionEnd) + end);
+	}
+
+	@Override
 	public void setup() {
-		scrollBar.setX(getX() + getWidth() - scrollBar.getWidth()/2);
+		scrollBar.setX((getX() + getWidth()) - (scrollBar.getWidth() / 2));
 		registerComponent(scrollBar);
 
 	}
@@ -289,7 +288,7 @@ public class MultiTextbox extends TextBox {
 	@Override
 	public GuiWidget setX(int x) {
 		super.setX(x);
-		scrollBar.setX(x + getWidth() - scrollBar.getWidth()/2);
+		scrollBar.setX((x + getWidth()) - (scrollBar.getWidth() / 2));
 		return this;
 	}
 
