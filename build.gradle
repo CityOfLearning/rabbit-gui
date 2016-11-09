@@ -34,6 +34,7 @@ repositories {
 
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'maven'
+apply plugin: 'antlr'
 apply plugin: "jp.classmethod.aws.s3"
 
 aws {
@@ -67,8 +68,8 @@ configurations {
 }
 
 dependencies {
-    compile 'net.objecthunter:exp4j:0.4.5'
     shade 'net.objecthunter:exp4j:0.4.5'
+	shade "org.antlr:antlr4-runtime:4.5.3"
 }
 
 jar {	
