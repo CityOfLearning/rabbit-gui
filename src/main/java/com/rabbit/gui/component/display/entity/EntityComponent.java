@@ -4,6 +4,7 @@ import org.lwjgl.input.Mouse;
 
 import com.rabbit.gui.component.GuiWidget;
 import com.rabbit.gui.layout.LayoutComponent;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -47,6 +48,14 @@ public class EntityComponent extends GuiWidget {
 		this.canRotate = canRotate;
 	}
 
+	public EntityLivingBase getEntity() {
+		return entity;
+	}
+
+	public float getZoom() {
+		return zoom;
+	}
+
 	@Override
 	public void onDraw(int mouseX, int mouseY, float partialTicks) {
 		super.onDraw(mouseX, mouseY, partialTicks);
@@ -57,16 +66,17 @@ public class EntityComponent extends GuiWidget {
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x, y, 50.0F);
 		GlStateManager.scale(-30.0f * zoom, 30.0f * zoom, 30.0f * zoom);
-		//this flips the model along the z axis so it flips the up vs down
-		//which is annoying because it draws the component in the opposite manner
-		//as other components in the rabbit library...
+		// this flips the model along the z axis so it flips the up vs down
+		// which is annoying because it draws the component in the opposite
+		// manner
+		// as other components in the rabbit library...
 		GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
 		RenderHelper.enableStandardItemLighting();
 		entity.renderYawOffset = rotation;
 		entity.rotationYawHead = entity.renderYawOffset;
 		RenderManager rendermanager = Minecraft.getMinecraft().getRenderManager();
 		rendermanager.setRenderShadow(false);
-		rendermanager.renderEntityWithPosYaw(entity, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F);
+		rendermanager.renderEntityWithPosYaw(entity, 0.0D, 0.0D, 0.0D, 180.0F, 1.0F);
 		rendermanager.setRenderShadow(true);
 		GlStateManager.popMatrix();
 		RenderHelper.disableStandardItemLighting();
@@ -75,7 +85,7 @@ public class EntityComponent extends GuiWidget {
 		GlStateManager.disableTexture2D();
 		GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
 	}
-	
+
 	@Override
 	public boolean onMouseClicked(int posX, int posY, int mouseButtonIndex, boolean overlap) {
 		super.onMouseClicked(posX, posY, mouseButtonIndex, overlap);
@@ -99,5 +109,15 @@ public class EntityComponent extends GuiWidget {
 	public void onMouseRelease(int mouseX, int mouseY) {
 		super.onMouseRelease(mouseX, mouseY);
 		dragging = false;
+	}
+
+	public EntityComponent setEntity(EntityLivingBase entity) {
+		this.entity = entity;
+		return this;
+	}
+
+	public EntityComponent setZoom(float zoom) {
+		this.zoom = zoom;
+		return this;
 	}
 }

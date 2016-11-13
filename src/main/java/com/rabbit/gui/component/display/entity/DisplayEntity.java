@@ -24,6 +24,11 @@ public class DisplayEntity extends EntityCreature {
 		tasks.addTask(1, new EntityAILookIdle(this));
 	}
 
+	@Override
+	public String getName() {
+		return "DisplayEntity";
+	}
+
 	public ResourceLocation getTexture() {
 		return texture;
 	}

@@ -9,4 +9,9 @@ public class DisplayEntityHead extends DisplayEntity {
 	public DisplayEntityHead(World worldIn) {
 		super(worldIn);
 	}
+
+	@Override
+	public String getName() {
+		return "DisplayHead";
+	}
 }
