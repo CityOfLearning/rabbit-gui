@@ -25,7 +25,7 @@ public class Panel extends GuiWidget {
 	public Panel(int xPos, int yPos, int width, int height) {
 		this(xPos, yPos, width, height, true);
 	}
-	
+
 	public Panel(int xPos, int yPos, int width, int height, boolean visible) {
 		super(xPos, yPos, width, height);
 		isDragging = false;
@@ -152,6 +152,11 @@ public class Panel extends GuiWidget {
 		setSize(newWidth, newHeight);
 	}
 
+	public Panel reverseComponents() {
+		panelComponents = Lists.reverse(panelComponents);
+		return this;
+	}
+
 	public void setSize(int width, int height) {
 		this.width = width;
 		this.height = height;
@@ -164,11 +169,6 @@ public class Panel extends GuiWidget {
 
 	public Panel setVisible(boolean state) {
 		isVisible = state;
-		return this;
-	}
-	
-	public Panel reverseComponents(){
-		panelComponents = Lists.reverse(panelComponents);
 		return this;
 	}
 }

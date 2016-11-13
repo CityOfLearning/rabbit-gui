@@ -463,7 +463,6 @@ public class TextBox extends GuiWidget implements Shiftable {
 		if (getCursorPosition() > getText().length()) {
 			cursorPos = getText().length();
 		}
-
 		setSelectionPos(getCursorPosition());
 		return this;
 	}

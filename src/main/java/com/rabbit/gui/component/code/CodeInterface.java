@@ -10,10 +10,8 @@ import org.antlr.v4.runtime.Token;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-import com.rabbit.gui.RabbitGui;
 import com.rabbit.gui.component.GuiWidget;
 import com.rabbit.gui.component.code.parser.Python3Lexer;
-import com.rabbit.gui.component.code.parser.Python3Parser;
 import com.rabbit.gui.component.control.MultiTextbox;
 import com.rabbit.gui.component.control.TextBox;
 import com.rabbit.gui.component.display.Shape;
@@ -35,6 +33,17 @@ public class CodeInterface extends MultiTextbox {
 	private boolean hasError = false;
 	private String formattedText = "";
 
+	private final String SYMBOL = "\u00A7f"; // white
+	private final String NUMBER = "\u00A79"; // blue
+	private final String STRING = "\u00A7e"; // yellow
+	private final String VARIABLE = "\u00A7b"; // cyan
+	private final String FUNCTION = "\u00A76"; // gold
+	private final String MEMBER_VAR = "\u00A7d"; // magenta
+	private final String MEMBER_FUNCTION = "\u00A7a"; // light green
+	private final String SYNTAX = "\u00A7c"; // light red
+	private final String COMMENT = "\u00A78"; // dark gray
+	private final String RESET = "\u00A7r";
+
 	public CodeInterface(int xPos, int yPos, int width, int height) {
 		super(xPos, yPos, width, height);
 		errorBox = new Shape(0, 0, getWidth(), 0, ShapeType.RECT, Color.red);
@@ -51,13 +60,6 @@ public class CodeInterface extends MultiTextbox {
 		errCode = "";
 		errorBox.setHeight(0);
 		hasError = false;
-	}
-
-	@Override
-	public TextBox setText(String newText) {
-		text = newText;
-		formatText();
-		return this;
 	}
 
 	@Override
@@ -131,9 +133,8 @@ public class CodeInterface extends MultiTextbox {
 				++charCount;
 			}
 			/*
-			 * Find and render the cursor for some 
-			 * reason the formatted text doesnt render 
-			 * the cursor in the right place
+			 * Find and render the cursor for some reason the formatted text
+			 * doesnt render the cursor in the right place
 			 */
 			lines = getLines();
 			charCount = 0;
@@ -153,7 +154,7 @@ public class CodeInterface extends MultiTextbox {
 						int cursorX = getX() + TextRenderer.getFontRenderer().getStringWidth(line) + 3;
 						int cursorY = getY() + ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT)
 								+ 4;
-						if (getText().length() == getCursorPosition() || c == '\n') {
+						if ((getText().length() == getCursorPosition()) || (c == '\n')) {
 							TextRenderer.getFontRenderer().drawString("_", cursorX, cursorY, 0xFFFFFFFF);
 						} else {
 							Renderer.drawRect(cursorX, cursorY, cursorX + 1,
@@ -168,8 +169,8 @@ public class CodeInterface extends MultiTextbox {
 						int cursorX = getX() + TextRenderer.getFontRenderer().getStringWidth(line) + 3;
 						int cursorY = getY() + ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT)
 								+ 4;
-						if (getText().length() == getCursorPosition() || getText().toCharArray()[Math.min(charCount,
-								getText().toCharArray().length - 1)] == '\n') {
+						if ((getText().length() == getCursorPosition()) || (getText().toCharArray()[Math.min(charCount,
+								getText().toCharArray().length - 1)] == '\n')) {
 							TextRenderer.getFontRenderer().drawString("_", cursorX, cursorY, 0xFFFFFFFF);
 						} else {
 							Renderer.drawRect(cursorX, cursorY, cursorX + 1,
@@ -190,33 +191,6 @@ public class CodeInterface extends MultiTextbox {
 		}
 	}
 
-	@Override
-	protected boolean handleInput(char typedChar, int typedKeyIndex) {
-		if (hasError && (typedKeyIndex == Keyboard.KEY_RETURN)) {
-			errLine++;
-		}
-		boolean status = super.handleInput(typedChar, typedKeyIndex);
-		formatText();
-		return status;
-	}
-
-	// basic red <= 33
-	// name/function green = 35
-	// string yellow = 36
-	// number light blue 37-43
-	// symbols/assignmenst white 44-90
-
-	private final String SYMBOL = "\u00A7f"; //white
-	private final String NUMBER = "\u00A79"; //blue
-	private final String STRING = "\u00A7e"; //yellow
-	private final String VARIABLE = "\u00A7b"; //cyan
-	private final String FUNCTION = "\u00A76"; //gold
-	private final String MEMBER_VAR = "\u00A7d"; //magenta
-	private final String MEMBER_FUNCTION = "\u00A7a"; //light green
-	private final String SYNTAX = "\u00A7c"; //light red
-	private final String COMMENT = "\u00A78"; //dark gray
-	private final String RESET = "\u00A7r";
-	
 	private void formatText() {
 		formattedText = "";
 		for (String line : getLines()) {
@@ -227,14 +201,14 @@ public class CodeInterface extends MultiTextbox {
 				if (token.getType() == Token.EOF) {
 					break;
 				} else if (token.getType() <= Python3Lexer.BREAK) {
-					this.formattedText += SYNTAX + token.getText() + RESET;
+					formattedText += SYNTAX + token.getText() + RESET;
 				} else if (token.getType() == Python3Lexer.NAME) {
 					// a name ends up being nearly everything so lets break it
 					// down
 					// a little
 					Token nextToken = null;
 					Token prevToken = null;
-					if (i < tokens.getNumberOfOnChannelTokens() - 1) {
+					if (i < (tokens.getNumberOfOnChannelTokens() - 1)) {
 						nextToken = tokens.get(i + 1);
 					}
 					if (i > 0) {
@@ -243,34 +217,34 @@ public class CodeInterface extends MultiTextbox {
 					// if the next token is an open paren its a function
 					// if it follows a dot its a member variable
 					// if that has a paren its a member function
-					if (prevToken != null && prevToken.getType() == Python3Lexer.DOT) {
-						if (nextToken != null && nextToken.getType() == Python3Lexer.OPEN_PAREN) {
+					if ((prevToken != null) && (prevToken.getType() == Python3Lexer.DOT)) {
+						if ((nextToken != null) && (nextToken.getType() == Python3Lexer.OPEN_PAREN)) {
 							// its a member function
-							this.formattedText += MEMBER_FUNCTION + token.getText() + RESET;
+							formattedText += MEMBER_FUNCTION + token.getText() + RESET;
 						} else {
 							// its a member of some sort
-							this.formattedText += MEMBER_VAR + token.getText() + RESET;
+							formattedText += MEMBER_VAR + token.getText() + RESET;
 						}
-					} else if (nextToken != null && nextToken.getType() == Python3Lexer.OPEN_PAREN) {
+					} else if ((nextToken != null) && (nextToken.getType() == Python3Lexer.OPEN_PAREN)) {
 						// a function
-						this.formattedText += FUNCTION + token.getText() + RESET;
+						formattedText += FUNCTION + token.getText() + RESET;
 					} else {
-						this.formattedText += VARIABLE + token.getText() + RESET;
+						formattedText += VARIABLE + token.getText() + RESET;
 					}
 				} else if (token.getType() == Python3Lexer.STRING_LITERAL) {
-					this.formattedText += STRING + token.getText() + RESET;
-				} else if (token.getType() >= Python3Lexer.BYTES_LITERAL
-						&& token.getType() <= Python3Lexer.IMAG_NUMBER) {
-					this.formattedText += NUMBER + token.getText() + RESET;
-				} else if (token.getType() >= Python3Lexer.DOT && token.getType() <= Python3Lexer.IDIV_ASSIGN) {
-					this.formattedText += SYMBOL + token.getText() + RESET;
+					formattedText += STRING + token.getText() + RESET;
+				} else if ((token.getType() >= Python3Lexer.BYTES_LITERAL)
+						&& (token.getType() <= Python3Lexer.IMAG_NUMBER)) {
+					formattedText += NUMBER + token.getText() + RESET;
+				} else if ((token.getType() >= Python3Lexer.DOT) && (token.getType() <= Python3Lexer.IDIV_ASSIGN)) {
+					formattedText += SYMBOL + token.getText() + RESET;
 				} else if (token.getType() == Python3Lexer.COMMENT) {
-					this.formattedText += COMMENT + token.getText() + RESET;
+					formattedText += COMMENT + token.getText() + RESET;
 				} else {
-					this.formattedText += token.getText();
+					formattedText += token.getText();
 				}
 			}
-				formattedText += "\n";
+			formattedText += "\n";
 		}
 	}
 
@@ -290,6 +264,16 @@ public class CodeInterface extends MultiTextbox {
 		return lines;
 	}
 
+	@Override
+	protected boolean handleInput(char typedChar, int typedKeyIndex) {
+		if (hasError && (typedKeyIndex == Keyboard.KEY_RETURN)) {
+			errLine++;
+		}
+		boolean status = super.handleInput(typedChar, typedKeyIndex);
+		formatText();
+		return status;
+	}
+
 	public void notifyError(int line, String code, String error) {
 		errLine = line;
 		// code can be empty
@@ -305,6 +289,13 @@ public class CodeInterface extends MultiTextbox {
 		if (errLine >= 0) {
 			hasError = true;
 		}
+	}
+
+	@Override
+	public TextBox setText(String newText) {
+		text = newText;
+		formatText();
+		return this;
 	}
 
 	@Override
