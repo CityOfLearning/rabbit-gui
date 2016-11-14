@@ -15,9 +15,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagFloat;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
 
 public class DisplayEntity extends EntityCreature {
 
@@ -32,28 +35,26 @@ public class DisplayEntity extends EntityCreature {
 	}
 
 	/**
-     * (abstract) Protected helper method to write subclass entity data to NBT.
-     */
+	 * (abstract) Protected helper method to write subclass entity data to NBT.
+	 */
 	@Override
-    public void writeEntityToNBT(NBTTagCompound tagCompound)
-    {
-        super.writeEntityToNBT(tagCompound);
-        tagCompound.setString("texture", this.texture.toString());
-        tagCompound.setInteger("textureHeight", textureHeight);
-    }
+	public void writeEntityToNBT(NBTTagCompound tagCompound) {
+		super.writeEntityToNBT(tagCompound);
+		tagCompound.setString("texture", this.texture.toString());
+		tagCompound.setInteger("textureHeight", textureHeight);
+	}
 
-    /**
-     * (abstract) Protected helper method to read subclass entity data from NBT.
-     */
-    @Override
-    public void readEntityFromNBT(NBTTagCompound tagCompound)
-    {
-        super.readEntityFromNBT(tagCompound);
-        this.texture = new ResourceLocation(tagCompound.getString("texture"));
-        this.textureHeight = tagCompound.getInteger("textureHeight");
-        
-    }
-	
+	/**
+	 * (abstract) Protected helper method to read subclass entity data from NBT.
+	 */
+	@Override
+	public void readEntityFromNBT(NBTTagCompound tagCompound) {
+		super.readEntityFromNBT(tagCompound);
+		this.texture = new ResourceLocation(tagCompound.getString("texture"));
+		this.textureHeight = tagCompound.getInteger("textureHeight");
+
+	}
+
 	@Override
 	public String getName() {
 		return "DisplayEntity";
@@ -69,22 +70,24 @@ public class DisplayEntity extends EntityCreature {
 
 	public void setTexture(ResourceLocation texture) {
 		this.texture = texture;
-		InputStream inputstream = null;
-		try {
-			IResource iresource = Minecraft.getMinecraft().getResourceManager().getResource(texture);
-			inputstream = iresource.getInputStream();
-			BufferedImage bufferedimage = TextureUtil.readBufferedImage(inputstream);
-			setTextureHeight(bufferedimage.getHeight());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			if (inputstream != null) {
-				try {
-					inputstream.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+		if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
+			InputStream inputstream = null;
+			try {
+				IResource iresource = Minecraft.getMinecraft().getResourceManager().getResource(texture);
+				inputstream = iresource.getInputStream();
+				BufferedImage bufferedimage = TextureUtil.readBufferedImage(inputstream);
+				setTextureHeight(bufferedimage.getHeight());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} finally {
+				if (inputstream != null) {
+					try {
+						inputstream.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 		}
