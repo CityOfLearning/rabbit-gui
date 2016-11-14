@@ -78,9 +78,9 @@ public class MultiTextbox extends TextBox {
 						int cursorY = getY() + ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT)
 								+ 4;
 						if ((getText().length() == getCursorPosition()) || (c == '\n')) {
-							TextRenderer.getFontRenderer().drawString("_", cursorX, cursorY, color);
+							TextRenderer.getFontRenderer().drawString("_", cursorX, cursorY, 0xFFFFFFFF);
 						} else {
-							Renderer.drawRect(cursorX, cursorY, cursorX + 1, cursorY + 10, color);
+							Renderer.drawRect(cursorX, cursorY, cursorX + 1, cursorY + 10, 0xFFFFFFFF);
 						}
 					}
 					charCount++;
@@ -95,10 +95,10 @@ public class MultiTextbox extends TextBox {
 								+ 4;
 						if ((getText().length() == getCursorPosition()) || (getText().toCharArray()[Math.min(charCount,
 								getText().toCharArray().length - 1)] == '\n')) {
-							TextRenderer.getFontRenderer().drawString("_", cursorX, cursorY, color);
+							TextRenderer.getFontRenderer().drawString("_", cursorX, cursorY, 0xFFFFFFFF);
 						} else {
 							Renderer.drawRect(cursorX, cursorY, cursorX + 1,
-									cursorY + TextRenderer.getFontRenderer().FONT_HEIGHT, color);
+									cursorY + TextRenderer.getFontRenderer().FONT_HEIGHT, 0xFFFFFFFF);
 						}
 					}
 				}
