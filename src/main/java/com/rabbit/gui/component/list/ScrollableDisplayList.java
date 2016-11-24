@@ -11,6 +11,7 @@ import com.rabbit.gui.utils.Geometry;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -94,6 +95,12 @@ public class ScrollableDisplayList extends DisplayList {
 	public void onDraw(int mouseX, int mouseY, float partialTicks) {
 		super.onDraw(mouseX, mouseY, partialTicks);
 
+	}
+
+	public ScrollableDisplayList setScrollAmount(float amt) {
+		amt = MathHelper.clamp_float(amt, 0, 1.0f);
+		scrollBar.setProgress(amt);
+		return this;
 	}
 
 	@Override
