@@ -47,6 +47,10 @@ public class EntityComponent extends GuiWidget {
 		this.zoom = zoom;
 		this.canRotate = canRotate;
 	}
+	
+	public float getRotation(){
+		return rotation;
+	}
 
 	public EntityLivingBase getEntity() {
 		return entity;
@@ -76,7 +80,7 @@ public class EntityComponent extends GuiWidget {
 		entity.rotationYawHead = entity.renderYawOffset;
 		RenderManager rendermanager = Minecraft.getMinecraft().getRenderManager();
 		rendermanager.setRenderShadow(false);
-		rendermanager.renderEntityWithPosYaw(entity, 0.0D, 0.0D, 0.0D, 180.0F, 1.0F);
+		rendermanager.renderEntityWithPosYaw(entity, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F);
 		rendermanager.setRenderShadow(true);
 		GlStateManager.popMatrix();
 		RenderHelper.disableStandardItemLighting();
@@ -118,6 +122,11 @@ public class EntityComponent extends GuiWidget {
 
 	public EntityComponent setZoom(float zoom) {
 		this.zoom = zoom;
+		return this;
+	}
+	
+	public EntityComponent setRotation(float rotation){
+		this.rotation = rotation;
 		return this;
 	}
 }

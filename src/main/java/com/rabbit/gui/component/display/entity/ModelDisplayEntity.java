@@ -7,7 +7,7 @@ import net.minecraft.entity.Entity;
 public class ModelDisplayEntity extends ModelPlayer {
 
 	// these are for 64x32 textures
-	private ModelBiped biped;
+	protected ModelBiped biped;
 
 	public ModelDisplayEntity() {
 		super(0, false);
