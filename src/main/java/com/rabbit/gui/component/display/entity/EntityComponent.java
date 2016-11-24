@@ -47,13 +47,13 @@ public class EntityComponent extends GuiWidget {
 		this.zoom = zoom;
 		this.canRotate = canRotate;
 	}
-	
-	public float getRotation(){
-		return rotation;
-	}
 
 	public EntityLivingBase getEntity() {
 		return entity;
+	}
+
+	public float getRotation() {
+		return rotation;
 	}
 
 	public float getZoom() {
@@ -120,13 +120,13 @@ public class EntityComponent extends GuiWidget {
 		return this;
 	}
 
-	public EntityComponent setZoom(float zoom) {
-		this.zoom = zoom;
+	public EntityComponent setRotation(float rotation) {
+		this.rotation = rotation;
 		return this;
 	}
-	
-	public EntityComponent setRotation(float rotation){
-		this.rotation = rotation;
+
+	public EntityComponent setZoom(float zoom) {
+		this.zoom = zoom;
 		return this;
 	}
 }

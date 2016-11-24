@@ -8,15 +8,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.entity.EntityCreature;
-import net.minecraft.entity.EntityHanging;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAILookIdle;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagFloat;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -34,27 +27,6 @@ public class DisplayEntity extends EntityCreature {
 		tasks.addTask(1, new EntityAILookIdle(this));
 	}
 
-	/**
-	 * (abstract) Protected helper method to write subclass entity data to NBT.
-	 */
-	@Override
-	public void writeEntityToNBT(NBTTagCompound tagCompound) {
-		super.writeEntityToNBT(tagCompound);
-		tagCompound.setString("texture", this.texture.toString());
-		tagCompound.setInteger("textureHeight", textureHeight);
-	}
-
-	/**
-	 * (abstract) Protected helper method to read subclass entity data from NBT.
-	 */
-	@Override
-	public void readEntityFromNBT(NBTTagCompound tagCompound) {
-		super.readEntityFromNBT(tagCompound);
-		this.texture = new ResourceLocation(tagCompound.getString("texture"));
-		this.textureHeight = tagCompound.getInteger("textureHeight");
-
-	}
-
 	@Override
 	public String getName() {
 		return "DisplayEntity";
@@ -66,6 +38,17 @@ public class DisplayEntity extends EntityCreature {
 
 	public int getTextureHeight() {
 		return textureHeight;
+	}
+
+	/**
+	 * (abstract) Protected helper method to read subclass entity data from NBT.
+	 */
+	@Override
+	public void readEntityFromNBT(NBTTagCompound tagCompound) {
+		super.readEntityFromNBT(tagCompound);
+		texture = new ResourceLocation(tagCompound.getString("texture"));
+		textureHeight = tagCompound.getInteger("textureHeight");
+
 	}
 
 	public void setTexture(ResourceLocation texture) {
@@ -96,5 +79,15 @@ public class DisplayEntity extends EntityCreature {
 
 	public void setTextureHeight(int textureHeight) {
 		this.textureHeight = textureHeight;
+	}
+
+	/**
+	 * (abstract) Protected helper method to write subclass entity data to NBT.
+	 */
+	@Override
+	public void writeEntityToNBT(NBTTagCompound tagCompound) {
+		super.writeEntityToNBT(tagCompound);
+		tagCompound.setString("texture", texture.toString());
+		tagCompound.setInteger("textureHeight", textureHeight);
 	}
 }
