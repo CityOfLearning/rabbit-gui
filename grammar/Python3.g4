@@ -867,8 +867,18 @@ RIGHT_SHIFT_ASSIGN : '>>=';
 POWER_ASSIGN : '**=';
 IDIV_ASSIGN : '//=';
 
-SPACES : [ \t]+;
-COMMENT : '#' ~[\r\n]*;
+SPACES
+ : ( [ \t]+ ) -> channel(HIDDEN)
+ ;
+
+COMMENT
+ : ( '#' ~[\r\n]* ) -> channel(HIDDEN)
+ ;
+
+LINE_JOINING
+ : ( '\\' SPACES? ( '\r'? '\n' | '\r' ) ) -> channel(HIDDEN)
+ ;
+ 
 
 UNKNOWN_CHAR
  : .
@@ -1004,10 +1014,6 @@ fragment LONG_BYTES_CHAR
 /// bytesescapeseq ::=  "\" <any ASCII character>
 fragment BYTES_ESCAPE_SEQ
  : '\\' [\u0000-\u007F]
- ;
-
-fragment LINE_JOINING
- : '\\' SPACES? ( '\r'? '\n' | '\r' )
  ;
 
 /// id_start     ::=  <all characters in general categories Lu, Ll, Lt, Lm, Lo, Nl, the underscore, and characters with the Other_ID_Start property>

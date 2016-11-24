@@ -11,14 +11,9 @@ public class DescriptiveErrorListener extends BaseErrorListener {
 	@Override
 	public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine,
 			String msg, RecognitionException e) {
-//		String sourceName = recognizer.getInputStream().getSourceName();
-//		if (!sourceName.isEmpty()) {
-//			sourceName = String.format("%s:%d:%d: ", sourceName, line, charPositionInLine);
-//		}
-		
 		Token token = (Token) offendingSymbol;
-		if(token.getType() != Python3Parser.COMMENT && token.getType() != Python3Parser.NEWLINE){
-			System.out.println("line " + line + ":" + charPositionInLine + " Token " +token.getType() +" " + msg);
+		if (token.getType() != Python3Parser.EOF) {
+			System.out.println("line " + line + ":" + charPositionInLine + " Token " + token.getType() + " " + msg);
 		}
 	}
 }

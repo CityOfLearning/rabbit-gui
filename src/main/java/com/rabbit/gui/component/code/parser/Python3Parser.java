@@ -32,7 +32,7 @@ public class Python3Parser extends Parser {
 		AT=76, ARROW=77, ADD_ASSIGN=78, SUB_ASSIGN=79, MULT_ASSIGN=80, AT_ASSIGN=81, 
 		DIV_ASSIGN=82, MOD_ASSIGN=83, AND_ASSIGN=84, OR_ASSIGN=85, XOR_ASSIGN=86, 
 		LEFT_SHIFT_ASSIGN=87, RIGHT_SHIFT_ASSIGN=88, POWER_ASSIGN=89, IDIV_ASSIGN=90, 
-		SPACES=91, COMMENT=92, UNKNOWN_CHAR=93, INDENT=94, DEDENT=95;
+		SPACES=91, COMMENT=92, LINE_JOINING=93, UNKNOWN_CHAR=94, INDENT=95, DEDENT=96;
 	public static final int
 		RULE_single_input = 0, RULE_file_input = 1, RULE_eval_input = 2, RULE_decorator = 3, 
 		RULE_decorators = 4, RULE_decorated = 5, RULE_funcdef = 6, RULE_parameters = 7, 
@@ -101,7 +101,7 @@ public class Python3Parser extends Parser {
 		"NOT_EQ_1", "NOT_EQ_2", "AT", "ARROW", "ADD_ASSIGN", "SUB_ASSIGN", "MULT_ASSIGN", 
 		"AT_ASSIGN", "DIV_ASSIGN", "MOD_ASSIGN", "AND_ASSIGN", "OR_ASSIGN", "XOR_ASSIGN", 
 		"LEFT_SHIFT_ASSIGN", "RIGHT_SHIFT_ASSIGN", "POWER_ASSIGN", "IDIV_ASSIGN", 
-		"SPACES", "COMMENT", "UNKNOWN_CHAR", "INDENT", "DEDENT"
+		"SPACES", "COMMENT", "LINE_JOINING", "UNKNOWN_CHAR", "INDENT", "DEDENT"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -6745,7 +6745,7 @@ public class Python3Parser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3a\u0422\4\2\t\2\4"+
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3b\u0422\4\2\t\2\4"+
 		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t"+
 		"\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
 		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\4\31\t\31"+
@@ -7008,9 +7008,9 @@ public class Python3Parser extends Parser {
 		"\u028c\u028f\5^\60\2\u028d\u028e\7\b\2\2\u028e\u0290\7%\2\2\u028f\u028d"+
 		"\3\2\2\2\u028f\u0290\3\2\2\2\u0290\u0292\3\2\2\2\u0291\u028c\3\2\2\2\u0291"+
 		"\u0292\3\2\2\2\u0292[\3\2\2\2\u0293\u029e\5\34\17\2\u0294\u0295\7$\2\2"+
-		"\u0295\u0297\7`\2\2\u0296\u0298\5\32\16\2\u0297\u0296\3\2\2\2\u0298\u0299"+
+		"\u0295\u0297\7a\2\2\u0296\u0298\5\32\16\2\u0297\u0296\3\2\2\2\u0298\u0299"+
 		"\3\2\2\2\u0299\u0297\3\2\2\2\u0299\u029a\3\2\2\2\u029a\u029b\3\2\2\2\u029b"+
-		"\u029c\7a\2\2\u029c\u029e\3\2\2\2\u029d\u0293\3\2\2\2\u029d\u0294\3\2"+
+		"\u029c\7b\2\2\u029c\u029e\3\2\2\2\u029d\u0293\3\2\2\2\u029d\u0294\3\2"+
 		"\2\2\u029e]\3\2\2\2\u029f\u02a5\5f\64\2\u02a0\u02a1\7\f\2\2\u02a1\u02a2"+
 		"\5f\64\2\u02a2\u02a3\7\16\2\2\u02a3\u02a4\5^\60\2\u02a4\u02a6\3\2\2\2"+
 		"\u02a5\u02a0\3\2\2\2\u02a5\u02a6\3\2\2\2\u02a6\u02a9\3\2\2\2\u02a7\u02a9"+
