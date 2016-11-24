@@ -6,12 +6,18 @@ import java.util.List;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import com.rabbit.gui.component.GuiWidget;
+import com.rabbit.gui.component.code.parser.DescriptiveErrorListener;
+import com.rabbit.gui.component.code.parser.Python3BaseListener;
 import com.rabbit.gui.component.code.parser.Python3Lexer;
+import com.rabbit.gui.component.code.parser.Python3Parser;
+import com.rabbit.gui.component.code.parser.Python3Parser.ExprContext;
 import com.rabbit.gui.component.control.MultiTextbox;
 import com.rabbit.gui.component.control.TextBox;
 import com.rabbit.gui.component.display.Shape;
@@ -22,6 +28,7 @@ import com.rabbit.gui.render.TextRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import scala.actors.threadpool.Arrays;
 
 @SideOnly(Side.CLIENT)
 public class CodeInterface extends MultiTextbox {
@@ -240,28 +247,40 @@ public class CodeInterface extends MultiTextbox {
 					formattedText += SYMBOL + token.getText() + RESET;
 				} else if (token.getType() == Python3Lexer.COMMENT) {
 					formattedText += COMMENT + token.getText() + RESET;
-				} else {
+				} else if (token.getType() == Python3Lexer.SPACES) {
+					formattedText += token.getText();
+				} else if (token.getType() == Python3Parser.INDENT) {
 					formattedText += token.getText();
 				}
+				// dedents dont seem to matter in this context
+				/*
+				 * else if (token.getType() == Python3Lexer.NEWLINE) {
+				 * formattedText += "\n"; }
+				 * 
+				 * else if( token.getType() == Python3Parser.DEDENT){
+				 * formattedText += "\n"; }
+				 */
 			}
 			formattedText += "\n";
 		}
 	}
 
+	public void testForErrors() {
+		Python3Lexer lexer = new Python3Lexer(new ANTLRInputStream(getText()));
+		CommonTokenStream tokens = new CommonTokenStream(lexer);
+
+		Python3Parser parser = new Python3Parser(tokens);
+		parser.removeErrorListeners();
+		parser.addErrorListener(DescriptiveErrorListener.INSTANCE);
+
+		ParserRuleContext context = parser.getRuleContext();
+		ParseTreeWalker walker = new ParseTreeWalker();
+		Python3BaseListener listener = new Python3BaseListener();
+		walker.walk(listener, context);
+	}
+
 	public List<String> getFormattedLines() {
-		List<String> lines = new ArrayList<String>();
-		StringBuffer currentLine = new StringBuffer();
-		char[] chars = formattedText.toCharArray();
-		for (char symbol : chars) {
-			if ((symbol == '\r') || (symbol == '\n')) {
-				lines.add(currentLine.toString());
-				currentLine.delete(0, currentLine.length());
-			} else {
-				currentLine.append(symbol);
-			}
-		}
-		lines.add(currentLine.toString());
-		return lines;
+		return Arrays.asList(formattedText.split("\n"));
 	}
 
 	@Override
@@ -294,6 +313,7 @@ public class CodeInterface extends MultiTextbox {
 	@Override
 	public TextBox setText(String newText) {
 		text = newText;
+		testForErrors();
 		formatText();
 		return this;
 	}
