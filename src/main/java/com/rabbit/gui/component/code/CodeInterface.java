@@ -1,23 +1,19 @@
 package com.rabbit.gui.component.code;
 
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import com.rabbit.gui.component.GuiWidget;
+import com.rabbit.gui.component.code.parser.CollectorTokenSource;
 import com.rabbit.gui.component.code.parser.DescriptiveErrorListener;
-import com.rabbit.gui.component.code.parser.Python3BaseListener;
 import com.rabbit.gui.component.code.parser.Python3Lexer;
 import com.rabbit.gui.component.code.parser.Python3Parser;
-import com.rabbit.gui.component.code.parser.Python3Parser.ExprContext;
 import com.rabbit.gui.component.control.MultiTextbox;
 import com.rabbit.gui.component.control.TextBox;
 import com.rabbit.gui.component.display.Shape;
@@ -26,6 +22,7 @@ import com.rabbit.gui.render.Renderer;
 import com.rabbit.gui.render.TextRenderer;
 
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import scala.actors.threadpool.Arrays;
@@ -33,7 +30,7 @@ import scala.actors.threadpool.Arrays;
 @SideOnly(Side.CLIENT)
 public class CodeInterface extends MultiTextbox {
 
-	protected int maxStringLength = 100000;
+	protected int maxStringLength = Integer.MAX_VALUE;
 	protected Shape errorBox;
 	private int errLine = -1;
 	private String errCode;
@@ -84,9 +81,8 @@ public class CodeInterface extends MultiTextbox {
 			List<String> lines = getFormattedLines();
 			int charCount = 0;
 			int lineCount = 0;
-			int maxWidth = width - 4;
-			for (int i = 0; i < lines.size(); ++i) {
-				String wholeLine = lines.get(i);
+			int maxWidth = scrollBar.isVisible() ? width - 14 : width - 4;
+			for (String wholeLine : lines) {
 				String line = "";
 				char[] chars = wholeLine.toCharArray();
 				for (char c : chars) {
@@ -139,6 +135,8 @@ public class CodeInterface extends MultiTextbox {
 				++lineCount;
 				++charCount;
 			}
+			listHeight = (lineCount * TextRenderer.getFontRenderer().FONT_HEIGHT) + (height / 2);
+
 			/*
 			 * Find and render the cursor for some reason the formatted text
 			 * doesnt render the cursor in the right place
@@ -146,9 +144,8 @@ public class CodeInterface extends MultiTextbox {
 			lines = getLines();
 			charCount = 0;
 			lineCount = 0;
-			maxWidth = width - 4;
-			for (int i = 0; i < lines.size(); ++i) {
-				String wholeLine = lines.get(i);
+			maxWidth = scrollBar.isVisible() ? width - 14 : width - 4;
+			for (String wholeLine : lines) {
 				String line = "";
 				char[] chars = wholeLine.toCharArray();
 				for (char c : chars) {
@@ -188,7 +185,6 @@ public class CodeInterface extends MultiTextbox {
 				++lineCount;
 				++charCount;
 			}
-			listHeight = lineCount * TextRenderer.getFontRenderer().FONT_HEIGHT;
 			scrollBar.setVisiblie(listHeight > (height - 4));
 			scrollBar.setHandleMouseWheel((listHeight > (height - 4)) && isUnderMouse(Mouse.getX(), Mouse.getY()));
 			scrollBar.setScrollerSize((super.getScrollerSize()));
@@ -202,8 +198,14 @@ public class CodeInterface extends MultiTextbox {
 		formattedText = "";
 		for (String line : getLines()) {
 			Python3Lexer lexer = new Python3Lexer(new ANTLRInputStream(line));
-			CommonTokenStream tokens = new CommonTokenStream(lexer);
-			for (int i = 0; i < tokens.getNumberOfOnChannelTokens(); i++) {
+			CollectorTokenSource tokenSource = new CollectorTokenSource(lexer);
+			CommonTokenStream tokens = new CommonTokenStream(tokenSource);
+			Python3Parser parser = new Python3Parser(tokens);
+			parser.removeErrorListeners();
+			lexer.removeErrorListeners();
+			parser.file_input();
+
+			for (int i = 0; i < tokenSource.getCollectedTokens().size(); i++) {
 				Token token = tokens.get(i);
 				if (token.getType() == Token.EOF) {
 					break;
@@ -211,11 +213,10 @@ public class CodeInterface extends MultiTextbox {
 					formattedText += SYNTAX + token.getText() + RESET;
 				} else if (token.getType() == Python3Lexer.NAME) {
 					// a name ends up being nearly everything so lets break it
-					// down
-					// a little
+					// down a little
 					Token nextToken = null;
 					Token prevToken = null;
-					if (i < (tokens.getNumberOfOnChannelTokens() - 1)) {
+					if (i < (tokenSource.getCollectedTokens().size() - 1)) {
 						nextToken = tokens.get(i + 1);
 					}
 					if (i > 0) {
@@ -245,18 +246,22 @@ public class CodeInterface extends MultiTextbox {
 					formattedText += NUMBER + token.getText() + RESET;
 				} else if ((token.getType() >= Python3Lexer.DOT) && (token.getType() <= Python3Lexer.IDIV_ASSIGN)) {
 					formattedText += SYMBOL + token.getText() + RESET;
-				} else if (token.getType() == Python3Lexer.COMMENT) {
+				} else if (token.getType() == Python3Parser.COMMENT) {
 					formattedText += COMMENT + token.getText() + RESET;
-				} else if (token.getType() == Python3Lexer.SPACES) {
+				} else if (token.getType() == Python3Parser.SPACES) {
 					formattedText += token.getText();
 				} else if (token.getType() == Python3Parser.INDENT) {
 					formattedText += token.getText();
 				}
+				// else {
+				// System.out.println("Attempting to format token: " +
+				// token.getType() + ", " + token.getText());
+				// }
 				// dedents dont seem to matter in this context
 				/*
 				 * else if (token.getType() == Python3Lexer.NEWLINE) {
 				 * formattedText += "\n"; }
-				 * 
+				 *
 				 * else if( token.getType() == Python3Parser.DEDENT){
 				 * formattedText += "\n"; }
 				 */
@@ -265,22 +270,17 @@ public class CodeInterface extends MultiTextbox {
 		}
 	}
 
-	public void testForErrors() {
-		Python3Lexer lexer = new Python3Lexer(new ANTLRInputStream(getText()));
-		CommonTokenStream tokens = new CommonTokenStream(lexer);
-
-		Python3Parser parser = new Python3Parser(tokens);
-		parser.removeErrorListeners();
-		parser.addErrorListener(DescriptiveErrorListener.INSTANCE);
-
-		ParserRuleContext context = parser.getRuleContext();
-		ParseTreeWalker walker = new ParseTreeWalker();
-		Python3BaseListener listener = new Python3BaseListener();
-		walker.walk(listener, context);
-	}
-
 	public List<String> getFormattedLines() {
 		return Arrays.asList(formattedText.split("\n"));
+	}
+
+	@Override
+	public int getStartLineY() {
+		if (scrollBar != null) {
+			return MathHelper.ceiling_double_int((scrollBar.getScrolledAmt() * (listHeight - getHeight()))
+					/ TextRenderer.getFontRenderer().FONT_HEIGHT);
+		}
+		return 0;
 	}
 
 	@Override
@@ -335,5 +335,16 @@ public class CodeInterface extends MultiTextbox {
 	public GuiWidget setY(int y) {
 		super.setY(y);
 		return this;
+	}
+
+	public void testForErrors() {
+		Python3Lexer lexer = new Python3Lexer(new ANTLRInputStream(getText()));
+
+		CollectorTokenSource tokenSource = new CollectorTokenSource(lexer);
+		CommonTokenStream tokens = new CommonTokenStream(tokenSource);
+		Python3Parser parser = new Python3Parser(tokens);
+		parser.removeErrorListeners();
+		parser.addErrorListener(DescriptiveErrorListener.INSTANCE);
+		parser.file_input();
 	}
 }
