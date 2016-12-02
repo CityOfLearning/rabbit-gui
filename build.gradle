@@ -6,7 +6,7 @@ import com.amazonaws.auth.policy.resources.S3BucketResource
 import com.amazonaws.auth.policy.resources.S3ObjectResource
 import com.amazonaws.services.s3.model.ObjectMetadata
 
-import jp.classmethod.aws.gradle.s3.AmazonS3FileUploadTask
+import jp.classmethod.aws.gradle.s3.SyncTask
 
 buildscript {
     repositories {
@@ -117,28 +117,23 @@ reobfJar.doLast {
     ant.checksum file: tasks.jar.archivePath
 }
 
-task publish(dependsOn:['build', 'uploadJar', 'uploadHash']) {
-
+build.doLast {
+	File jarFile = file('./build/libs/' + archivesBaseName + '-' + version +".jar")
+	File md5File = file('./build/libs/' + archivesBaseName + '-' + version +".jar.MD5")
+	jarFile.renameTo(file('./build/libs/' + archivesBaseName+".jar"))
+	md5File.renameTo(file('./build/libs/' + archivesBaseName+".MD5"))
 }
 
-task uploadJar(type: AmazonS3FileUploadTask) {
-	file file('./build/libs/'+archivesBaseName +'-' +version+'.jar') // must be a file
+task publish(type: SyncTask, dependsOn: build) {
+	source file('./build/libs/') //must be a directory
 	bucketName myBucketName
-	key archivesBaseName + '.jar'
-	overwrite true
 	
-	def m = new ObjectMetadata()
-	m.setCacheControl("no-cache, no-store")
-	objectMetadata = m
-}
-
-task uploadHash(type: AmazonS3FileUploadTask) {
-	file file('./build/libs/'+archivesBaseName +'-' +version+'.jar.MD5') // must be a file
-	bucketName myBucketName
-	key archivesBaseName + '.MD5'
-	overwrite true
+	metadataProvider { bucket, key, file ->
 	
-	def m = new ObjectMetadata()
-	m.setCacheControl("no-cache, no-store")
-	objectMetadata = m
+		ObjectMetadata m = new ObjectMetadata()
+		m.setCacheControl("no-cache, no-store")
+		return m
+	}
+	
+	setAcl 'PublicRead'
 }
