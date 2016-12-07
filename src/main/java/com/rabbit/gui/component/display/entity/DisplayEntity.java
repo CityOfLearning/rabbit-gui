@@ -24,6 +24,7 @@ public class DisplayEntity extends EntityCreature {
 
 	public DisplayEntity(World worldIn) {
 		super(worldIn);
+		setSize(1, 2);
 		tasks.addTask(1, new EntityAILookIdle(this));
 	}
 

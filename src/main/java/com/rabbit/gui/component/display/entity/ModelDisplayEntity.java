@@ -2,6 +2,7 @@ package com.rabbit.gui.component.display.entity;
 
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelPlayer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 
 public class ModelDisplayEntity extends ModelPlayer {
@@ -22,7 +23,10 @@ public class ModelDisplayEntity extends ModelPlayer {
 	public void render(Entity entityIn, float p_78088_2_, float p_78088_3_, float p_78088_4_, float p_78088_5_,
 			float p_78088_6_, float scale) {
 		setRotationAngles(p_78088_2_, p_78088_3_, p_78088_4_, p_78088_5_, p_78088_6_, scale, entityIn);
-
+		
+		GlStateManager.pushMatrix();
+		GlStateManager.translate(-0.5F, 0.0F, 0.0F);
+		
 		if (((DisplayEntity) entityIn).getTextureHeight() > 32) {
 			if (textureHeight == 32) {
 				textureHeight = 64;
@@ -31,5 +35,6 @@ public class ModelDisplayEntity extends ModelPlayer {
 		} else {
 			biped.render(entityIn, p_78088_2_, p_78088_3_, p_78088_4_, p_78088_5_, p_78088_6_, scale);
 		}
+		GlStateManager.popMatrix();
 	}
 }

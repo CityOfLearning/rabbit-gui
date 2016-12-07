@@ -1,8 +1,12 @@
 package com.rabbit.gui.component.display.entity;
 
+import java.awt.Color;
+
 import org.lwjgl.input.Mouse;
 
 import com.rabbit.gui.component.GuiWidget;
+import com.rabbit.gui.component.display.Shape;
+import com.rabbit.gui.component.display.ShapeType;
 import com.rabbit.gui.layout.LayoutComponent;
 
 import net.minecraft.client.Minecraft;
@@ -42,6 +46,8 @@ public class EntityComponent extends GuiWidget {
 	public EntityComponent(int x, int y, int width, int height, EntityLivingBase entity, int rotation, float zoom,
 			boolean canRotate) {
 		super(x, y, width, height);
+		width = (int) (entity.width * 30 * zoom);
+		height = (int) (entity.height * 30 * zoom);
 		this.entity = entity;
 		this.rotation = rotation;
 		this.zoom = zoom;
@@ -63,24 +69,26 @@ public class EntityComponent extends GuiWidget {
 	@Override
 	public void onDraw(int mouseX, int mouseY, float partialTicks) {
 		super.onDraw(mouseX, mouseY, partialTicks);
+		
+		entity.onLivingUpdate();
+		System.out.println(partialTicks);
+		
 		GlStateManager.enableColorMaterial();
 		GlStateManager.enableTexture2D();
 		GlStateManager.enableBlend();
 		GlStateManager.color(1, 1, 1, 1);
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x, y, 50.0F);
-		GlStateManager.scale(-30.0f * zoom, 30.0f * zoom, 30.0f * zoom);
-		// this flips the model along the z axis so it flips the up vs down
-		// which is annoying because it draws the component in the opposite
-		// manner
-		// as other components in the rabbit library...
 		GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
+		GlStateManager.translate(-30.0f * entity.width * zoom, -30.0f * entity.height * zoom, 0.0F);
+		GlStateManager.scale(-30.0f * zoom, 30.0f * zoom, 30.0f * zoom);
+
 		RenderHelper.enableStandardItemLighting();
 		entity.renderYawOffset = rotation;
 		entity.rotationYawHead = entity.renderYawOffset;
 		RenderManager rendermanager = Minecraft.getMinecraft().getRenderManager();
 		rendermanager.setRenderShadow(false);
-		rendermanager.renderEntityWithPosYaw(entity, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F);
+		rendermanager.renderEntityWithPosYaw(entity, 0.0D, 0.0D, 0.0D, 0.0F, 1.0f);
 		rendermanager.setRenderShadow(true);
 		GlStateManager.popMatrix();
 		RenderHelper.disableStandardItemLighting();
