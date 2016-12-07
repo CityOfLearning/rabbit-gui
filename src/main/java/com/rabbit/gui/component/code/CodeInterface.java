@@ -547,7 +547,7 @@ public class CodeInterface extends MultiTextbox {
 			tlineWidth = TextRenderer.getFontRenderer().getStringWidth(line) > tlineWidth
 					? TextRenderer.getFontRenderer().getStringWidth(line) : tlineWidth;
 		}
-		int dWidth = RabbitGui.proxy.getCurrentStage().width;
+		int dWidth = RabbitGui.proxy.getCurrentStage() != null? RabbitGui.proxy.getCurrentStage().width: 400;
 		if (((tlineWidth + mouseX) > dWidth) && ((mouseX + 1) > (dWidth / 2))) {
 			// the button is on the right half of the screen
 			drawToLeft = true;
