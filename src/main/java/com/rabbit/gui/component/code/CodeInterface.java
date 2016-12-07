@@ -483,7 +483,8 @@ public class CodeInterface extends MultiTextbox {
 			}
 		}
 		Collections.sort(recommendations);
-		return recommendations;
+		return recommendations;*/
+		return Lists.newArrayList();
 	}
 
 	public void testForErrors() {
@@ -525,8 +526,7 @@ public class CodeInterface extends MultiTextbox {
 				}
 			}
 			i++;
-		}*/
-		return Lists.newArrayList();
+		}
 	}
 
 	public void addClassMembers(String clazz, List<String> mappings) {
