@@ -430,7 +430,7 @@ public class CodeInterface extends MultiTextbox {
 	}
 
 	public List<String> getRecommendation(String line) {
-		AntlrAutoCompletionSuggester autoComplete = new AntlrAutoCompletionSuggester(Python3Parser.ruleNames,
+		/*AntlrAutoCompletionSuggester autoComplete = new AntlrAutoCompletionSuggester(Python3Parser.ruleNames,
 				Python3Parser.VOCABULARY, Python3Parser._ATN);
 
 		EditorContext context = autoComplete.new EditorContext(line);
@@ -525,7 +525,8 @@ public class CodeInterface extends MultiTextbox {
 				}
 			}
 			i++;
-		}
+		}*/
+		return Lists.newArrayList();
 	}
 
 	public void addClassMembers(String clazz, List<String> mappings) {
