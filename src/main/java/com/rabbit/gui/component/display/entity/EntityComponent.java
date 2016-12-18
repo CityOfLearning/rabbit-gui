@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -69,26 +70,21 @@ public class EntityComponent extends GuiWidget {
 	@Override
 	public void onDraw(int mouseX, int mouseY, float partialTicks) {
 		super.onDraw(mouseX, mouseY, partialTicks);
-		
-		entity.onLivingUpdate();
-		System.out.println(partialTicks);
-		
+
 		GlStateManager.enableColorMaterial();
-		GlStateManager.enableTexture2D();
-		GlStateManager.enableBlend();
 		GlStateManager.color(1, 1, 1, 1);
 		GlStateManager.pushMatrix();
-		GlStateManager.translate(x, y, 50.0F);
+		GlStateManager.translate(x, y, 100.0F);
+		GlStateManager.scale(30.0f * zoom, 30.0f * zoom, 30.0f * zoom);
 		GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
-		GlStateManager.translate(-30.0f * entity.width * zoom, -30.0f * entity.height * zoom, 0.0F);
-		GlStateManager.scale(-30.0f * zoom, 30.0f * zoom, 30.0f * zoom);
-
-		RenderHelper.enableStandardItemLighting();
+		GlStateManager.translate(-entity.width/2, -entity.height, 0.0F);
+				
+		RenderHelper.enableStandardItemLighting();	
 		entity.renderYawOffset = rotation;
 		entity.rotationYawHead = entity.renderYawOffset;
 		RenderManager rendermanager = Minecraft.getMinecraft().getRenderManager();
 		rendermanager.setRenderShadow(false);
-		rendermanager.renderEntityWithPosYaw(entity, 0.0D, 0.0D, 0.0D, 0.0F, 1.0f);
+		rendermanager.renderEntityWithPosYaw(entity, 0.0D, 0.0D, 0.0D, 0.0f, 1.0F);
 		rendermanager.setRenderShadow(true);
 		GlStateManager.popMatrix();
 		RenderHelper.disableStandardItemLighting();
@@ -113,7 +109,7 @@ public class EntityComponent extends GuiWidget {
 	public void onMouseInput() {
 		super.onMouseInput();
 		if (canRotate && dragging) {
-			rotation -= Mouse.getEventDX() * .5;
+			rotation += Mouse.getEventDX() * .5;
 		}
 	}
 

@@ -8,7 +8,7 @@ public class DisplayEntityHead extends DisplayEntity {
 
 	public DisplayEntityHead(World worldIn) {
 		super(worldIn);
-		setSize(.5f, .5f);
+		setSize(1f, .5f);
 	}
 
 	@Override
