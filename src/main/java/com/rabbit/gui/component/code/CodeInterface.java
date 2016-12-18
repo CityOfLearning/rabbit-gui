@@ -211,22 +211,22 @@ public class CodeInterface extends MultiTextbox {
 										cursorY + TextRenderer.getFontRenderer().FONT_HEIGHT, 0xFFFFFFFF);
 							}
 						}
-						if (this.suggestionCooldown <= 0) {
-							setHoverText(getRecommendation(wholeLine));
-							if (drawHoverText) {
-								verifyHoverText(cursorX + 5, cursorY);
-								if (drawToLeft) {
-									int tlineWidth = 0;
-									for (String hline : hoverText) {
-										tlineWidth = TextRenderer.getFontRenderer().getStringWidth(hline) > tlineWidth
-												? TextRenderer.getFontRenderer().getStringWidth(hline) : tlineWidth;
-									}
-									Renderer.drawHoveringText(hoverText, cursorX - tlineWidth - 20, cursorY + 12);
-								} else {
-									Renderer.drawHoveringText(hoverText, cursorX + 5, cursorY + 12);
-								}
-							}
-						}
+//						if (this.suggestionCooldown <= 0) {
+//							setHoverText(getRecommendation(wholeLine));
+//							if (drawHoverText) {
+//								verifyHoverText(cursorX + 5, cursorY);
+//								if (drawToLeft) {
+//									int tlineWidth = 0;
+//									for (String hline : hoverText) {
+//										tlineWidth = TextRenderer.getFontRenderer().getStringWidth(hline) > tlineWidth
+//												? TextRenderer.getFontRenderer().getStringWidth(hline) : tlineWidth;
+//									}
+//									Renderer.drawHoveringText(hoverText, cursorX - tlineWidth - 20, cursorY + 12);
+//								} else {
+//									Renderer.drawHoveringText(hoverText, cursorX + 5, cursorY + 12);
+//								}
+//							}
+//						}
 					}
 					charCount++;
 					line += c;
@@ -248,22 +248,22 @@ public class CodeInterface extends MultiTextbox {
 										cursorY + TextRenderer.getFontRenderer().FONT_HEIGHT, 0xFFFFFFFF);
 							}
 						}
-						if (this.suggestionCooldown <= 0) {
-							setHoverText(getRecommendation(wholeLine));
-							if (drawHoverText) {
-								verifyHoverText(cursorX + 5, cursorY);
-								if (drawToLeft) {
-									int tlineWidth = 0;
-									for (String hline : hoverText) {
-										tlineWidth = TextRenderer.getFontRenderer().getStringWidth(hline) > tlineWidth
-												? TextRenderer.getFontRenderer().getStringWidth(hline) : tlineWidth;
-									}
-									Renderer.drawHoveringText(hoverText, cursorX - tlineWidth - 20, cursorY + 12);
-								} else {
-									Renderer.drawHoveringText(hoverText, cursorX + 5, cursorY + 12);
-								}
-							}
-						}
+//						if (this.suggestionCooldown <= 0) {
+//							setHoverText(getRecommendation(wholeLine));
+//							if (drawHoverText) {
+//								verifyHoverText(cursorX + 5, cursorY);
+//								if (drawToLeft) {
+//									int tlineWidth = 0;
+//									for (String hline : hoverText) {
+//										tlineWidth = TextRenderer.getFontRenderer().getStringWidth(hline) > tlineWidth
+//												? TextRenderer.getFontRenderer().getStringWidth(hline) : tlineWidth;
+//									}
+//									Renderer.drawHoveringText(hoverText, cursorX - tlineWidth - 20, cursorY + 12);
+//								} else {
+//									Renderer.drawHoveringText(hoverText, cursorX + 5, cursorY + 12);
+//								}
+//							}
+//						}
 					}
 				}
 				++lineCount;
@@ -320,7 +320,10 @@ public class CodeInterface extends MultiTextbox {
 					} else if ((nextToken != null) && (nextToken.getType() == Python3Lexer.OPEN_PAREN)) {
 						// a function
 						formattedText += FUNCTION + token.getText() + RESET;
-					} else {
+					} else if((prevToken != null) && prevToken.getType() == Python3Parser.UNKNOWN_CHAR && (prevToken.getText().equals("\"") || prevToken.getText().equals("'"))) {
+						//part of a string literal that has not been closed yet
+						formattedText += token.getText() + RESET;
+					}else {
 						formattedText += VARIABLE + token.getText() + RESET;
 					}
 				} else if (token.getType() == Python3Lexer.STRING_LITERAL) {
@@ -336,26 +339,18 @@ public class CodeInterface extends MultiTextbox {
 					formattedText += token.getText();
 				} else if (token.getType() == Python3Parser.INDENT) {
 					formattedText += token.getText();
+				} else {
+					if (token.getType() == Python3Parser.UNKNOWN_CHAR && (token.getText().equals("\"") || token.getText().equals("'"))) {
+						formattedText += STRING + token.getText();
+					} else {
+						System.out.println("Attempting to format token: " + token.getType() + ", " + token.getText());
+					}
 				}
-				// else {
-				// System.out.println("Attempting to format token: " +
-				// token.getType() + ", " + token.getText());
-				// }
-				// dedents dont seem to matter in this context
-				/*
-				 * else if (token.getType() == Python3Lexer.NEWLINE) {
-				 * formattedText += "\n"; }
-				 *
-				 * else if( token.getType() == Python3Parser.DEDENT){
-				 * formattedText += "\n"; }
-				 */
 			}
 			formattedText += "\n";
 		}
 	}
 
-	// for some reason this caused a null pointer... though the formatted text
-	// should never be null
 	public List<String> getFormattedLines() {
 		return Arrays.asList(formattedText.split("\n"));
 	}
@@ -375,7 +370,6 @@ public class CodeInterface extends MultiTextbox {
 			errLine++;
 		}
 		boolean status = super.handleInput(typedChar, typedKeyIndex);
-		formatText();
 		return status;
 	}
 
@@ -430,7 +424,7 @@ public class CodeInterface extends MultiTextbox {
 	}
 
 	public List<String> getRecommendation(String line) {
-		/*AntlrAutoCompletionSuggester autoComplete = new AntlrAutoCompletionSuggester(Python3Parser.ruleNames,
+		AntlrAutoCompletionSuggester autoComplete = new AntlrAutoCompletionSuggester(Python3Parser.ruleNames,
 				Python3Parser.VOCABULARY, Python3Parser._ATN);
 
 		EditorContext context = autoComplete.new EditorContext(line);
@@ -483,8 +477,7 @@ public class CodeInterface extends MultiTextbox {
 			}
 		}
 		Collections.sort(recommendations);
-		return recommendations;*/
-		return Lists.newArrayList();
+		return recommendations;
 	}
 
 	public void testForErrors() {
@@ -547,8 +540,7 @@ public class CodeInterface extends MultiTextbox {
 			tlineWidth = TextRenderer.getFontRenderer().getStringWidth(line) > tlineWidth
 					? TextRenderer.getFontRenderer().getStringWidth(line) : tlineWidth;
 		}
-		int dWidth = RabbitGui.proxy.getCurrentStage() != null? RabbitGui.proxy.getCurrentStage().width: 400;
-		if (((tlineWidth + mouseX) > dWidth) && ((mouseX + 1) > (dWidth / 2))) {
+		if (((tlineWidth + mouseX) > width) && ((mouseX + 1) > (width / 2))) {
 			// the button is on the right half of the screen
 			drawToLeft = true;
 		}
@@ -581,13 +573,13 @@ public class CodeInterface extends MultiTextbox {
 				int lineWidth = TextRenderer.getFontRenderer().getStringWidth(line) + 12;
 				// we just need to know what the right most side of the button
 				// is
-				if (lineWidth > (dWidth - mouseX)) {
+				if (lineWidth > (width - mouseX)) {
 					// the line is too long lets split it
 					String newString = "";
 					for (String substring : line.split(" ")) {
 						// we can fit the string, we are ok
 						if ((TextRenderer.getFontRenderer().getStringWidth(newString)
-								+ TextRenderer.getFontRenderer().getStringWidth(substring)) < (dWidth - mouseX - 12)) {
+								+ TextRenderer.getFontRenderer().getStringWidth(substring)) < (width - mouseX - 12)) {
 							newString += substring + " ";
 						} else {
 							newHoverText.add(newString);
