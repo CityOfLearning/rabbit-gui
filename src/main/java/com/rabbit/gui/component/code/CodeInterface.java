@@ -12,23 +12,19 @@ import java.util.Set;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Token;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.rabbit.gui.RabbitGui;
 import com.rabbit.gui.component.GuiWidget;
 import com.rabbit.gui.component.code.parser.AntlrAutoCompletionSuggester;
+import com.rabbit.gui.component.code.parser.AntlrAutoCompletionSuggester.EditorContext;
+import com.rabbit.gui.component.code.parser.AntlrAutoCompletionSuggester.TokenType;
 import com.rabbit.gui.component.code.parser.CollectorTokenSource;
 import com.rabbit.gui.component.code.parser.DescriptiveErrorListener;
 import com.rabbit.gui.component.code.parser.Python3Lexer;
 import com.rabbit.gui.component.code.parser.Python3Parser;
-import com.rabbit.gui.component.code.parser.AntlrAutoCompletionSuggester.EditorContext;
-import com.rabbit.gui.component.code.parser.AntlrAutoCompletionSuggester.TokenType;
-import com.rabbit.gui.component.control.Button;
 import com.rabbit.gui.component.control.MultiTextbox;
 import com.rabbit.gui.component.control.TextBox;
 import com.rabbit.gui.component.display.Shape;
@@ -91,13 +87,16 @@ public class CodeInterface extends MultiTextbox {
 		errorBox = new Shape(0, 0, getWidth(), 0, ShapeType.RECT, Color.red);
 	}
 
-	public CodeInterface addHoverText(String text) {
-		originalHoverText.add(text);
-		return this;
+	public void addClassMembers(String clazz, List<String> mappings) {
+		if (classMembers.containsKey(clazz)) {
+			classMembers.replace(clazz, mappings);
+		} else {
+			classMembers.put(clazz, mappings);
+		}
 	}
 
-	public CodeInterface doesDrawHoverText(boolean state) {
-		drawHoverText = state;
+	public CodeInterface addHoverText(String text) {
+		originalHoverText.add(text);
 		return this;
 	}
 
@@ -106,6 +105,11 @@ public class CodeInterface extends MultiTextbox {
 		errCode = "";
 		errorBox.setHeight(0);
 		hasError = false;
+	}
+
+	public CodeInterface doesDrawHoverText(boolean state) {
+		drawHoverText = state;
+		return this;
 	}
 
 	@Override
@@ -201,7 +205,7 @@ public class CodeInterface extends MultiTextbox {
 						int cursorY = getY() + ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT)
 								+ 4;
 						if (renderCursor) {
-							if (this.suggestionCooldown > 0) {
+							if (suggestionCooldown > 0) {
 								suggestionCooldown -= 2;
 							}
 							if ((getText().length() == getCursorPosition()) || (c == '\n')) {
@@ -211,22 +215,28 @@ public class CodeInterface extends MultiTextbox {
 										cursorY + TextRenderer.getFontRenderer().FONT_HEIGHT, 0xFFFFFFFF);
 							}
 						}
-//						if (this.suggestionCooldown <= 0) {
-//							setHoverText(getRecommendation(wholeLine));
-//							if (drawHoverText) {
-//								verifyHoverText(cursorX + 5, cursorY);
-//								if (drawToLeft) {
-//									int tlineWidth = 0;
-//									for (String hline : hoverText) {
-//										tlineWidth = TextRenderer.getFontRenderer().getStringWidth(hline) > tlineWidth
-//												? TextRenderer.getFontRenderer().getStringWidth(hline) : tlineWidth;
-//									}
-//									Renderer.drawHoveringText(hoverText, cursorX - tlineWidth - 20, cursorY + 12);
-//								} else {
-//									Renderer.drawHoveringText(hoverText, cursorX + 5, cursorY + 12);
-//								}
-//							}
-//						}
+						// if (this.suggestionCooldown <= 0) {
+						// setHoverText(getRecommendation(wholeLine));
+						// if (drawHoverText) {
+						// verifyHoverText(cursorX + 5, cursorY);
+						// if (drawToLeft) {
+						// int tlineWidth = 0;
+						// for (String hline : hoverText) {
+						// tlineWidth =
+						// TextRenderer.getFontRenderer().getStringWidth(hline)
+						// > tlineWidth
+						// ?
+						// TextRenderer.getFontRenderer().getStringWidth(hline)
+						// : tlineWidth;
+						// }
+						// Renderer.drawHoveringText(hoverText, cursorX -
+						// tlineWidth - 20, cursorY + 12);
+						// } else {
+						// Renderer.drawHoveringText(hoverText, cursorX + 5,
+						// cursorY + 12);
+						// }
+						// }
+						// }
 					}
 					charCount++;
 					line += c;
@@ -237,7 +247,7 @@ public class CodeInterface extends MultiTextbox {
 						int cursorY = getY() + ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT)
 								+ 4;
 						if (renderCursor) {
-							if (this.suggestionCooldown > 0) {
+							if (suggestionCooldown > 0) {
 								suggestionCooldown -= 2;
 							}
 							if ((getText().length() == getCursorPosition()) || (getText().toCharArray()[Math
@@ -248,22 +258,28 @@ public class CodeInterface extends MultiTextbox {
 										cursorY + TextRenderer.getFontRenderer().FONT_HEIGHT, 0xFFFFFFFF);
 							}
 						}
-//						if (this.suggestionCooldown <= 0) {
-//							setHoverText(getRecommendation(wholeLine));
-//							if (drawHoverText) {
-//								verifyHoverText(cursorX + 5, cursorY);
-//								if (drawToLeft) {
-//									int tlineWidth = 0;
-//									for (String hline : hoverText) {
-//										tlineWidth = TextRenderer.getFontRenderer().getStringWidth(hline) > tlineWidth
-//												? TextRenderer.getFontRenderer().getStringWidth(hline) : tlineWidth;
-//									}
-//									Renderer.drawHoveringText(hoverText, cursorX - tlineWidth - 20, cursorY + 12);
-//								} else {
-//									Renderer.drawHoveringText(hoverText, cursorX + 5, cursorY + 12);
-//								}
-//							}
-//						}
+						// if (this.suggestionCooldown <= 0) {
+						// setHoverText(getRecommendation(wholeLine));
+						// if (drawHoverText) {
+						// verifyHoverText(cursorX + 5, cursorY);
+						// if (drawToLeft) {
+						// int tlineWidth = 0;
+						// for (String hline : hoverText) {
+						// tlineWidth =
+						// TextRenderer.getFontRenderer().getStringWidth(hline)
+						// > tlineWidth
+						// ?
+						// TextRenderer.getFontRenderer().getStringWidth(hline)
+						// : tlineWidth;
+						// }
+						// Renderer.drawHoveringText(hoverText, cursorX -
+						// tlineWidth - 20, cursorY + 12);
+						// } else {
+						// Renderer.drawHoveringText(hoverText, cursorX + 5,
+						// cursorY + 12);
+						// }
+						// }
+						// }
 					}
 				}
 				++lineCount;
@@ -279,7 +295,7 @@ public class CodeInterface extends MultiTextbox {
 	}
 
 	private void formatText() {
-		formattedText = "";
+		StringBuilder builder = new StringBuilder();
 		for (String line : getLines()) {
 			Python3Lexer lexer = new Python3Lexer(new ANTLRInputStream(line));
 			CollectorTokenSource tokenSource = new CollectorTokenSource(lexer);
@@ -294,7 +310,7 @@ public class CodeInterface extends MultiTextbox {
 				if (token.getType() == Token.EOF) {
 					break;
 				} else if (token.getType() <= Python3Lexer.BREAK) {
-					formattedText += SYNTAX + token.getText() + RESET;
+					builder.append(SYNTAX + token.getText() + RESET);
 				} else if (token.getType() == Python3Lexer.NAME) {
 					// a name ends up being nearly everything so lets break it
 					// down a little
@@ -312,115 +328,54 @@ public class CodeInterface extends MultiTextbox {
 					if ((prevToken != null) && (prevToken.getType() == Python3Lexer.DOT)) {
 						if ((nextToken != null) && (nextToken.getType() == Python3Lexer.OPEN_PAREN)) {
 							// its a member function
-							formattedText += MEMBER_FUNCTION + token.getText() + RESET;
+							builder.append(MEMBER_FUNCTION + token.getText() + RESET);
 						} else {
 							// its a member of some sort
-							formattedText += MEMBER_VAR + token.getText() + RESET;
+							builder.append(MEMBER_VAR + token.getText() + RESET);
 						}
 					} else if ((nextToken != null) && (nextToken.getType() == Python3Lexer.OPEN_PAREN)) {
 						// a function
-						formattedText += FUNCTION + token.getText() + RESET;
-					} else if((prevToken != null) && prevToken.getType() == Python3Parser.UNKNOWN_CHAR && (prevToken.getText().equals("\"") || prevToken.getText().equals("'"))) {
-						//part of a string literal that has not been closed yet
-						formattedText += token.getText() + RESET;
-					}else {
-						formattedText += VARIABLE + token.getText() + RESET;
+						builder.append(FUNCTION + token.getText() + RESET);
+					} else if ((prevToken != null) && (prevToken.getType() == Python3Parser.UNKNOWN_CHAR)
+							&& (prevToken.getText().equals("\"") || prevToken.getText().equals("'"))) {
+						// part of a string literal that has not been closed yet
+						builder.append(token.getText() + RESET);
+					} else {
+						builder.append(VARIABLE + token.getText() + RESET);
 					}
 				} else if (token.getType() == Python3Lexer.STRING_LITERAL) {
-					formattedText += STRING + token.getText() + RESET;
+					builder.append(STRING + token.getText() + RESET);
 				} else if ((token.getType() >= Python3Lexer.BYTES_LITERAL)
 						&& (token.getType() <= Python3Lexer.IMAG_NUMBER)) {
-					formattedText += NUMBER + token.getText() + RESET;
+					builder.append(NUMBER + token.getText() + RESET);
 				} else if ((token.getType() >= Python3Lexer.DOT) && (token.getType() <= Python3Lexer.IDIV_ASSIGN)) {
-					formattedText += SYMBOL + token.getText() + RESET;
+					builder.append(SYMBOL + token.getText() + RESET);
 				} else if (token.getType() == Python3Parser.COMMENT) {
-					formattedText += COMMENT + token.getText() + RESET;
+					builder.append(COMMENT + token.getText() + RESET);
 				} else if (token.getType() == Python3Parser.SPACES) {
-					formattedText += token.getText();
+					builder.append(token.getText());
 				} else if (token.getType() == Python3Parser.INDENT) {
-					formattedText += token.getText();
+					builder.append(token.getText());
 				} else {
-					if (token.getType() == Python3Parser.UNKNOWN_CHAR && (token.getText().equals("\"") || token.getText().equals("'"))) {
-						formattedText += STRING + token.getText();
+					if ((token.getType() == Python3Parser.UNKNOWN_CHAR)
+							&& (token.getText().equals("\"") || token.getText().equals("'"))) {
+						builder.append(STRING + token.getText());
 					} else {
 						System.out.println("Attempting to format token: " + token.getType() + ", " + token.getText());
 					}
 				}
 			}
-			formattedText += "\n";
+			builder.append("\n");
 		}
+		formattedText = builder.toString();
+	}
+
+	public List<String> getClassMembers(String clazz) {
+		return classMembers.get(clazz);
 	}
 
 	public List<String> getFormattedLines() {
 		return Arrays.asList(formattedText.split("\n"));
-	}
-
-	@Override
-	public int getStartLineY() {
-		if (scrollBar != null) {
-			return MathHelper.ceiling_double_int((scrollBar.getScrolledAmt() * (listHeight - getHeight()))
-					/ TextRenderer.getFontRenderer().FONT_HEIGHT);
-		}
-		return 0;
-	}
-
-	@Override
-	protected boolean handleInput(char typedChar, int typedKeyIndex) {
-		if (hasError && (typedKeyIndex == Keyboard.KEY_RETURN)) {
-			errLine++;
-		}
-		boolean status = super.handleInput(typedChar, typedKeyIndex);
-		return status;
-	}
-
-	public void notifyError(int line, String code, String error) {
-		errLine = line;
-		// code can be empty
-		if ((code != null) && !code.isEmpty()) {
-			errCode = code.trim();
-		} else if (error.contains("NameError")) {
-			try {
-				errCode = getLines().get(errLine);
-			} catch (Exception e) {
-				// index out of bounds
-			}
-		}
-		if (errLine >= 0) {
-			hasError = true;
-		}
-	}
-
-	public CodeInterface setHoverText(List<String> text) {
-		originalHoverText = text;
-		return this;
-	}
-
-	@Override
-	public TextBox setText(String newText) {
-		text = newText;
-		suggestionCooldown = 50;
-		testForErrors();
-		formatText();
-		return this;
-	}
-
-	@Override
-	public void setup() {
-		super.setup();
-		registerComponent(errorBox);
-	}
-
-	@Override
-	public GuiWidget setX(int x) {
-		super.setX(x);
-		errorBox.setX(x);
-		return this;
-	}
-
-	@Override
-	public GuiWidget setY(int y) {
-		super.setY(y);
-		return this;
 	}
 
 	public List<String> getRecommendation(String line) {
@@ -480,9 +435,79 @@ public class CodeInterface extends MultiTextbox {
 		return recommendations;
 	}
 
+	@Override
+	public int getStartLineY() {
+		if (scrollBar != null) {
+			return MathHelper.ceiling_double_int((scrollBar.getScrolledAmt() * (listHeight - getHeight()))
+					/ TextRenderer.getFontRenderer().FONT_HEIGHT);
+		}
+		return 0;
+	}
+
+	@Override
+	protected boolean handleInput(char typedChar, int typedKeyIndex) {
+		if (hasError && (typedKeyIndex == Keyboard.KEY_RETURN)) {
+			errLine++;
+		}
+		boolean status = super.handleInput(typedChar, typedKeyIndex);
+		if (typedKeyIndex == Keyboard.KEY_TAB) {
+			pushText("    ");
+		}
+		return status;
+	}
+
+	public void notifyError(int line, String code, String error) {
+		errLine = line;
+		// code can be empty
+		if ((code != null) && !code.isEmpty()) {
+			errCode = code.trim();
+		} else if (error.contains("NameError")) {
+			try {
+				errCode = getLines().get(errLine);
+			} catch (Exception e) {
+				// index out of bounds
+			}
+		}
+		if (errLine >= 0) {
+			hasError = true;
+		}
+	}
+
+	public CodeInterface setHoverText(List<String> text) {
+		originalHoverText = text;
+		return this;
+	}
+
+	@Override
+	public TextBox setText(String newText) {
+		text = newText;
+		suggestionCooldown = 50;
+		testForErrors();
+		formatText();
+		return this;
+	}
+
+	@Override
+	public void setup() {
+		super.setup();
+		registerComponent(errorBox);
+	}
+
+	@Override
+	public GuiWidget setX(int x) {
+		super.setX(x);
+		errorBox.setX(x);
+		return this;
+	}
+
+	@Override
+	public GuiWidget setY(int y) {
+		super.setY(y);
+		return this;
+	}
+
 	public void testForErrors() {
 		Python3Lexer lexer = new Python3Lexer(new ANTLRInputStream(getText()));
-
 		CollectorTokenSource tokenSource = new CollectorTokenSource(lexer);
 		CommonTokenStream tokens = new CommonTokenStream(tokenSource);
 		Python3Parser parser = new Python3Parser(tokens);
@@ -492,7 +517,7 @@ public class CodeInterface extends MultiTextbox {
 
 		List<Token> res = new LinkedList<Token>();
 		for (Token token : tokenSource.getCollectedTokens()) {
-			if (token.getChannel() == 0 && token.getType() != Python3Parser.NEWLINE) {
+			if ((token.getChannel() == 0) && (token.getType() != Python3Parser.NEWLINE)) {
 				res.add(token);
 			}
 		}
@@ -503,8 +528,8 @@ public class CodeInterface extends MultiTextbox {
 		for (Token token : res) {
 			if (token.getType() == Python3Parser.ASSIGN) {
 				try {
-					if (res.get(i - 1).getType() == Python3Parser.NAME
-							&& res.get(i + 1).getType() == Python3Parser.NAME) {
+					if ((res.get(i - 1).getType() == Python3Parser.NAME)
+							&& (res.get(i + 1).getType() == Python3Parser.NAME)) {
 						// ok we have an assignment lets remember the object map
 						// now
 						try {
@@ -520,18 +545,6 @@ public class CodeInterface extends MultiTextbox {
 			}
 			i++;
 		}
-	}
-
-	public void addClassMembers(String clazz, List<String> mappings) {
-		if (classMembers.containsKey(clazz)) {
-			classMembers.replace(clazz, mappings);
-		} else {
-			classMembers.put(clazz, mappings);
-		}
-	}
-
-	public List<String> getClassMembers(String clazz) {
-		return this.classMembers.get(clazz);
 	}
 
 	protected void verifyHoverText(int mouseX, int mouseY) {
@@ -552,18 +565,18 @@ public class CodeInterface extends MultiTextbox {
 				// side of the screen we have to split
 				if (lineWidth > mouseX) {
 					// the line is too long lets split it
-					String newString = "";
+					StringBuilder builder = new StringBuilder();
 					for (String substring : line.split(" ")) {
 						// we can fit the string, we are ok
-						if ((TextRenderer.getFontRenderer().getStringWidth(newString)
+						if ((TextRenderer.getFontRenderer().getStringWidth(builder.toString())
 								+ TextRenderer.getFontRenderer().getStringWidth(substring)) < (mouseX - 12)) {
-							newString += substring + " ";
+							builder.append(substring + " ");
 						} else {
-							newHoverText.add(newString);
-							newString = substring + " ";
+							newHoverText.add(builder.toString());
+							builder.append(substring + " ");
 						}
 					}
-					newHoverText.add(newString);
+					newHoverText.add(builder.toString());
 				} else {
 					newHoverText.add(line);
 				}
@@ -575,18 +588,18 @@ public class CodeInterface extends MultiTextbox {
 				// is
 				if (lineWidth > (width - mouseX)) {
 					// the line is too long lets split it
-					String newString = "";
+					StringBuilder builder = new StringBuilder();
 					for (String substring : line.split(" ")) {
 						// we can fit the string, we are ok
-						if ((TextRenderer.getFontRenderer().getStringWidth(newString)
+						if ((TextRenderer.getFontRenderer().getStringWidth(builder.toString())
 								+ TextRenderer.getFontRenderer().getStringWidth(substring)) < (width - mouseX - 12)) {
-							newString += substring + " ";
+							builder.append(substring + " ");
 						} else {
-							newHoverText.add(newString);
-							newString = substring + " ";
+							newHoverText.add(builder.toString());
+							builder.append(substring + " ");
 						}
 					}
-					newHoverText.add(newString);
+					newHoverText.add(builder.toString());
 				} else {
 					newHoverText.add(line);
 				}
