@@ -1,7 +1,5 @@
 package com.rabbit.gui.component.code.parser;
 
-import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -40,25 +38,6 @@ import com.google.common.collect.Sets;
 import com.rabbit.gui.utils.UtilityFunctions;
 
 public class AntlrAutoCompletionSuggester {
-
-	private String[] ruleNames;
-	private Vocabulary vocabulary;
-	private ATN atn;
-
-	public AntlrAutoCompletionSuggester(String[] ruleNames, Vocabulary vocabulary, ATN atn) {
-		this.ruleNames = ruleNames;
-		this.vocabulary = vocabulary;
-		this.atn = atn;
-	}
-
-	public Set<TokenType> suggestions(EditorContext editorContext) {
-		Set<TokenType> collector = Sets.newHashSet();
-		List<String> history = Lists.newArrayList();
-		history.add("start");
-		process(ruleNames, vocabulary, atn.states.get(0), new MyTokenStream(editorContext.preceedingTokens()),
-				collector, new ParserStack(), Sets.newHashSet(), history);
-		return collector;
-	}
 
 	public class EditorContext {
 
@@ -132,8 +111,8 @@ public class AntlrAutoCompletionSuggester {
 				}
 			} else if (state instanceof LoopEndState) {
 				boolean cont = (UtilityFunctions.getLastElement(states) instanceof StarLoopEntryState)
-						&& (((StarLoopEntryState) UtilityFunctions.getLastElement(
-								states)).loopBackState == ((LoopEndState)state).loopBackState);
+						&& (((StarLoopEntryState) UtilityFunctions
+								.getLastElement(states)).loopBackState == ((LoopEndState) state).loopBackState);
 				if (cont) {
 					return new Pair<Boolean, ParserStack>(true, new ParserStack(UtilityFunctions.minusLast(states)));
 				} else {
@@ -147,8 +126,8 @@ public class AntlrAutoCompletionSuggester {
 				} else {
 					return new Pair<Boolean, ParserStack>(false, this);
 				}
-			} else if ((state instanceof BasicState)
-					|| (state instanceof StarLoopbackState) || (state instanceof PlusLoopbackState)) {
+			} else if ((state instanceof BasicState) || (state instanceof StarLoopbackState)
+					|| (state instanceof PlusLoopbackState)) {
 				return new Pair<Boolean, ParserStack>(true, this);
 			} else {
 				throw new UnsupportedOperationException(state.getClass().getCanonicalName());
@@ -169,39 +148,24 @@ public class AntlrAutoCompletionSuggester {
 		public boolean equals(Object o) {
 			return (int) o == type;
 		}
-		
+
 		public int getType() {
-		      return type;
-		   }
+			return type;
+		}
 	}
+
+	private String[] ruleNames;
+
+	private Vocabulary vocabulary;
+
+	private ATN atn;
 
 	private final int CARET_TOKEN_TYPE = -10;
 
-	private String describe(String[] ruleNames, Vocabulary vocabulary, ATNState s, Transition t) {
-		return String.format("%d %s TR %s", s.stateNumber, describe(s), describe(ruleNames, vocabulary, t));
-	}
-
-	private String describe(String[] ruleNames, Vocabulary vocabulary, Transition t) {
-		if (t instanceof EpsilonTransition) {
-			return "(e)";
-		} else if (t instanceof RuleTransition) {
-			return "rule " + ruleNames[((RuleTransition) t).ruleIndex] + " precedence "
-					+ ((RuleTransition) t).precedence;
-		} else if (t instanceof AtomTransition) {
-			return "atom(" + vocabulary.getSymbolicName(((AtomTransition) t).label) + ")";
-		} else if (t instanceof SetTransition) {
-			String retStr = "set(";			
-			for(Integer it : ((SetTransition)t).set.toList()){
-				retStr += vocabulary.getSymbolicName(it) + ", ";
-			}
-			return retStr + ")";
-		} else if (t instanceof ActionTransition) {
-			return "action";
-		} else if (t instanceof PrecedencePredicateTransition) {
-			return "precedence predicate " + ((PrecedencePredicateTransition) t).precedence;
-		} else {
-			return "UNKNOWN " + t.getClass().getSimpleName();
-		}
+	public AntlrAutoCompletionSuggester(String[] ruleNames, Vocabulary vocabulary, ATN atn) {
+		this.ruleNames = ruleNames;
+		this.vocabulary = vocabulary;
+		this.atn = atn;
 	}
 
 	private String describe(ATNState s) {
@@ -238,7 +202,32 @@ public class AntlrAutoCompletionSuggester {
 		}
 	}
 
-	
+	private String describe(String[] ruleNames, Vocabulary vocabulary, ATNState s, Transition t) {
+		return String.format("%d %s TR %s", s.stateNumber, describe(s), describe(ruleNames, vocabulary, t));
+	}
+
+	private String describe(String[] ruleNames, Vocabulary vocabulary, Transition t) {
+		if (t instanceof EpsilonTransition) {
+			return "(e)";
+		} else if (t instanceof RuleTransition) {
+			return "rule " + ruleNames[((RuleTransition) t).ruleIndex] + " precedence "
+					+ ((RuleTransition) t).precedence;
+		} else if (t instanceof AtomTransition) {
+			return "atom(" + vocabulary.getSymbolicName(((AtomTransition) t).label) + ")";
+		} else if (t instanceof SetTransition) {
+			String retStr = "set(";
+			for (Integer it : ((SetTransition) t).set.toList()) {
+				retStr += vocabulary.getSymbolicName(it) + ", ";
+			}
+			return retStr + ")";
+		} else if (t instanceof ActionTransition) {
+			return "action";
+		} else if (t instanceof PrecedencePredicateTransition) {
+			return "precedence predicate " + ((PrecedencePredicateTransition) t).precedence;
+		} else {
+			return "UNKNOWN " + t.getClass().getSimpleName();
+		}
+	}
 
 	private boolean isCompatibleWithStack(ATNState state, ParserStack parserStack) {
 		Pair<Boolean, ParserStack> res = parserStack.process(state);
@@ -246,8 +235,8 @@ public class AntlrAutoCompletionSuggester {
 			return false;
 		}
 		if (state.epsilonOnlyTransitions) {
-			for(Transition it : state.getTransitions()){
-				if(isCompatibleWithStack(it.target, res.b)){
+			for (Transition it : state.getTransitions()) {
+				if (isCompatibleWithStack(it.target, res.b)) {
 					return true;
 				}
 			}
@@ -271,7 +260,7 @@ public class AntlrAutoCompletionSuggester {
 		} while (next.getType() >= 0);
 		return res;
 	}
-	
+
 	private void process(String[] ruleNames, Vocabulary vocabulary, ATNState state, MyTokenStream tokens,
 			Set<TokenType> collector, ParserStack parserStack, Set<Integer> alreadyPassed, List<String> history) {
 		boolean atCaret = tokens.atCaret();
@@ -321,5 +310,14 @@ public class AntlrAutoCompletionSuggester {
 				throw new UnsupportedOperationException(it.getClass().getCanonicalName());
 			}
 		}
+	}
+
+	public Set<TokenType> suggestions(EditorContext editorContext) {
+		Set<TokenType> collector = Sets.newHashSet();
+		List<String> history = Lists.newArrayList();
+		history.add("start");
+		process(ruleNames, vocabulary, atn.states.get(0), new MyTokenStream(editorContext.preceedingTokens()),
+				collector, new ParserStack(), Sets.newHashSet(), history);
+		return collector;
 	}
 }
