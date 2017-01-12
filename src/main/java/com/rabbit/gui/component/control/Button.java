@@ -45,7 +45,6 @@ public class Button extends GuiWidget implements Shiftable {
 
 	protected boolean drawHoverText = false;
 	protected List<String> originalHoverText = new ArrayList<String>();
-
 	protected List<String> hoverText = new ArrayList<String>();
 
 	protected ResourceLocation buttonTexture = new ResourceLocation("textures/gui/widgets.png");
@@ -74,11 +73,6 @@ public class Button extends GuiWidget implements Shiftable {
 
 	public Button addHoverText(String text) {
 		originalHoverText.add(text);
-		return this;
-	}
-
-	public Button doesDrawHoverText(boolean state) {
-		drawHoverText = state;
 		return this;
 	}
 
@@ -197,6 +191,11 @@ public class Button extends GuiWidget implements Shiftable {
 
 	public Button setCustomTexture(ResourceLocation res) {
 		buttonTexture = res;
+		return this;
+	}
+
+	public Button setDoesDrawHoverText(boolean state) {
+		drawHoverText = state;
 		return this;
 	}
 

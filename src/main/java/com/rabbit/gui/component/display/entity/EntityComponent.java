@@ -1,12 +1,8 @@
 package com.rabbit.gui.component.display.entity;
 
-import java.awt.Color;
-
 import org.lwjgl.input.Mouse;
 
 import com.rabbit.gui.component.GuiWidget;
-import com.rabbit.gui.component.display.Shape;
-import com.rabbit.gui.component.display.ShapeType;
 import com.rabbit.gui.layout.LayoutComponent;
 
 import net.minecraft.client.Minecraft;
@@ -15,7 +11,6 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -77,9 +72,9 @@ public class EntityComponent extends GuiWidget {
 		GlStateManager.translate(x, y, 100.0F);
 		GlStateManager.scale(30.0f * zoom, 30.0f * zoom, 30.0f * zoom);
 		GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
-		GlStateManager.translate(-entity.width/2, -entity.height, 0.0F);
-				
-		RenderHelper.enableStandardItemLighting();	
+		GlStateManager.translate(-entity.width / 2, -entity.height, 0.0F);
+
+		RenderHelper.enableStandardItemLighting();
 		entity.renderYawOffset = rotation;
 		entity.rotationYawHead = entity.renderYawOffset;
 		RenderManager rendermanager = Minecraft.getMinecraft().getRenderManager();

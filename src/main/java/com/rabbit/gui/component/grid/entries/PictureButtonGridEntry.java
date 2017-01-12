@@ -70,12 +70,6 @@ public class PictureButtonGridEntry extends Button implements GridEntry {
 	}
 
 	@Override
-	public PictureButtonGridEntry doesDrawHoverText(boolean state) {
-		drawHoverText = state;
-		return this;
-	}
-
-	@Override
 	public List<String> getHoverText() {
 		return originalHoverText;
 	}
@@ -143,6 +137,12 @@ public class PictureButtonGridEntry extends Button implements GridEntry {
 
 	public PictureButtonGridEntry setClickListener(OnClickListener onClicked) {
 		listener = onClicked;
+		return this;
+	}
+
+	@Override
+	public PictureButtonGridEntry setDoesDrawHoverText(boolean state) {
+		drawHoverText = state;
 		return this;
 	}
 

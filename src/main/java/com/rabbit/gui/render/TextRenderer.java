@@ -20,38 +20,6 @@ public class TextRenderer {
 	}
 
 	/**
-	 * Renders string centered
-	 *
-	 * @param xPos
-	 * @param yPos
-	 * @param text
-	 * @return X position of rendered string
-	 * @deprecated use {@link #renderString(int, int, String, TextAlignment)}
-	 *             with TextAlignment.CENTER instead
-	 */
-	@Deprecated
-	public static int renderCenteredString(int xPos, int yPos, String text) {
-		return renderCenteredString(xPos, yPos, text, Color.white);
-	}
-
-	/**
-	 * Renders string centered
-	 *
-	 * @param xPos
-	 * @param yPos
-	 * @param text
-	 * @param color
-	 * @return X position of rendered string
-	 * @deprecated use
-	 *             {@link #renderString(int, int, String, int, TextAlignment)}
-	 *             with TextAlignment.CENTER instead
-	 */
-	@Deprecated
-	public static int renderCenteredString(int xPos, int yPos, String text, Color color) {
-		return renderString(xPos - (getFontRenderer().getStringWidth(text) / 2), yPos, text, color, TextAlignment.LEFT);
-	}
-
-	/**
 	 * See {@link #renderString(int, int, String, int, boolean)}
 	 */
 	public static int renderString(int xPos, int yPos, String text) {
