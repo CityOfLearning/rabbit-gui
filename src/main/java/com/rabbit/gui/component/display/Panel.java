@@ -9,6 +9,7 @@ import com.rabbit.gui.component.IGui;
 import com.rabbit.gui.component.control.Button;
 import com.rabbit.gui.utils.Geometry;
 
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -21,6 +22,8 @@ public class Panel extends GuiWidget {
 	private int dragXDelta, dragYDelta;
 	private int resizeXPos;
 	private boolean isVisible;
+	private boolean isFocused;
+	private int z = 0;
 
 	public Panel(int xPos, int yPos, int width, int height) {
 		this(xPos, yPos, width, height, true);
@@ -31,6 +34,15 @@ public class Panel extends GuiWidget {
 		isDragging = false;
 		isResizing = false;
 		isVisible = visible;
+		isFocused = false;
+	}
+
+	public int getZ() {
+		return z;
+	}
+
+	public boolean isFocused() {
+		return isFocused;
 	}
 
 	public void movePanel(int newX, int newY) {
@@ -50,29 +62,35 @@ public class Panel extends GuiWidget {
 	@Override
 	public void onDraw(int xMouse, int yMouse, float partialTicks) {
 		if (isVisible) {
-			if (isDragging) {
-				movePanel(xMouse - dragXDelta, yMouse - dragYDelta);
+			if (isFocused) {
+				if (isDragging) {
+					movePanel(xMouse - dragXDelta, yMouse - dragYDelta);
+				}
+				if (isResizing) {
+					movePanel(xMouse - dragXDelta, y);
+					resize(width + (resizeXPos - xMouse), height);
+					resizeXPos = xMouse;
+					// movePanel(xMouse - dragXDelta, yMouse - dragYDelta);
+					// setSize(width + (resizeXPos-xMouse), height + (resizeYPos
+					// -
+					// yMouse));
+				}
 			}
-			if (isResizing) {
-				movePanel(xMouse - dragXDelta, y);
-				resize(width + (resizeXPos - xMouse), height);
-				resizeXPos = xMouse;
-				// movePanel(xMouse - dragXDelta, yMouse - dragYDelta);
-				// setSize(width + (resizeXPos-xMouse), height + (resizeYPos -
-				// yMouse));
-			}
+			GlStateManager.translate(0, 0, z);
 			panelComponents.forEach(com -> com.onDraw(xMouse, yMouse, partialTicks));
 		}
 	}
 
 	@Override
 	public void onKeyTyped(char typedChar, int typedIndex) {
-		panelComponents.forEach(com -> com.onKeyTyped(typedChar, typedIndex));
+		if (isVisible && isFocused) {
+			panelComponents.forEach(com -> com.onKeyTyped(typedChar, typedIndex));
+		}
 	}
 
 	@Override
 	public boolean onMouseClicked(int posX, int posY, int mouseButtonIndex, boolean overlap) {
-		if (isVisible) {
+		if (isVisible && isFocused) {
 			super.onMouseClicked(posX, posY, mouseButtonIndex, overlap);
 
 			// is it in the upper left corner
@@ -104,13 +122,15 @@ public class Panel extends GuiWidget {
 
 	@Override
 	public void onMouseInput() {
-		panelComponents.forEach(com -> com.onMouseInput());
+		if (isVisible && isFocused) {
+			panelComponents.forEach(com -> com.onMouseInput());
+		}
 	}
 
 	@Override
 	public void onMouseRelease(int mouseX, int mouseY) {
 		super.onMouseRelease(mouseX, mouseY);
-		if (isVisible) {
+		if (isVisible && isFocused) {
 			panelComponents.forEach(com -> com.onMouseRelease(mouseX, mouseY));
 			if (isDragging) {
 				isDragging = false;
@@ -123,7 +143,9 @@ public class Panel extends GuiWidget {
 
 	@Override
 	public void onUpdate() {
-		panelComponents.forEach(com -> com.onUpdate());
+		if (isVisible && isFocused) {
+			panelComponents.forEach(com -> com.onUpdate());
+		}
 	}
 
 	/**
@@ -157,9 +179,15 @@ public class Panel extends GuiWidget {
 		return this;
 	}
 
-	public void setSize(int width, int height) {
+	public Panel setFocused(boolean isFocused) {
+		this.isFocused = isFocused;
+		return this;
+	}
+
+	public Panel setSize(int width, int height) {
 		this.width = width;
 		this.height = height;
+		return this;
 	}
 
 	@Override
@@ -168,7 +196,16 @@ public class Panel extends GuiWidget {
 	}
 
 	public Panel setVisible(boolean state) {
+		if (!state) {
+			// cant be invisible and focused
+			isFocused = false;
+		}
 		isVisible = state;
+		return this;
+	}
+
+	public Panel setZ(int zPos) {
+		z = zPos;
 		return this;
 	}
 }
