@@ -52,7 +52,7 @@ public class Row<T> implements WidgetList<T> {
 	}
 
 	public List<String> getStringContent() {
-		List<String> strings = new ArrayList<String>();
+		List<String> strings = new ArrayList<>();
 		this.getContent().forEach(element -> strings.add(String.valueOf(element)));
 		return strings;
 	}

@@ -49,11 +49,9 @@ public class TextTab extends Tab {
 			if (angle == 0) {
 				curYPos = y + 3;
 				for (String line : lines) {
-					TextRenderer
-							.renderString(
-									(int) (x + ((width / 2.0)
-											- (TextRenderer.getFontRenderer().getStringWidth(line) / 2.0))),
-									curYPos, line, Color.white);
+					TextRenderer.renderString(
+							(int) (x + ((width / 2.0) - (TextRenderer.getFontRenderer().getStringWidth(line) / 2.0))),
+							curYPos, line, Color.white);
 					curYPos += 8;
 				}
 			} else if (angle == 180) {

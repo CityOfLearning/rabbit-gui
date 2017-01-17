@@ -19,7 +19,7 @@ public class DoubleListener implements DoubleChangeDispatcher {
 
 	public DoubleListener(double initialState) {
 		value = initialState;
-		listeners = new ArrayList<DoubleChangeListener>();
+		listeners = new ArrayList<>();
 	}
 
 	@Override

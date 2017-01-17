@@ -9,7 +9,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class SkinManager {
 	// key is minecraft username and value is the skin texture
-	private static Map<String, UUID> playerSkin = new HashMap<String, UUID>();
+	private static Map<String, UUID> playerSkin = new HashMap<>();
 
 	public static void addSkin(EntityPlayer player, String skin) {
 		addSkin(player.getName(), skin);

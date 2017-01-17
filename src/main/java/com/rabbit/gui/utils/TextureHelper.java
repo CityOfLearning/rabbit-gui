@@ -44,9 +44,9 @@ public class TextureHelper {
 				bufImg = ImageCacheHelper.resizeImage(bufImg);
 			}
 		}
-		dynamicImageInfo.put(textureId, new ImmutablePair<Integer, Integer>(bufImg.getWidth(), bufImg.getHeight()));
+		dynamicImageInfo.put(textureId, new ImmutablePair<>(bufImg.getWidth(), bufImg.getHeight()));
 		dynamicImages.put(textureId,
-				new ImmutablePair<String, DynamicTexture>(textureLocation.getPath(), new DynamicTexture(bufImg)));
+				new ImmutablePair<>(textureLocation.getPath(), new DynamicTexture(bufImg)));
 	}
 
 	public static void addStaticTexture(UUID textureId, ResourceLocation texture) {
@@ -122,7 +122,7 @@ public class TextureHelper {
 			}
 
 		}
-		return new ImmutablePair<Integer, Integer>(width, height);
+		return new ImmutablePair<>(width, height);
 	}
 
 	private static int getTrimmedHeight(BufferedImage img) {

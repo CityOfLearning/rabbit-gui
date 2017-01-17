@@ -102,33 +102,33 @@ public class AntlrAutoCompletionSuggester {
 				List<ATNState> temp = Lists.newArrayList();
 				temp.addAll(states);
 				temp.add(state);
-				return new Pair<Boolean, ParserStack>(true, new ParserStack(temp));
+				return new Pair<>(true, new ParserStack(temp));
 			} else if (state instanceof BlockEndState) {
 				if (UtilityFunctions.getLastElement(states) == ((BlockEndState) state).startState) {
-					return new Pair<Boolean, ParserStack>(true, new ParserStack(UtilityFunctions.minusLast(states)));
+					return new Pair<>(true, new ParserStack(UtilityFunctions.minusLast(states)));
 				} else {
-					return new Pair<Boolean, ParserStack>(false, this);
+					return new Pair<>(false, this);
 				}
 			} else if (state instanceof LoopEndState) {
 				boolean cont = (UtilityFunctions.getLastElement(states) instanceof StarLoopEntryState)
 						&& (((StarLoopEntryState) UtilityFunctions
 								.getLastElement(states)).loopBackState == ((LoopEndState) state).loopBackState);
 				if (cont) {
-					return new Pair<Boolean, ParserStack>(true, new ParserStack(UtilityFunctions.minusLast(states)));
+					return new Pair<>(true, new ParserStack(UtilityFunctions.minusLast(states)));
 				} else {
-					return new Pair<Boolean, ParserStack>(false, this);
+					return new Pair<>(false, this);
 				}
 			} else if (state instanceof RuleStopState) {
 				boolean cont = (UtilityFunctions.getLastElement(states) instanceof RuleStartState)
 						&& (((RuleStartState) UtilityFunctions.getLastElement(states)).stopState == state);
 				if (cont) {
-					return new Pair<Boolean, ParserStack>(true, new ParserStack(UtilityFunctions.minusLast(states)));
+					return new Pair<>(true, new ParserStack(UtilityFunctions.minusLast(states)));
 				} else {
-					return new Pair<Boolean, ParserStack>(false, this);
+					return new Pair<>(false, this);
 				}
 			} else if ((state instanceof BasicState) || (state instanceof StarLoopbackState)
 					|| (state instanceof PlusLoopbackState)) {
-				return new Pair<Boolean, ParserStack>(true, this);
+				return new Pair<>(true, this);
 			} else {
 				throw new UnsupportedOperationException(state.getClass().getCanonicalName());
 			}
@@ -247,7 +247,7 @@ public class AntlrAutoCompletionSuggester {
 	}
 
 	private List<Token> Lexer2List(Lexer lexer) {
-		List<Token> res = new LinkedList<Token>();
+		List<Token> res = new LinkedList<>();
 		Token next;
 		do {
 			next = lexer.nextToken();
@@ -284,7 +284,7 @@ public class AntlrAutoCompletionSuggester {
 					}
 				} else {
 					if (nextTokenType.getType() == ((AtomTransition) it).label) {
-						alreadyPassed = new HashSet<Integer>();
+						alreadyPassed = new HashSet<>();
 						history.add(desc);
 						process(ruleNames, vocabulary, it.target, tokens.move(), collector, stackRes.b, alreadyPassed,
 								history);
@@ -299,7 +299,7 @@ public class AntlrAutoCompletionSuggester {
 						}
 					} else {
 						if (nextTokenType.getType() == label) {
-							alreadyPassed = new HashSet<Integer>();
+							alreadyPassed = new HashSet<>();
 							history.add(desc);
 							process(ruleNames, vocabulary, it.target, tokens.move(), collector, stackRes.b,
 									alreadyPassed, history);
