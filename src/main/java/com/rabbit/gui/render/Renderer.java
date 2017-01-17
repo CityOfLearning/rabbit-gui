@@ -62,8 +62,8 @@ public class Renderer {
 			int textureHeight, int topBorder, int bottomBorder, int leftBorder, int rightBorder) {
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		GlStateManager.enableBlend();
-		GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+		// GL11.glBlendFunc();
 		int fillerWidth = textureWidth - leftBorder - rightBorder;
 		int fillerHeight = textureHeight - topBorder - bottomBorder;
 		int canvasWidth = width - leftBorder - rightBorder;
@@ -119,20 +119,22 @@ public class Renderer {
 	 */
 	public static void drawFilledArc(int xCenter, int yCenter, int radius, double startDegrees, double finishDegrees,
 			int color) {
-		GL11.glPushMatrix();
-		GlStateManager.disableTexture2D();
-		ColourHelper.glColorRGB(color);
-		GL11.glBegin(GL11.GL_TRIANGLE_FAN);
-		GL11.glVertex2d(xCenter, yCenter);
-		for (double i = startDegrees; i <= finishDegrees; i += 0.05) {
-			double theta = (2 * Math.PI * i) / 360.0;
-			double dotX = xCenter + (Math.sin(theta) * radius);
-			double dotY = yCenter + (Math.cos(theta) * radius);
-			GL11.glVertex2d(dotX, dotY);
+		GlStateManager.pushMatrix();
+		{
+			GlStateManager.disableTexture2D();
+			ColourHelper.glColorRGB(color);
+			GL11.glBegin(GL11.GL_TRIANGLE_FAN);
+			GL11.glVertex2d(xCenter, yCenter);
+			for (double i = startDegrees; i <= finishDegrees; i += 0.05) {
+				double theta = (2 * Math.PI * i) / 360.0;
+				double dotX = xCenter + (Math.sin(theta) * radius);
+				double dotY = yCenter + (Math.cos(theta) * radius);
+				GL11.glVertex2d(dotX, dotY);
+			}
+			GL11.glEnd();
+			GlStateManager.enableTexture2D();
 		}
-		GL11.glEnd();
-		GlStateManager.enableTexture2D();
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 
 	/**
@@ -156,7 +158,7 @@ public class Renderer {
 		GlStateManager.disableTexture2D();
 		GlStateManager.enableBlend();
 		GlStateManager.disableAlpha();
-		GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+		GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 		GlStateManager.shadeModel(GL11.GL_SMOOTH);
 
 		GL11.glBegin(GL11.GL_QUADS);
@@ -189,95 +191,99 @@ public class Renderer {
 
 	public static void drawHoveringText(List<String> content, int xPos, int yPos) {
 		if (!content.isEmpty()) {
-			GL11.glPushMatrix();
-			GL11.glTranslatef(0, 0, 1);
+			GlStateManager.pushMatrix();
+			{
+				GlStateManager.translate(0, 0, 1);
 
-			int width = 0;
-			for (String line : content) {
-				int lineWidth = TextRenderer.getFontRenderer().getStringWidth(line);
-				width = Math.max(width, lineWidth);
-			}
-			int x = xPos + 12;
-			int y = yPos - 12;
-			int additional = 8;
-
-			if (content.size() > 1) {
-				additional += 2 + ((content.size() - 1) * 10);
-			}
-
-			int firstColor = -267386864;
-			int secondColor = 1347420415;
-
-			drawGradient(x - 3, y - 4, x + width + 3, y - 3, firstColor, firstColor);
-			drawGradient(x - 3, y + additional + 3, x + width + 3, y + additional + 4, firstColor, firstColor);
-			drawGradient(x - 3, y - 3, x + width + 3, y + additional + 3, firstColor, firstColor);
-			drawGradient(x - 4, y - 3, x - 3, y + additional + 3, firstColor, firstColor);
-			drawGradient(x + width + 3, y - 3, x + width + 4, y + additional + 3, firstColor, firstColor);
-			int l1 = ((secondColor & 16711422) >> 1) | (secondColor & -16777216);
-			drawGradient(x - 3, (y - 3) + 1, (x - 3) + 1, (y + additional + 3) - 1, secondColor, l1);
-			drawGradient(x + width + 2, (y - 3) + 1, x + width + 3, (y + additional + 3) - 1, secondColor, l1);
-			drawGradient(x - 3, y - 3, x + width + 3, (y - 3) + 1, secondColor, secondColor);
-			drawGradient(x - 3, y + additional + 2, x + width + 3, y + additional + 3, l1, l1);
-
-			for (int i = 0; i < content.size(); ++i) {
-				String line = content.get(i);
-				TextRenderer.renderString(x, y, line, Color.white, true, TextAlignment.LEFT);
-				if (i == 0) {
-					y += 2;
+				int width = 0;
+				for (String line : content) {
+					int lineWidth = TextRenderer.getFontRenderer().getStringWidth(line);
+					width = Math.max(width, lineWidth);
 				}
-				y += 10;
-			}
+				int x = xPos + 12;
+				int y = yPos - 12;
+				int additional = 8;
 
-			GL11.glTranslatef(0, 0, -1);
-			GL11.glPopMatrix();
+				if (content.size() > 1) {
+					additional += 2 + ((content.size() - 1) * 10);
+				}
+
+				int firstColor = -267386864;
+				int secondColor = 1347420415;
+
+				drawGradient(x - 3, y - 4, x + width + 3, y - 3, firstColor, firstColor);
+				drawGradient(x - 3, y + additional + 3, x + width + 3, y + additional + 4, firstColor, firstColor);
+				drawGradient(x - 3, y - 3, x + width + 3, y + additional + 3, firstColor, firstColor);
+				drawGradient(x - 4, y - 3, x - 3, y + additional + 3, firstColor, firstColor);
+				drawGradient(x + width + 3, y - 3, x + width + 4, y + additional + 3, firstColor, firstColor);
+				int l1 = ((secondColor & 16711422) >> 1) | (secondColor & -16777216);
+				drawGradient(x - 3, (y - 3) + 1, (x - 3) + 1, (y + additional + 3) - 1, secondColor, l1);
+				drawGradient(x + width + 2, (y - 3) + 1, x + width + 3, (y + additional + 3) - 1, secondColor, l1);
+				drawGradient(x - 3, y - 3, x + width + 3, (y - 3) + 1, secondColor, secondColor);
+				drawGradient(x - 3, y + additional + 2, x + width + 3, y + additional + 3, l1, l1);
+
+				for (int i = 0; i < content.size(); ++i) {
+					String line = content.get(i);
+					TextRenderer.renderString(x, y, line, Color.white, true, TextAlignment.LEFT);
+					if (i == 0) {
+						y += 2;
+					}
+					y += 10;
+				}
+
+				GlStateManager.translate(0, 0, -1);
+			}
+			GlStateManager.popMatrix();
 		}
 	}
 
 	public static void drawHoveringTextInScissoredArea(List<String> content, int xPos, int yPos) {
 		if (!content.isEmpty()) {
-			GL11.glPushMatrix();
-			GL11.glDisable(GL11.GL_SCISSOR_TEST);
-			GL11.glTranslatef(0, 0, 1);
+			GlStateManager.pushMatrix();
+			{
+				GL11.glDisable(GL11.GL_SCISSOR_TEST);
+				GlStateManager.translate(0, 0, 1);
 
-			int width = 0;
-			for (String line : content) {
-				int lineWidth = TextRenderer.getFontRenderer().getStringWidth(line);
-				width = Math.max(width, lineWidth);
-			}
-			int x = xPos + 12;
-			int y = yPos - 12;
-			int additional = 8;
-
-			if (content.size() > 1) {
-				additional += 2 + ((content.size() - 1) * 10);
-			}
-
-			int firstColor = -267386864;
-			int secondColor = 1347420415;
-
-			drawGradient(x - 3, y - 4, x + width + 3, y - 3, firstColor, firstColor);
-			drawGradient(x - 3, y + additional + 3, x + width + 3, y + additional + 4, firstColor, firstColor);
-			drawGradient(x - 3, y - 3, x + width + 3, y + additional + 3, firstColor, firstColor);
-			drawGradient(x - 4, y - 3, x - 3, y + additional + 3, firstColor, firstColor);
-			drawGradient(x + width + 3, y - 3, x + width + 4, y + additional + 3, firstColor, firstColor);
-			int l1 = ((secondColor & 16711422) >> 1) | (secondColor & -16777216);
-			drawGradient(x - 3, (y - 3) + 1, (x - 3) + 1, (y + additional + 3) - 1, secondColor, l1);
-			drawGradient(x + width + 2, (y - 3) + 1, x + width + 3, (y + additional + 3) - 1, secondColor, l1);
-			drawGradient(x - 3, y - 3, x + width + 3, (y - 3) + 1, secondColor, secondColor);
-			drawGradient(x - 3, y + additional + 2, x + width + 3, y + additional + 3, l1, l1);
-
-			for (int i = 0; i < content.size(); ++i) {
-				String line = content.get(i);
-				TextRenderer.renderString(x, y, line, Color.white, true, TextAlignment.LEFT);
-				if (i == 0) {
-					y += 2;
+				int width = 0;
+				for (String line : content) {
+					int lineWidth = TextRenderer.getFontRenderer().getStringWidth(line);
+					width = Math.max(width, lineWidth);
 				}
-				y += 10;
-			}
+				int x = xPos + 12;
+				int y = yPos - 12;
+				int additional = 8;
 
-			GL11.glTranslatef(0, 0, -1);
-			GL11.glEnable(GL11.GL_SCISSOR_TEST);
-			GL11.glPopMatrix();
+				if (content.size() > 1) {
+					additional += 2 + ((content.size() - 1) * 10);
+				}
+
+				int firstColor = -267386864;
+				int secondColor = 1347420415;
+
+				drawGradient(x - 3, y - 4, x + width + 3, y - 3, firstColor, firstColor);
+				drawGradient(x - 3, y + additional + 3, x + width + 3, y + additional + 4, firstColor, firstColor);
+				drawGradient(x - 3, y - 3, x + width + 3, y + additional + 3, firstColor, firstColor);
+				drawGradient(x - 4, y - 3, x - 3, y + additional + 3, firstColor, firstColor);
+				drawGradient(x + width + 3, y - 3, x + width + 4, y + additional + 3, firstColor, firstColor);
+				int l1 = ((secondColor & 16711422) >> 1) | (secondColor & -16777216);
+				drawGradient(x - 3, (y - 3) + 1, (x - 3) + 1, (y + additional + 3) - 1, secondColor, l1);
+				drawGradient(x + width + 2, (y - 3) + 1, x + width + 3, (y + additional + 3) - 1, secondColor, l1);
+				drawGradient(x - 3, y - 3, x + width + 3, (y - 3) + 1, secondColor, secondColor);
+				drawGradient(x - 3, y + additional + 2, x + width + 3, y + additional + 3, l1, l1);
+
+				for (int i = 0; i < content.size(); ++i) {
+					String line = content.get(i);
+					TextRenderer.renderString(x, y, line, Color.white, true, TextAlignment.LEFT);
+					if (i == 0) {
+						y += 2;
+					}
+					y += 10;
+				}
+
+				GlStateManager.translate(0, 0, -1);
+				GL11.glEnable(GL11.GL_SCISSOR_TEST);
+			}
+			GlStateManager.popMatrix();
 		}
 	}
 
@@ -295,16 +301,18 @@ public class Renderer {
 	}
 
 	public static void drawLine(int fromX, int fromY, int toX, int toY, Color color, float width) {
-		GL11.glPushMatrix();
-		ColourHelper.glColorAWT(color);
-		GlStateManager.disableTexture2D();
-		GL11.glLineWidth(width);
-		GL11.glBegin(GL11.GL_LINE_STRIP);
-		GL11.glVertex2i(fromX, fromY);
-		GL11.glVertex2i(toX, toY);
-		GL11.glEnd();
-		GlStateManager.enableTexture2D();
-		GL11.glPopMatrix();
+		GlStateManager.pushMatrix();
+		{
+			ColourHelper.glColorAWT(color);
+			GlStateManager.disableTexture2D();
+			GL11.glLineWidth(width);
+			GL11.glBegin(GL11.GL_LINE_STRIP);
+			GL11.glVertex2i(fromX, fromY);
+			GL11.glVertex2i(toX, toY);
+			GL11.glEnd();
+			GlStateManager.enableTexture2D();
+		}
+		GlStateManager.popMatrix();
 	}
 
 	/**
@@ -325,16 +333,18 @@ public class Renderer {
 	 *            - line width
 	 */
 	public static void drawLine(int fromX, int fromY, int toX, int toY, int color, float width) {
-		GL11.glPushMatrix();
-		ColourHelper.glColorRGB(color);
-		GlStateManager.disableTexture2D();
-		GL11.glLineWidth(width);
-		GL11.glBegin(GL11.GL_LINE_STRIP);
-		GL11.glVertex2i(fromX, fromY);
-		GL11.glVertex2i(toX, toY);
-		GL11.glEnd();
-		GlStateManager.enableTexture2D();
-		GL11.glPopMatrix();
+		GlStateManager.pushMatrix();
+		{
+			ColourHelper.glColorRGB(color);
+			GlStateManager.disableTexture2D();
+			GL11.glLineWidth(width);
+			GL11.glBegin(GL11.GL_LINE_STRIP);
+			GL11.glVertex2i(fromX, fromY);
+			GL11.glVertex2i(toX, toY);
+			GL11.glEnd();
+			GlStateManager.enableTexture2D();
+		}
+		GlStateManager.popMatrix();
 	}
 
 	/**
@@ -389,7 +399,7 @@ public class Renderer {
 		WorldRenderer renderer = tessellator.getWorldRenderer();
 		GlStateManager.enableBlend();
 		GlStateManager.disableTexture2D();
-		GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+		GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 		ColourHelper.glColorRGB(color);
 		renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
 		renderer.pos(xTop, yBot, 0.0D).endVertex();
@@ -418,7 +428,7 @@ public class Renderer {
 		GlStateManager.enableBlend();
 		GlStateManager.disableTexture2D();
 		specialGL.run();
-		GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+		GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 		ColourHelper.glColorRGB(color);
 		renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
 		renderer.pos(xTop, yBot, 0.0D).endVertex();
@@ -538,21 +548,23 @@ public class Renderer {
 	 *            - rgb color
 	 */
 	public static void drawTriangle(int leftX, int leftY, int topX, int topY, int rightX, int rightY, int color) {
-		GL11.glPushMatrix();
-		GlStateManager.enableBlend();
-		GlStateManager.disableTexture2D();
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		ColourHelper.glColorRGB(color);
-		Tessellator tessellator = Tessellator.getInstance();
-		WorldRenderer renderer = tessellator.getWorldRenderer();
-		renderer.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION);
-		renderer.pos(topX, topY, 0).endVertex();
-		renderer.pos(leftX, leftY, 0).endVertex();
-		renderer.pos(rightX, rightY, 0).endVertex();
-		tessellator.draw();
-		GlStateManager.enableTexture2D();
-		GlStateManager.disableBlend();
-		GL11.glPopMatrix();
+		GlStateManager.pushMatrix();
+		{
+			GlStateManager.enableBlend();
+			GlStateManager.disableTexture2D();
+			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+			ColourHelper.glColorRGB(color);
+			Tessellator tessellator = Tessellator.getInstance();
+			WorldRenderer renderer = tessellator.getWorldRenderer();
+			renderer.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION);
+			renderer.pos(topX, topY, 0).endVertex();
+			renderer.pos(leftX, leftY, 0).endVertex();
+			renderer.pos(rightX, rightY, 0).endVertex();
+			tessellator.draw();
+			GlStateManager.enableTexture2D();
+			GlStateManager.disableBlend();
+		}
+		GlStateManager.popMatrix();
 	}
 
 	/**
@@ -586,49 +598,51 @@ public class Renderer {
 	public static void renderChatBubble(int xPos, int yPos, int width, int height, List<String> lines) {
 		FontRenderer font = Minecraft.getMinecraft().fontRendererObj;
 		GlStateManager.pushMatrix();
-		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
-		GlStateManager.depthMask(false);
-		GlStateManager.disableLighting();
-		GlStateManager.enableBlend();
-		int black = -16777216;
-		int white = -1140850689;
-		GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-		GlStateManager.disableTexture2D();
-		drawRect(xPos - 2, yPos - 2, xPos + width + 2, yPos + height + 1, white);
-		GlStateManager.translate(0, 0, -0.1);
-		drawRect(xPos - 1, yPos - 3, xPos + width + 1, (yPos + height) - 2, black);
-		drawRect(xPos - 1, yPos + 2, (xPos + width) - 1, yPos + height + 1, black);
-		drawRect(xPos + 3, yPos + 2, xPos + width + 1, yPos + height + 1, black);
-		drawRect(xPos - 3, yPos - 1, (xPos + width) - 2, yPos + height, black);
-		drawRect(xPos + 3, yPos - 1, xPos + width + 2, yPos + height, black);
-		drawRect(xPos - 2, yPos - 2, (xPos + width) - 1, (yPos + height) - 1, black);
-		drawRect(xPos + 2, yPos - 2, xPos + width + 1, (yPos + height) - 1, black);
-		drawRect(xPos - 2, yPos + 1, (xPos + width) - 1, yPos + height, black);
-		drawRect(xPos + 2, yPos + 1, xPos + width + 1, yPos + height, black);
-		GlStateManager.translate(0, 0, 0.1);
-		drawRect(xPos, yPos + 1, xPos + width + 3, yPos + height + 4, white);
-		drawRect(xPos - 1, yPos + 4, xPos + width + 1, yPos + height + 5, white);
-		GlStateManager.translate(0, 0, -0.1);
-		drawRect(xPos - 1, yPos + 1, xPos + width, yPos + height + 4, black);
-		drawRect(xPos + 3, yPos + 1, xPos + width + 4, yPos + height + 3, black);
-		drawRect(xPos + 2, yPos + 3, xPos + width + 3, yPos + height + 4, black);
-		drawRect(xPos + 1, yPos + 4, xPos + width + 2, yPos + height + 5, black);
-		drawRect(xPos - 2, yPos + 4, (xPos + width) - 1, yPos + height + 5, black);
-		drawRect(xPos - 2, yPos + 5, xPos + width + 1, yPos + height + 6, black);
-		GlStateManager.translate(0, 0, 0.1);
-		GlStateManager.enableTexture2D();
-		GlStateManager.depthMask(true);
-		int index = 0;
-		for (String message : lines) {
-			// none of the shadows look good...
-			Minecraft.getMinecraft().fontRendererObj.drawString(message, (float) 5 + xPos,
-					5 + yPos + (index * font.FONT_HEIGHT), black, false);
-			++index;
+		{
+			GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+			GlStateManager.depthMask(false);
+			GlStateManager.disableLighting();
+			GlStateManager.enableBlend();
+			int black = -16777216;
+			int white = -1140850689;
+			GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+			GlStateManager.disableTexture2D();
+			drawRect(xPos - 2, yPos - 2, xPos + width + 2, yPos + height + 1, white);
+			GlStateManager.translate(0, 0, -0.1);
+			drawRect(xPos - 1, yPos - 3, xPos + width + 1, (yPos + height) - 2, black);
+			drawRect(xPos - 1, yPos + 2, (xPos + width) - 1, yPos + height + 1, black);
+			drawRect(xPos + 3, yPos + 2, xPos + width + 1, yPos + height + 1, black);
+			drawRect(xPos - 3, yPos - 1, (xPos + width) - 2, yPos + height, black);
+			drawRect(xPos + 3, yPos - 1, xPos + width + 2, yPos + height, black);
+			drawRect(xPos - 2, yPos - 2, (xPos + width) - 1, (yPos + height) - 1, black);
+			drawRect(xPos + 2, yPos - 2, xPos + width + 1, (yPos + height) - 1, black);
+			drawRect(xPos - 2, yPos + 1, (xPos + width) - 1, yPos + height, black);
+			drawRect(xPos + 2, yPos + 1, xPos + width + 1, yPos + height, black);
+			GlStateManager.translate(0, 0, 0.1);
+			drawRect(xPos, yPos + 1, xPos + width + 3, yPos + height + 4, white);
+			drawRect(xPos - 1, yPos + 4, xPos + width + 1, yPos + height + 5, white);
+			GlStateManager.translate(0, 0, -0.1);
+			drawRect(xPos - 1, yPos + 1, xPos + width, yPos + height + 4, black);
+			drawRect(xPos + 3, yPos + 1, xPos + width + 4, yPos + height + 3, black);
+			drawRect(xPos + 2, yPos + 3, xPos + width + 3, yPos + height + 4, black);
+			drawRect(xPos + 1, yPos + 4, xPos + width + 2, yPos + height + 5, black);
+			drawRect(xPos - 2, yPos + 4, (xPos + width) - 1, yPos + height + 5, black);
+			drawRect(xPos - 2, yPos + 5, xPos + width + 1, yPos + height + 6, black);
+			GlStateManager.translate(0, 0, 0.1);
+			GlStateManager.enableTexture2D();
+			GlStateManager.depthMask(true);
+			int index = 0;
+			for (String message : lines) {
+				// none of the shadows look good...
+				Minecraft.getMinecraft().fontRendererObj.drawString(message, (float) 5 + xPos,
+						5 + yPos + (index * font.FONT_HEIGHT), black, false);
+				++index;
+			}
+			GlStateManager.enableLighting();
+			GlStateManager.disableBlend();
+			GlStateManager.enableDepth();
+			GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 		}
-		GlStateManager.enableLighting();
-		GlStateManager.disableBlend();
-		GlStateManager.enableDepth();
-		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 		GlStateManager.popMatrix();
 	}
 
@@ -657,7 +671,7 @@ public class Renderer {
 		GlStateManager.disableTexture2D();
 		GlStateManager.enableBlend();
 		GlStateManager.disableAlpha();
-		GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+		GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 		GlStateManager.shadeModel(7425);
 		Tessellator tessellator = Tessellator.getInstance();
 		WorldRenderer worldrenderer = tessellator.getWorldRenderer();
@@ -729,7 +743,7 @@ public class Renderer {
 		WorldRenderer worldrenderer = tessellator.getWorldRenderer();
 		GlStateManager.enableBlend();
 		GlStateManager.disableTexture2D();
-		GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+		GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 		GlStateManager.color(f, f1, f2, f3);
 		worldrenderer.begin(7, DefaultVertexFormats.POSITION);
 		worldrenderer.pos(left, bottom, 0.0D).endVertex();

@@ -10,6 +10,7 @@ import com.rabbit.gui.layout.LayoutComponent;
 import com.rabbit.gui.utils.Geometry;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -46,16 +47,19 @@ public class ScrollableGrid extends Grid {
 			int slotWidth = this.slotWidth;
 			int slotHeight = this.slotHeight;
 			if ((slotPosY < (getY() + height)) && ((slotPosY + slotHeight) > getY())) {
-				GL11.glPushMatrix();
-				GL11.glEnable(GL11.GL_SCISSOR_TEST);
-				Minecraft mc = Minecraft.getMinecraft();
-				GL11.glScissor(getX() * scale, mc.displayHeight - ((getY() + getHeight()) * scale), getWidth() * scale,
-						getHeight() * scale);
-				entry.onDraw(this, slotPosX + 1, slotPosY + 1, slotWidth - 2, slotHeight - 2, mouseX, mouseY);
-				// entry.onDraw(this, slotPosX, slotPosY, slotWidth, slotHeight,
-				// mouseX, mouseY);
-				GL11.glDisable(GL11.GL_SCISSOR_TEST);
-				GL11.glPopMatrix();
+				GlStateManager.pushMatrix();
+				{
+					GL11.glEnable(GL11.GL_SCISSOR_TEST);
+					Minecraft mc = Minecraft.getMinecraft();
+					GL11.glScissor(getX() * scale, mc.displayHeight - ((getY() + getHeight()) * scale),
+							getWidth() * scale, getHeight() * scale);
+					entry.onDraw(this, slotPosX + 1, slotPosY + 1, slotWidth - 2, slotHeight - 2, mouseX, mouseY);
+					// entry.onDraw(this, slotPosX, slotPosY, slotWidth,
+					// slotHeight,
+					// mouseX, mouseY);
+					GL11.glDisable(GL11.GL_SCISSOR_TEST);
+				}
+				GlStateManager.popMatrix();
 			}
 		}
 	}

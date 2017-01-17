@@ -66,14 +66,16 @@ public class Compass extends GuiWidget {
 
 	private void renderPicture(ResourceLocation img) {
 		GlStateManager.pushMatrix();
-		GlStateManager.resetColor();
-		GlStateManager.color(1, 1, 1, 1);
-		GlStateManager.enableTexture2D();
-		GlStateManager.enableBlend();
-		GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
-		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		Minecraft.getMinecraft().renderEngine.bindTexture(img);
-		Renderer.drawScaledTexturedRect(getX(), getY(), getWidth(), getHeight());
+		{
+			GlStateManager.resetColor();
+			GlStateManager.color(1, 1, 1, 1);
+			GlStateManager.enableTexture2D();
+			GlStateManager.enableBlend();
+			GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+			GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+			Minecraft.getMinecraft().renderEngine.bindTexture(img);
+			Renderer.drawScaledTexturedRect(getX(), getY(), getWidth(), getHeight());
+		}
 		GlStateManager.popMatrix();
 	}
 

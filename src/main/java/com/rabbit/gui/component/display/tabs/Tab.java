@@ -30,8 +30,8 @@ public abstract class Tab extends GuiWidget {
 	protected boolean isHidden = false;
 	protected TabClickListener onClick;
 
-	protected List<String> originalHoverText = new ArrayList<String>();
-	protected List<String> hoverText = new ArrayList<String>();
+	protected List<String> originalHoverText = new ArrayList<>();
+	protected List<String> hoverText = new ArrayList<>();
 
 	protected int angle;
 
@@ -80,18 +80,20 @@ public abstract class Tab extends GuiWidget {
 	public void drawHoverText(int mouseX, int mouseY, float partialTicks) {
 		if (drawHoverText && isUnderMouse(mouseX, mouseY)) {
 			GlStateManager.pushMatrix();
-			GlStateManager.translate(0, 0, 200);
-			if (drawHoverText) {
-				verifyHoverText(mouseX, mouseY);
-				if (drawToLeft) {
-					int tlineWidth = 0;
-					for (String line : hoverText) {
-						tlineWidth = TextRenderer.getFontRenderer().getStringWidth(line) > tlineWidth
-								? TextRenderer.getFontRenderer().getStringWidth(line) : tlineWidth;
+			{
+				GlStateManager.translate(0, 0, 200);
+				if (drawHoverText) {
+					verifyHoverText(mouseX, mouseY);
+					if (drawToLeft) {
+						int tlineWidth = 0;
+						for (String line : hoverText) {
+							tlineWidth = TextRenderer.getFontRenderer().getStringWidth(line) > tlineWidth
+									? TextRenderer.getFontRenderer().getStringWidth(line) : tlineWidth;
+						}
+						Renderer.drawHoveringText(hoverText, mouseX - tlineWidth - 20, mouseY + 12);
+					} else {
+						Renderer.drawHoveringText(hoverText, mouseX, mouseY + 12);
 					}
-					Renderer.drawHoveringText(hoverText, mouseX - tlineWidth - 20, mouseY + 12);
-				} else {
-					Renderer.drawHoveringText(hoverText, mouseX, mouseY + 12);
 				}
 			}
 			GlStateManager.popMatrix();
@@ -244,7 +246,7 @@ public abstract class Tab extends GuiWidget {
 			// the button is on the right half of the screen
 			drawToLeft = true;
 		}
-		List<String> newHoverText = new ArrayList<String>();
+		List<String> newHoverText = new ArrayList<>();
 		if (drawToLeft) {
 			for (String line : originalHoverText) {
 				int lineWidth = TextRenderer.getFontRenderer().getStringWidth(line) + 12;

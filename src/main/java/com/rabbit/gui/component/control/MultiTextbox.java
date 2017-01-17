@@ -42,81 +42,84 @@ public class MultiTextbox extends TextBox {
 	protected void drawBox() {
 		if (isVisible()) {
 			GlStateManager.pushMatrix();
-			if (isBackgroundVisible()) {
-				drawTextBoxBackground();
-			}
-			TextRenderer.getFontRenderer().setUnicodeFlag(drawUnicode);
-			int color = isEnabled ? getEnabledColor() : getDisabledColor();
-			boolean renderCursor = isFocused() && (((cursorCounter / 6) % 2) == 0);
-			int startLine = getStartLineY();
-			int maxLineAmount = (height / TextRenderer.getFontRenderer().FONT_HEIGHT) + startLine;
-			List<String> lines = getLines();
-			int charCount = 0;
-			int lineCount = 0;
-			int maxWidth = width - 4;
-			for (int i = 0; i < lines.size(); ++i) {
-				String wholeLine = lines.get(i);
-				String line = "";
-				char[] chars = wholeLine.toCharArray();
-				for (char c : chars) {
-					if (TextRenderer.getFontRenderer().getStringWidth(line + c) > maxWidth) {
-						if ((lineCount >= startLine) && (lineCount < maxLineAmount)) {
-							TextRenderer.getFontRenderer()
-									.drawString(
-											line, getX()
-													+ 4,
-											getY() + 4 + ((lineCount - startLine)
-													* TextRenderer.getFontRenderer().FONT_HEIGHT),
-											color);
-						}
-						line = "";
-						lineCount++;
-					}
-					if (renderCursor && (charCount == getCursorPosition()) && (lineCount >= startLine)
-							&& (lineCount < maxLineAmount)) {
-						int cursorX = getX() + TextRenderer.getFontRenderer().getStringWidth(line) + 3;
-						int cursorY = getY() + ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT)
-								+ 4;
-						if ((getText().length() == getCursorPosition()) || (c == '\n')) {
-							TextRenderer.getFontRenderer().drawString("_", cursorX, cursorY, 0xFFFFFFFF);
-						} else {
-							Renderer.drawRect(cursorX, cursorY, cursorX + 1, cursorY + 10, 0xFFFFFFFF);
-						}
-					}
-					charCount++;
-					line += c;
+			{
+				if (isBackgroundVisible()) {
+					drawTextBoxBackground();
 				}
-				if ((lineCount >= startLine) && (lineCount < maxLineAmount)) {
-					TextRenderer.getFontRenderer().drawString(line, getX() + 4,
-							getY() + 4 + ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT), color);
-					if (renderCursor && (charCount == getCursorPosition())) {
-						int cursorX = getX() + TextRenderer.getFontRenderer().getStringWidth(line) + 3;
-						int cursorY = getY() + ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT)
-								+ 4;
-						if ((getText().length() == getCursorPosition()) || (getText().toCharArray()[Math.min(charCount,
-								getText().toCharArray().length - 1)] == '\n')) {
-							TextRenderer.getFontRenderer().drawString("_", cursorX, cursorY, 0xFFFFFFFF);
-						} else {
-							Renderer.drawRect(cursorX, cursorY, cursorX + 1,
-									cursorY + TextRenderer.getFontRenderer().FONT_HEIGHT, 0xFFFFFFFF);
+				TextRenderer.getFontRenderer().setUnicodeFlag(drawUnicode);
+				int color = isEnabled ? getEnabledColor() : getDisabledColor();
+				boolean renderCursor = isFocused() && (((cursorCounter / 6) % 2) == 0);
+				int startLine = getStartLineY();
+				int maxLineAmount = (height / TextRenderer.getFontRenderer().FONT_HEIGHT) + startLine;
+				List<String> lines = getLines();
+				int charCount = 0;
+				int lineCount = 0;
+				int maxWidth = width - 4;
+				for (int i = 0; i < lines.size(); ++i) {
+					String wholeLine = lines.get(i);
+					String line = "";
+					char[] chars = wholeLine.toCharArray();
+					for (char c : chars) {
+						if (TextRenderer.getFontRenderer().getStringWidth(line + c) > maxWidth) {
+							if ((lineCount >= startLine) && (lineCount < maxLineAmount)) {
+								TextRenderer.getFontRenderer()
+										.drawString(
+												line, getX()
+														+ 4,
+												getY() + 4 + ((lineCount - startLine)
+														* TextRenderer.getFontRenderer().FONT_HEIGHT),
+												color);
+							}
+							line = "";
+							lineCount++;
+						}
+						if (renderCursor && (charCount == getCursorPosition()) && (lineCount >= startLine)
+								&& (lineCount < maxLineAmount)) {
+							int cursorX = getX() + TextRenderer.getFontRenderer().getStringWidth(line) + 3;
+							int cursorY = getY()
+									+ ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT) + 4;
+							if ((getText().length() == getCursorPosition()) || (c == '\n')) {
+								TextRenderer.getFontRenderer().drawString("_", cursorX, cursorY, 0xFFFFFFFF);
+							} else {
+								Renderer.drawRect(cursorX, cursorY, cursorX + 1, cursorY + 10, 0xFFFFFFFF);
+							}
+						}
+						charCount++;
+						line += c;
+					}
+					if ((lineCount >= startLine) && (lineCount < maxLineAmount)) {
+						TextRenderer.getFontRenderer().drawString(line, getX() + 4,
+								getY() + 4 + ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT),
+								color);
+						if (renderCursor && (charCount == getCursorPosition())) {
+							int cursorX = getX() + TextRenderer.getFontRenderer().getStringWidth(line) + 3;
+							int cursorY = getY()
+									+ ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT) + 4;
+							if ((getText().length() == getCursorPosition()) || (getText().toCharArray()[Math
+									.min(charCount, getText().toCharArray().length - 1)] == '\n')) {
+								TextRenderer.getFontRenderer().drawString("_", cursorX, cursorY, 0xFFFFFFFF);
+							} else {
+								Renderer.drawRect(cursorX, cursorY, cursorX + 1,
+										cursorY + TextRenderer.getFontRenderer().FONT_HEIGHT, 0xFFFFFFFF);
+							}
 						}
 					}
+					++lineCount;
+					++charCount;
 				}
-				++lineCount;
-				++charCount;
+				listHeight = lineCount * TextRenderer.getFontRenderer().FONT_HEIGHT;
+				scrollBar.setVisiblie(listHeight > (height - 4));
+				scrollBar.setHandleMouseWheel((listHeight > (height - 4)) && isUnderMouse(Mouse.getX(), Mouse.getY()));
+				scrollBar.setScrollerSize((getScrollerSize()));
+				GlStateManager.resetColor();
 			}
-			listHeight = lineCount * TextRenderer.getFontRenderer().FONT_HEIGHT;
-			scrollBar.setVisiblie(listHeight > (height - 4));
-			scrollBar.setHandleMouseWheel((listHeight > (height - 4)) && isUnderMouse(Mouse.getX(), Mouse.getY()));
-			scrollBar.setScrollerSize((getScrollerSize()));
-			GlStateManager.resetColor();
 			GlStateManager.popMatrix();
 			TextRenderer.getFontRenderer().setUnicodeFlag(false);
 		}
 	}
 
 	public List<String> getLines() {
-		List<String> lines = new ArrayList<String>();
+		List<String> lines = new ArrayList<>();
 		StringBuffer currentLine = new StringBuffer();
 		char[] chars = getText().toCharArray();
 		for (char symbol : chars) {

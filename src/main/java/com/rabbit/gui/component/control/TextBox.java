@@ -124,64 +124,67 @@ public class TextBox extends GuiWidget implements Shiftable {
 	protected void drawBox() {
 		if (isVisible()) {
 			GlStateManager.pushMatrix();
-			if (isBackgroundVisible()) {
-				drawTextBoxBackground();
-			}
-			GlStateManager.resetColor();
-			TextRenderer.getFontRenderer().setUnicodeFlag(drawUnicode);
-			int textColor = isEnabled() ? getEnabledColor() : getDisabledColor();
-			int cursorPosWithOffset = getCursorPosition() - scrollOffset;
-			int selEnd = selectionEnd - scrollOffset;
-			String drawText = TextRenderer.getFontRenderer().trimStringToWidth(
-					text.substring(Math.max(0, Math.min(scrollOffset, text.length()))),
-					isBackgroundVisible() ? getWidth() - 8 : getWidth());
-			boolean isCursorVisible = (cursorPosWithOffset >= 0) && (cursorPosWithOffset <= drawText.length());
-			boolean shouldRenderCursor = isFocused() && (((cursorCounter / 6) % 2) == 0) && isCursorVisible;
-			int firstTextX = isBackgroundVisible() ? getX() + 4 : getX();
-			int textY = isBackgroundVisible() ? getY() + ((getHeight() - 8) / 2) : getY();
-			int secondTextX = firstTextX;
-
-			if (selEnd > drawText.length()) {
-				selEnd = drawText.length();
-			}
-
-			if (drawText.length() > 0) {
-				String firstText = isCursorVisible ? drawText.substring(0, cursorPosWithOffset) : drawText;
-				secondTextX = TextRenderer.getFontRenderer().drawStringWithShadow(firstText, firstTextX, textY,
-						textColor);
-			}
-
-			boolean isCursorInText = (getCursorPosition() < getText().length())
-					|| (getText().length() >= getMaxLength());
-			int cursorX = secondTextX;
-
-			if (!isCursorVisible) {
-				cursorX = cursorPosWithOffset > 0 ? firstTextX + getWidth() : firstTextX;
-			} else if (isCursorInText) {
-				cursorX = --secondTextX;
-			}
-
-			if ((drawText.length() > 0) && isCursorVisible && (cursorPosWithOffset < drawText.length())) {
-				TextRenderer.getFontRenderer().drawStringWithShadow(drawText.substring(cursorPosWithOffset),
-						secondTextX, textY, textColor);
-			}
-
-			if (shouldRenderCursor) {
-				if (isCursorInText) {
-					Renderer.drawRect(cursorX, textY - 1, cursorX + 1,
-							textY + 1 + TextRenderer.getFontRenderer().FONT_HEIGHT, CURSOR_COLOR);
-				} else {
-					TextRenderer.getFontRenderer().drawStringWithShadow("_", cursorX, textY, textColor);
-
+			{
+				if (isBackgroundVisible()) {
+					drawTextBoxBackground();
 				}
-			}
+				GlStateManager.resetColor();
+				TextRenderer.getFontRenderer().setUnicodeFlag(drawUnicode);
+				int textColor = isEnabled() ? getEnabledColor() : getDisabledColor();
+				int cursorPosWithOffset = getCursorPosition() - scrollOffset;
+				int selEnd = selectionEnd - scrollOffset;
+				String drawText = TextRenderer.getFontRenderer().trimStringToWidth(
+						text.substring(Math.max(0, Math.min(scrollOffset, text.length()))),
+						isBackgroundVisible() ? getWidth() - 8 : getWidth());
+				boolean isCursorVisible = (cursorPosWithOffset >= 0) && (cursorPosWithOffset <= drawText.length());
+				boolean shouldRenderCursor = isFocused() && (((cursorCounter / 6) % 2) == 0) && isCursorVisible;
+				int firstTextX = isBackgroundVisible() ? getX() + 4 : getX();
+				int textY = isBackgroundVisible() ? getY() + ((getHeight() - 8) / 2) : getY();
+				int secondTextX = firstTextX;
 
-			if (selEnd != cursorPosWithOffset) {
-				int finishX = firstTextX + TextRenderer.getFontRenderer().getStringWidth(drawText.substring(0, selEnd));
-				renderSelectionRect(cursorX, textY - 1, finishX - 1,
-						textY + 1 + TextRenderer.getFontRenderer().FONT_HEIGHT);
+				if (selEnd > drawText.length()) {
+					selEnd = drawText.length();
+				}
+
+				if (drawText.length() > 0) {
+					String firstText = isCursorVisible ? drawText.substring(0, cursorPosWithOffset) : drawText;
+					secondTextX = TextRenderer.getFontRenderer().drawStringWithShadow(firstText, firstTextX, textY,
+							textColor);
+				}
+
+				boolean isCursorInText = (getCursorPosition() < getText().length())
+						|| (getText().length() >= getMaxLength());
+				int cursorX = secondTextX;
+
+				if (!isCursorVisible) {
+					cursorX = cursorPosWithOffset > 0 ? firstTextX + getWidth() : firstTextX;
+				} else if (isCursorInText) {
+					cursorX = --secondTextX;
+				}
+
+				if ((drawText.length() > 0) && isCursorVisible && (cursorPosWithOffset < drawText.length())) {
+					TextRenderer.getFontRenderer().drawStringWithShadow(drawText.substring(cursorPosWithOffset),
+							secondTextX, textY, textColor);
+				}
+
+				if (shouldRenderCursor) {
+					if (isCursorInText) {
+						Renderer.drawRect(cursorX, textY - 1, cursorX + 1,
+								textY + 1 + TextRenderer.getFontRenderer().FONT_HEIGHT, CURSOR_COLOR);
+					} else {
+						TextRenderer.getFontRenderer().drawStringWithShadow("_", cursorX, textY, textColor);
+
+					}
+				}
+
+				if (selEnd != cursorPosWithOffset) {
+					int finishX = firstTextX
+							+ TextRenderer.getFontRenderer().getStringWidth(drawText.substring(0, selEnd));
+					renderSelectionRect(cursorX, textY - 1, finishX - 1,
+							textY + 1 + TextRenderer.getFontRenderer().FONT_HEIGHT);
+				}
+				GlStateManager.resetColor();
 			}
-			GlStateManager.resetColor();
 			GlStateManager.popMatrix();
 			TextRenderer.getFontRenderer().setUnicodeFlag(false);
 		}
@@ -442,8 +445,8 @@ public class TextBox extends GuiWidget implements Shiftable {
 
 	protected void renderSelectionRect(int xTop, int yTop, int xBot, int yBot) {
 		Renderer.drawRectWithSpecialGL(xTop, yTop, xBot, yBot, -0x5555FF, () -> {
-			GL11.glColor4f(0.0F, 0.0F, 255.0F, 255.0F);
-			GL11.glDisable(GL11.GL_TEXTURE_2D);
+			GlStateManager.color(0.0F, 0.0F, 255.0F, 255.0F);
+			GlStateManager.disableTexture2D();
 			GL11.glEnable(GL11.GL_COLOR_LOGIC_OP);
 			GL11.glLogicOp(GL11.GL_OR_REVERSE);
 		});

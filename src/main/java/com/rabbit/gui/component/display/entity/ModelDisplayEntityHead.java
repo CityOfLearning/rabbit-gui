@@ -23,18 +23,22 @@ public class ModelDisplayEntityHead extends ModelDisplayEntity {
 				textureHeight = 64;
 			}
 			GlStateManager.pushMatrix();
-			GlStateManager.translate(0.35F, 1.5F, 0.0F);
-			super.bipedHead.render(scale);
-			super.bipedHeadwear.render(scale);
+			{
+				GlStateManager.translate(0.35F, 1.5F, 0.0F);
+				super.bipedHead.render(scale);
+				super.bipedHeadwear.render(scale);
+			}
 			GlStateManager.popMatrix();
 		} else {
 			if (textureHeight != 32) {
 				textureHeight = 32;
 			}
 			GlStateManager.pushMatrix();
-			GlStateManager.translate(0.35F, 1.5F, 0.0F);
-			super.biped.bipedHead.render(scale);
-			super.biped.bipedHeadwear.render(scale);
+			{
+				GlStateManager.translate(0.35F, 1.5F, 0.0F);
+				super.biped.bipedHead.render(scale);
+				super.biped.bipedHeadwear.render(scale);
+			}
 			GlStateManager.popMatrix();
 		}
 

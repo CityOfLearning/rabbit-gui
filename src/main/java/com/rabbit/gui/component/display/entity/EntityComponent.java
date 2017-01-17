@@ -69,18 +69,20 @@ public class EntityComponent extends GuiWidget {
 		GlStateManager.enableColorMaterial();
 		GlStateManager.color(1, 1, 1, 1);
 		GlStateManager.pushMatrix();
-		GlStateManager.translate(x, y, 100.0F);
-		GlStateManager.scale(30.0f * zoom, 30.0f * zoom, 30.0f * zoom);
-		GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
-		GlStateManager.translate(-entity.width / 2, -entity.height, 0.0F);
+		{
+			GlStateManager.translate(x, y, 100.0F);
+			GlStateManager.scale(30.0f * zoom, 30.0f * zoom, 30.0f * zoom);
+			GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
+			GlStateManager.translate(-entity.width / 2, -entity.height, 0.0F);
 
-		RenderHelper.enableStandardItemLighting();
-		entity.renderYawOffset = rotation;
-		entity.rotationYawHead = entity.renderYawOffset;
-		RenderManager rendermanager = Minecraft.getMinecraft().getRenderManager();
-		rendermanager.setRenderShadow(false);
-		rendermanager.renderEntityWithPosYaw(entity, 0.0D, 0.0D, 0.0D, 0.0f, 1.0F);
-		rendermanager.setRenderShadow(true);
+			RenderHelper.enableStandardItemLighting();
+			entity.renderYawOffset = rotation;
+			entity.rotationYawHead = entity.renderYawOffset;
+			RenderManager rendermanager = Minecraft.getMinecraft().getRenderManager();
+			rendermanager.setRenderShadow(false);
+			rendermanager.renderEntityWithPosYaw(entity, 0.0D, 0.0D, 0.0D, 0.0f, 1.0F);
+			rendermanager.setRenderShadow(true);
+		}
 		GlStateManager.popMatrix();
 		RenderHelper.disableStandardItemLighting();
 		GlStateManager.disableRescaleNormal();

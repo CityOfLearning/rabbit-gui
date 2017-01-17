@@ -58,7 +58,7 @@ public class DropDown<T> extends GuiWidget implements WidgetList<T>, Shiftable {
 		public void onItemSelected(DropDown<T> dropdown, String selected);
 	}
 
-	protected Map<String, DropDownElement<T>> content = new TreeMap<String, DropDownElement<T>>();
+	protected Map<String, DropDownElement<T>> content = new TreeMap<>();
 
 	private Button dropButton;
 	protected ScrollBar scrollBar;
@@ -103,7 +103,7 @@ public class DropDown<T> extends GuiWidget implements WidgetList<T>, Shiftable {
 	}
 
 	public DropDown<T> add(String key, T value) {
-		this.getContent().put(key, new DropDownElement<T>(this.getContent().size(), value, key));
+		this.getContent().put(key, new DropDownElement<>(this.getContent().size(), value, key));
 		return this;
 	}
 
@@ -149,7 +149,7 @@ public class DropDown<T> extends GuiWidget implements WidgetList<T>, Shiftable {
 
 	private void drawExpandedList(int mouseX, int mouseY, float partialTicks) {
 		GlStateManager.resetColor();
-		List<String> keys = new ArrayList<String>(this.getContent().keySet());
+		List<String> keys = new ArrayList<>(this.getContent().keySet());
 		int unrollHeight = Math.min(keys.size(), 4) * getHeight();
 
 		Renderer.drawRect(getX() - 1, getY() + getHeight(), getX() + getWidth() + 1,
@@ -174,15 +174,18 @@ public class DropDown<T> extends GuiWidget implements WidgetList<T>, Shiftable {
 					|| (!hoverUnrolledList && itemIdentifier.equalsIgnoreCase(this.getSelectedIdentifier()));
 
 			if ((slotPosY < (getY() + unrollHeight)) && ((slotPosY + getHeight()) > getY())) {
-				GL11.glPushMatrix();
-				GL11.glEnable(GL11.GL_SCISSOR_TEST);
-				Minecraft mc = Minecraft.getMinecraft();
-				GL11.glScissor(getX() * scale, mc.displayHeight - ((getY() + getHeight() + unrollHeight) * scale),
-						getWidth() * scale, unrollHeight * scale);
-				GlStateManager.resetColor();
-				this.drawSlot(itemIdentifier, getX(), getHeight() + slotPosY, getWidth(), getHeight(), selectedSlot);
-				GL11.glDisable(GL11.GL_SCISSOR_TEST);
-				GL11.glPopMatrix();
+				GlStateManager.pushMatrix();
+				{
+					GL11.glEnable(GL11.GL_SCISSOR_TEST);
+					Minecraft mc = Minecraft.getMinecraft();
+					GL11.glScissor(getX() * scale, mc.displayHeight - ((getY() + getHeight() + unrollHeight) * scale),
+							getWidth() * scale, unrollHeight * scale);
+					GlStateManager.resetColor();
+					this.drawSlot(itemIdentifier, getX(), getHeight() + slotPosY, getWidth(), getHeight(),
+							selectedSlot);
+					GL11.glDisable(GL11.GL_SCISSOR_TEST);
+				}
+				GlStateManager.popMatrix();
 			}
 		}
 	}

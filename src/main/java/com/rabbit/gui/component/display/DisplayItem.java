@@ -31,26 +31,28 @@ public class DisplayItem extends GuiWidget {
 	public void onDraw(int xMouse, int yMouse, float partialTicks) {
 		super.onDraw(xMouse, yMouse, partialTicks);
 		GlStateManager.pushMatrix();
-		GlStateManager.color(1, 1, 1, 1);
-		GlStateManager.enableRescaleNormal();
-		GlStateManager.enableBlend();
-		GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
-		RenderHelper.enableGUIStandardItemLighting();
+		{
+			GlStateManager.color(1, 1, 1, 1);
+			GlStateManager.enableRescaleNormal();
+			GlStateManager.enableBlend();
+			GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+			RenderHelper.enableGUIStandardItemLighting();
 
-		double scaleAmt = width / 16.0;
-		GlStateManager.translate(x, y, 0);
-		GlStateManager.scale(scaleAmt, scaleAmt, scaleAmt);
+			double scaleAmt = width / 16.0;
+			GlStateManager.translate(x, y, 0);
+			GlStateManager.scale(scaleAmt, scaleAmt, scaleAmt);
 
-		RenderItem renderItem = Renderer.getRenderItem();
-		// the vanilla item render code translates 50 in the z axis
-		// and then another 100 in the camera phase
-		renderItem.zLevel = -50;
-		renderItem.renderItemAndEffectIntoGUI(new ItemStack(item, 1), 0, 0);
+			RenderItem renderItem = Renderer.getRenderItem();
+			// the vanilla item render code translates 50 in the z axis
+			// and then another 100 in the camera phase
+			renderItem.zLevel = -50;
+			renderItem.renderItemAndEffectIntoGUI(new ItemStack(item, 1), 0, 0);
 
-		RenderHelper.disableStandardItemLighting();
-		GlStateManager.disableRescaleNormal();
-		GlStateManager.disableBlend();
-		GlStateManager.resetColor();
+			RenderHelper.disableStandardItemLighting();
+			GlStateManager.disableRescaleNormal();
+			GlStateManager.disableBlend();
+			GlStateManager.resetColor();
+		}
 		GlStateManager.popMatrix();
 	}
 

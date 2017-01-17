@@ -51,29 +51,31 @@ public class ButtonEntry extends Button implements ListEntry {
 		}
 		if (isVisible()) {
 			GlStateManager.pushMatrix();
-			prepareRender();
-			if (!isEnabled()) {
-				drawButton(DISABLED_STATE);
-			} else if (isButtonUnderMouse(mouseX, mouseY)) {
-				drawButton(HOVER_STATE);
-				if (drawHoverText) {
-					verifyHoverText(mouseX, mouseY);
-					if (drawToLeft) {
-						int tlineWidth = 0;
-						for (String line : hoverText) {
-							tlineWidth = TextRenderer.getFontRenderer().getStringWidth(line) > tlineWidth
-									? TextRenderer.getFontRenderer().getStringWidth(line) : tlineWidth;
+			{
+				prepareRender();
+				if (!isEnabled()) {
+					drawButton(DISABLED_STATE);
+				} else if (isButtonUnderMouse(mouseX, mouseY)) {
+					drawButton(HOVER_STATE);
+					if (drawHoverText) {
+						verifyHoverText(mouseX, mouseY);
+						if (drawToLeft) {
+							int tlineWidth = 0;
+							for (String line : hoverText) {
+								tlineWidth = TextRenderer.getFontRenderer().getStringWidth(line) > tlineWidth
+										? TextRenderer.getFontRenderer().getStringWidth(line) : tlineWidth;
+							}
+							Renderer.drawHoveringTextInScissoredArea(hoverText, mouseX - tlineWidth - 20, mouseY);
+						} else {
+							Renderer.drawHoveringTextInScissoredArea(hoverText, mouseX, mouseY);
 						}
-						Renderer.drawHoveringTextInScissoredArea(hoverText, mouseX - tlineWidth - 20, mouseY);
-					} else {
-						Renderer.drawHoveringTextInScissoredArea(hoverText, mouseX, mouseY);
 					}
+				} else {
+					drawButton(IDLE_STATE);
 				}
-			} else {
-				drawButton(IDLE_STATE);
+				TextRenderer.renderString(getX() + (getWidth() / 2), (getY() + (getHeight() / 2)) - 4, getText(),
+						TextAlignment.CENTER);
 			}
-			TextRenderer.renderString(getX() + (getWidth() / 2), (getY() + (getHeight() / 2)) - 4, getText(),
-					TextAlignment.CENTER);
 			GlStateManager.popMatrix();
 		}
 	}

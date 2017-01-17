@@ -38,49 +38,51 @@ public class ChatBox extends TextBox {
 	protected void drawBox() {
 		if (isVisible()) {
 			GlStateManager.pushMatrix();
-			int startLine = getStartLineY();
-			int maxLineAmount = (height / TextRenderer.getFontRenderer().FONT_HEIGHT) + startLine;
-			List<String> lines = getLines();
-			List<String> newlines = new ArrayList();
-			int lineCount = 0;
-			int maxWidth = width - 10;
-			for (int i = 0; i < lines.size(); ++i) {
-				String wholeLine = lines.get(i);
-				String line = "";
-				char[] chars = wholeLine.toCharArray();
-				for (char c : chars) {
-					if (TextRenderer.getFontRenderer().getStringWidth(line + c) > maxWidth) {
-						if ((lineCount >= startLine) && (lineCount < maxLineAmount)) {
-							newlines.add(line.substring(0, line.lastIndexOf(' ')));
+			{
+				int startLine = getStartLineY();
+				int maxLineAmount = (height / TextRenderer.getFontRenderer().FONT_HEIGHT) + startLine;
+				List<String> lines = getLines();
+				List<String> newlines = new ArrayList();
+				int lineCount = 0;
+				int maxWidth = width - 10;
+				for (int i = 0; i < lines.size(); ++i) {
+					String wholeLine = lines.get(i);
+					String line = "";
+					char[] chars = wholeLine.toCharArray();
+					for (char c : chars) {
+						if (TextRenderer.getFontRenderer().getStringWidth(line + c) > maxWidth) {
+							if ((lineCount >= startLine) && (lineCount < maxLineAmount)) {
+								newlines.add(line.substring(0, line.lastIndexOf(' ')));
+							}
+							if (line.contains(" ")) {
+								line = line.substring(line.lastIndexOf(' ') + 1);
+							} else {
+								line = "";
+							}
+							lineCount++;
 						}
-						if (line.contains(" ")) {
-							line = line.substring(line.lastIndexOf(' ') + 1);
-						} else {
-							line = "";
-						}
-						lineCount++;
+						line += c;
 					}
-					line += c;
+					if ((lineCount >= startLine) && (lineCount < maxLineAmount)) {
+						newlines.add(line);
+					}
+					++lineCount;
 				}
-				if ((lineCount >= startLine) && (lineCount < maxLineAmount)) {
-					newlines.add(line);
-				}
-				++lineCount;
+				listHeight = 5 + (lineCount * TextRenderer.getFontRenderer().FONT_HEIGHT);
+
+				Renderer.renderChatBubble(x, y, width, Math.min(height, listHeight), newlines);
+
+				scrollBar.setVisiblie(listHeight > (height - 4));
+				scrollBar.setHandleMouseWheel((listHeight > (height - 4)) && isUnderMouse(Mouse.getX(), Mouse.getY()));
+				scrollBar.setScrollerSize((getScrollerSize()));
+				GlStateManager.resetColor();
 			}
-			listHeight = 5 + (lineCount * TextRenderer.getFontRenderer().FONT_HEIGHT);
-
-			Renderer.renderChatBubble(x, y, width, Math.min(height, listHeight), newlines);
-
-			scrollBar.setVisiblie(listHeight > (height - 4));
-			scrollBar.setHandleMouseWheel((listHeight > (height - 4)) && isUnderMouse(Mouse.getX(), Mouse.getY()));
-			scrollBar.setScrollerSize((getScrollerSize()));
-			GlStateManager.resetColor();
 			GlStateManager.popMatrix();
 		}
 	}
 
 	public List<String> getLines() {
-		List<String> lines = new ArrayList<String>();
+		List<String> lines = new ArrayList<>();
 		StringBuffer currentLine = new StringBuffer();
 		char[] chars = getText().toCharArray();
 		for (char symbol : chars) {

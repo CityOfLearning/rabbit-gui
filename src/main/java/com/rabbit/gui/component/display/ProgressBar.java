@@ -55,25 +55,30 @@ public class ProgressBar extends GuiWidget {
 	}
 
 	private void renderBG() {
-		GL11.glPushMatrix();
-		GL11.glColor4f(1, 1, 1, 1);
-		GlStateManager.enableTexture2D();
-		GlStateManager.enableBlend();
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		Minecraft.getMinecraft().renderEngine.bindTexture(bg);
-		Renderer.drawScaledTexturedRect(getX(), getY(), getWidth(), getHeight());
-		GL11.glPopMatrix();
+		GlStateManager.pushMatrix();
+		{
+			GlStateManager.color(1, 1, 1, 1);
+			GlStateManager.enableTexture2D();
+			GlStateManager.enableBlend();
+			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+			Minecraft.getMinecraft().renderEngine.bindTexture(bg);
+			Renderer.drawScaledTexturedRect(getX(), getY(), getWidth(), getHeight());
+		}
+		GlStateManager.popMatrix();
 	}
 
 	private void renderFG() {
-		GL11.glPushMatrix();
-		GL11.glColor4f(1, 1, 1, 1);
-		GlStateManager.enableTexture2D();
-		GlStateManager.enableBlend();
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		Minecraft.getMinecraft().renderEngine.bindTexture(fg);
-		Renderer.drawScaledTexturedRect(getX() + 1, getY() + 1, (int) ((getWidth() - 2) * progress), getHeight() - 2);
-		GL11.glPopMatrix();
+		GlStateManager.pushMatrix();
+		{
+			GlStateManager.color(1, 1, 1, 1);
+			GlStateManager.enableTexture2D();
+			GlStateManager.enableBlend();
+			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+			Minecraft.getMinecraft().renderEngine.bindTexture(fg);
+			Renderer.drawScaledTexturedRect(getX() + 1, getY() + 1, (int) ((getWidth() - 2) * progress),
+					getHeight() - 2);
+		}
+		GlStateManager.popMatrix();
 	}
 
 	public void setProgress(double progress) {

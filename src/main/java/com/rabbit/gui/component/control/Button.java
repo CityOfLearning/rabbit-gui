@@ -44,8 +44,8 @@ public class Button extends GuiWidget implements Shiftable {
 	protected final static int HOVER_STATE = 2;
 
 	protected boolean drawHoverText = false;
-	protected List<String> originalHoverText = new ArrayList<String>();
-	protected List<String> hoverText = new ArrayList<String>();
+	protected List<String> originalHoverText = new ArrayList<>();
+	protected List<String> hoverText = new ArrayList<>();
 
 	protected ResourceLocation buttonTexture = new ResourceLocation("textures/gui/widgets.png");
 
@@ -125,29 +125,31 @@ public class Button extends GuiWidget implements Shiftable {
 	public void onDraw(int mouseX, int mouseY, float partialTicks) {
 		if (isVisible()) {
 			GlStateManager.pushMatrix();
-			prepareRender();
-			if (!isEnabled()) {
-				drawButton(DISABLED_STATE);
-			} else if (isButtonUnderMouse(mouseX, mouseY)) {
-				drawButton(HOVER_STATE);
-				if (drawHoverText) {
-					verifyHoverText(mouseX, mouseY);
-					if (drawToLeft) {
-						int tlineWidth = 0;
-						for (String line : hoverText) {
-							tlineWidth = TextRenderer.getFontRenderer().getStringWidth(line) > tlineWidth
-									? TextRenderer.getFontRenderer().getStringWidth(line) : tlineWidth;
+			{
+				prepareRender();
+				if (!isEnabled()) {
+					drawButton(DISABLED_STATE);
+				} else if (isButtonUnderMouse(mouseX, mouseY)) {
+					drawButton(HOVER_STATE);
+					if (drawHoverText) {
+						verifyHoverText(mouseX, mouseY);
+						if (drawToLeft) {
+							int tlineWidth = 0;
+							for (String line : hoverText) {
+								tlineWidth = TextRenderer.getFontRenderer().getStringWidth(line) > tlineWidth
+										? TextRenderer.getFontRenderer().getStringWidth(line) : tlineWidth;
+							}
+							Renderer.drawHoveringText(hoverText, mouseX - tlineWidth - 20, mouseY + 12);
+						} else {
+							Renderer.drawHoveringText(hoverText, mouseX, mouseY + 12);
 						}
-						Renderer.drawHoveringText(hoverText, mouseX - tlineWidth - 20, mouseY + 12);
-					} else {
-						Renderer.drawHoveringText(hoverText, mouseX, mouseY + 12);
 					}
+				} else {
+					drawButton(IDLE_STATE);
 				}
-			} else {
-				drawButton(IDLE_STATE);
+				TextRenderer.renderString(getX() + (getWidth() / 2), (getY() + (getHeight() / 2)) - 4, getText(),
+						TextAlignment.CENTER);
 			}
-			TextRenderer.renderString(getX() + (getWidth() / 2), (getY() + (getHeight() / 2)) - 4, getText(),
-					TextAlignment.CENTER);
 			GlStateManager.popMatrix();
 		}
 	}
@@ -246,7 +248,7 @@ public class Button extends GuiWidget implements Shiftable {
 			// the button is on the right half of the screen
 			drawToLeft = true;
 		}
-		List<String> newHoverText = new ArrayList<String>();
+		List<String> newHoverText = new ArrayList<>();
 		if (drawToLeft) {
 			for (String line : originalHoverText) {
 				int lineWidth = TextRenderer.getFontRenderer().getStringWidth(line) + 12;

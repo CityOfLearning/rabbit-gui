@@ -24,16 +24,18 @@ public class ModelDisplayEntity extends ModelPlayer {
 			float p_78088_6_, float scale) {
 
 		GlStateManager.pushMatrix();
+		{
 
-		if (((DisplayEntity) entityIn).getTextureHeight() > 32) {
-			if (textureHeight == 32) {
-				textureHeight = 64;
+			if (((DisplayEntity) entityIn).getTextureHeight() > 32) {
+				if (textureHeight == 32) {
+					textureHeight = 64;
+				}
+				setRotationAngles(p_78088_2_, p_78088_3_, p_78088_4_, p_78088_5_, p_78088_6_, scale, entityIn);
+				super.render(entityIn, p_78088_2_, p_78088_3_, p_78088_4_, p_78088_5_, p_78088_6_, scale);
+			} else {
+				biped.setRotationAngles(p_78088_2_, p_78088_3_, p_78088_4_, p_78088_5_, p_78088_6_, scale, entityIn);
+				biped.render(entityIn, p_78088_2_, p_78088_3_, p_78088_4_, p_78088_5_, p_78088_6_, scale);
 			}
-			setRotationAngles(p_78088_2_, p_78088_3_, p_78088_4_, p_78088_5_, p_78088_6_, scale, entityIn);
-			super.render(entityIn, p_78088_2_, p_78088_3_, p_78088_4_, p_78088_5_, p_78088_6_, scale);
-		} else {
-			biped.setRotationAngles(p_78088_2_, p_78088_3_, p_78088_4_, p_78088_5_, p_78088_6_, scale, entityIn);
-			biped.render(entityIn, p_78088_2_, p_78088_3_, p_78088_4_, p_78088_5_, p_78088_6_, scale);
 		}
 		GlStateManager.popMatrix();
 	}
