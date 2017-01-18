@@ -1,6 +1,7 @@
 package com.rabbit.gui.component.display.tabs;
 
 import java.awt.Color;
+import java.util.Arrays;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -12,7 +13,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.EnumFacing;
-import scala.actors.threadpool.Arrays;
 
 public class CompassTab extends Tab {
 
