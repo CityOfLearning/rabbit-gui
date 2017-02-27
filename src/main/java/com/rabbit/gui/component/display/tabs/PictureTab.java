@@ -162,4 +162,11 @@ public class PictureTab extends Tab {
 		drawHoverText(mouseX, mouseY, partialTicks);
 	}
 
+	public void setPicture(String texture){
+		picture.setImageTexture(texture);
+	}
+	
+	public void setPicture(ResourceLocation texture){
+		picture.setImageTexture(texture);
+	}
 }
