@@ -74,8 +74,23 @@ public class SkinManager {
 		playerSkin.remove(player);
 	}
 
+	public static void setSkinTexture(EntityPlayer player, ResourceLocation skin) {
+		setSkinTexture(player.getName(), skin);
+	}
+
 	public static void setSkinTexture(EntityPlayer player, String skin) {
 		setSkinTexture(player.getName(), skin);
+	}
+
+	public static void setSkinTexture(String player, ResourceLocation skin) {
+		if (playerSkin.containsKey(player)) {
+			UUID textureId = UUID.randomUUID();
+			// incase its a url the texture helper will sort it all out
+			TextureHelper.addStaticTexture(textureId, skin);
+			playerSkin.replace(player, textureId);
+		} else {
+			addSkin(player, skin);
+		}
 	}
 
 	public static void setSkinTexture(String player, String skin) {
