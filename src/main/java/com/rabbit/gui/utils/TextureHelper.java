@@ -45,8 +45,7 @@ public class TextureHelper {
 			}
 		}
 		dynamicImageInfo.put(textureId, new ImmutablePair<>(bufImg.getWidth(), bufImg.getHeight()));
-		dynamicImages.put(textureId,
-				new ImmutablePair<>(textureLocation.getPath(), new DynamicTexture(bufImg)));
+		dynamicImages.put(textureId, new ImmutablePair<>(textureLocation.getPath(), new DynamicTexture(bufImg)));
 	}
 
 	public static void addStaticTexture(UUID textureId, ResourceLocation texture) {

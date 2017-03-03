@@ -1,6 +1,5 @@
 package com.rabbit.gui.component.display;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,15 +9,10 @@ import com.google.common.collect.Lists;
 import com.rabbit.gui.component.GuiWidget;
 import com.rabbit.gui.component.IGui;
 import com.rabbit.gui.component.control.Button;
-import com.rabbit.gui.render.Renderer;
-import com.rabbit.gui.utils.ColourHelper;
 import com.rabbit.gui.utils.Geometry;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -88,18 +82,18 @@ public class ScissorPanel extends GuiWidget {
 			GlStateManager.translate(0, 0, z);
 			GlStateManager.pushMatrix();
 			Minecraft mc = Minecraft.getMinecraft();
-			
+
 			GL11.glEnable(GL11.GL_SCISSOR_TEST);
 			int scale = Geometry.computeScaleFactor();
 
-			GL11.glScissor(getX() * scale, mc.displayHeight - ((getY() + getHeight()) * scale),
-					getWidth() * scale, getHeight() * scale);
-			
+			GL11.glScissor(getX() * scale, mc.displayHeight - ((getY() + getHeight()) * scale), getWidth() * scale,
+					getHeight() * scale);
+
 			GlStateManager.resetColor();
 			panelComponents.forEach(com -> com.onDraw(xMouse, yMouse, partialTicks));
-						
+
 			GL11.glDisable(GL11.GL_SCISSOR_TEST);
-			
+
 			GlStateManager.popMatrix();
 		}
 	}
