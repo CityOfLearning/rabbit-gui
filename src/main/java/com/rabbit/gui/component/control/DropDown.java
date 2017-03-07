@@ -337,10 +337,11 @@ public class DropDown<T> extends GuiWidget implements WidgetList<T>, Shiftable {
 		return this;
 	}
 
-	private void setDefaultItem(String name) {
+	public DropDown<T> setDefaultItem(String name) {
 		if (this.getContent().containsKey(name)) {
 			this.selected = name;
 		}
+		return this;
 	}
 
 	public DropDown<T> setDrawUnicode(boolean drawUnicode) {
