@@ -10,7 +10,7 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
 public interface Python3Listener extends ParseTreeListener {
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#and_expr}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -18,7 +18,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#and_test}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -26,7 +26,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#arglist}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -34,7 +34,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#argument}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -42,7 +42,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#arith_expr}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -50,7 +50,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#assert_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -58,7 +58,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#atom}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -66,7 +66,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#augassign}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -74,7 +74,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#break_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -82,7 +82,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#classdef}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -90,7 +90,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#comp_for}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -98,7 +98,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#comp_if}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -106,7 +106,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#comp_iter}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -114,7 +114,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#comp_op}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -122,7 +122,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#comparison}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -130,7 +130,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#compound_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -138,7 +138,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#continue_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -146,7 +146,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#decorated}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -154,7 +154,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#decorator}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -162,7 +162,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#decorators}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -170,7 +170,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#del_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -178,7 +178,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#dictorsetmaker}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -186,7 +186,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#dotted_as_name}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -194,7 +194,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#dotted_as_names}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -202,7 +202,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#dotted_name}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -210,7 +210,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#eval_input}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -218,7 +218,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#except_clause}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -226,7 +226,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#expr}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -234,7 +234,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#expr_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -242,7 +242,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#exprlist}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -250,7 +250,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#factor}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -258,7 +258,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#file_input}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -266,7 +266,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#flow_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -274,7 +274,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#for_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -282,7 +282,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#funcdef}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -290,7 +290,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#global_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -298,7 +298,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#if_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -306,7 +306,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#import_as_name}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -314,7 +314,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#import_as_names}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -322,7 +322,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#import_from}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -330,7 +330,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#import_name}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -338,7 +338,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#import_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -346,7 +346,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#integer}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -354,7 +354,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#lambdef}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -362,7 +362,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#lambdef_nocond}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -370,7 +370,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#nonlocal_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -378,7 +378,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#not_test}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -386,7 +386,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#number}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -394,7 +394,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#or_test}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -402,7 +402,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#parameters}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -410,7 +410,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#pass_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -418,7 +418,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#power}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -426,7 +426,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#raise_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -434,7 +434,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#return_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -442,7 +442,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#shift_expr}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -450,7 +450,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#simple_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -458,7 +458,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#single_input}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -466,7 +466,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#sliceop}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -474,7 +474,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#small_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -482,7 +482,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#star_expr}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -490,7 +490,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -498,7 +498,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#string}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -506,7 +506,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#subscript}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -514,7 +514,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#subscriptlist}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -522,7 +522,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#suite}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -530,7 +530,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#term}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -538,7 +538,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#test}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -546,7 +546,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#test_nocond}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -554,7 +554,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#testlist}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -562,7 +562,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#testlist_comp}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -570,7 +570,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#testlist_star_expr}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -578,7 +578,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#tfpdef}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -586,7 +586,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#trailer}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -594,7 +594,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#try_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -602,7 +602,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#typedargslist}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -610,7 +610,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#varargslist}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -618,7 +618,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#vfpdef}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -626,7 +626,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#while_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -634,7 +634,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#with_item}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -642,7 +642,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#with_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -650,7 +650,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#xor_expr}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -658,7 +658,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#yield_arg}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -666,7 +666,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#yield_expr}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -674,7 +674,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Enter a parse tree produced by {@link Python3Parser#yield_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -682,7 +682,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#and_expr}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -690,7 +690,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#and_test}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -698,7 +698,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#arglist}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -706,7 +706,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#argument}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -714,7 +714,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#arith_expr}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -722,7 +722,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#assert_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -730,7 +730,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#atom}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -738,7 +738,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#augassign}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -746,7 +746,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#break_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -754,7 +754,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#classdef}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -762,7 +762,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#comp_for}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -770,7 +770,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#comp_if}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -778,7 +778,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#comp_iter}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -786,7 +786,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#comp_op}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -794,7 +794,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#comparison}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -802,7 +802,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#compound_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -810,7 +810,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#continue_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -818,7 +818,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#decorated}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -826,7 +826,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#decorator}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -834,7 +834,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#decorators}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -842,7 +842,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#del_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -850,7 +850,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#dictorsetmaker}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -858,7 +858,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#dotted_as_name}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -866,7 +866,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#dotted_as_names}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -874,7 +874,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#dotted_name}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -882,7 +882,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#eval_input}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -890,7 +890,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#except_clause}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -898,7 +898,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#expr}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -906,7 +906,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#expr_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -914,7 +914,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#exprlist}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -922,7 +922,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#factor}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -930,7 +930,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#file_input}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -938,7 +938,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#flow_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -946,7 +946,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#for_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -954,7 +954,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#funcdef}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -962,7 +962,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#global_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -970,7 +970,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#if_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -978,7 +978,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#import_as_name}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -986,7 +986,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#import_as_names}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -994,7 +994,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#import_from}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1002,7 +1002,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#import_name}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1010,7 +1010,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#import_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1018,7 +1018,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#integer}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1026,7 +1026,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#lambdef}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1034,7 +1034,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#lambdef_nocond}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1042,7 +1042,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#nonlocal_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1050,7 +1050,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#not_test}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1058,7 +1058,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#number}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1066,7 +1066,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#or_test}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1074,7 +1074,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#parameters}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1082,7 +1082,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#pass_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1090,7 +1090,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#power}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1098,7 +1098,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#raise_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1106,7 +1106,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#return_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1114,7 +1114,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#shift_expr}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1122,7 +1122,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#simple_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1130,7 +1130,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#single_input}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1138,7 +1138,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#sliceop}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1146,7 +1146,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#small_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1154,7 +1154,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#star_expr}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1162,7 +1162,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1170,7 +1170,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#string}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1178,7 +1178,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#subscript}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1186,7 +1186,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#subscriptlist}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1194,7 +1194,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#suite}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1202,7 +1202,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#term}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1210,7 +1210,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#test}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1218,7 +1218,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#test_nocond}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1226,7 +1226,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#testlist}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1234,7 +1234,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#testlist_comp}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1242,7 +1242,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#testlist_star_expr}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1250,7 +1250,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#tfpdef}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1258,7 +1258,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#trailer}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1266,7 +1266,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#try_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1274,7 +1274,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#typedargslist}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1282,7 +1282,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#varargslist}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1290,7 +1290,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#vfpdef}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1298,7 +1298,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#while_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1306,7 +1306,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#with_item}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1314,7 +1314,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#with_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1322,7 +1322,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#xor_expr}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1330,7 +1330,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#yield_arg}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1338,7 +1338,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#yield_expr}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
@@ -1346,7 +1346,7 @@ public interface Python3Listener extends ParseTreeListener {
 
 	/**
 	 * Exit a parse tree produced by {@link Python3Parser#yield_stmt}.
-	 * 
+	 *
 	 * @param ctx
 	 *            the parse tree
 	 */
