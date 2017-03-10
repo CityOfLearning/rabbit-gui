@@ -47,8 +47,7 @@ public class DisplayEntity extends EntityCreature {
 	@Override
 	public void readEntityFromNBT(NBTTagCompound tagCompound) {
 		super.readEntityFromNBT(tagCompound);
-		texture = new ResourceLocation(tagCompound.getString("texture"));
-		textureHeight = tagCompound.getInteger("textureHeight");
+		setTexture(new ResourceLocation(tagCompound.getString("texture")));
 
 	}
 
@@ -89,6 +88,5 @@ public class DisplayEntity extends EntityCreature {
 	public void writeEntityToNBT(NBTTagCompound tagCompound) {
 		super.writeEntityToNBT(tagCompound);
 		tagCompound.setString("texture", texture.toString());
-		tagCompound.setInteger("textureHeight", textureHeight);
 	}
 }
