@@ -1,6 +1,7 @@
 package com.rabbit.gui.component.list;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import com.rabbit.gui.component.GuiWidget;
@@ -38,6 +39,12 @@ public class DisplayList extends GuiWidget implements WidgetList<ListEntry> {
 	@Override
 	public DisplayList add(ListEntry object) {
 		content.add(object);
+		return this;
+	}
+
+	@Override
+	public WidgetList<ListEntry> addAll(Collection<ListEntry> values) {
+		values.forEach(this::add);
 		return this;
 	}
 

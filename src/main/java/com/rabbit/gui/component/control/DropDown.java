@@ -3,6 +3,7 @@ package com.rabbit.gui.component.control;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -110,6 +111,12 @@ public class DropDown<T> extends GuiWidget implements WidgetList<T>, Shiftable {
 	@Override
 	public DropDown<T> add(T value) {
 		return this.add(String.valueOf(value), value);
+	}
+
+	@Override
+	public DropDown<T> addAll(Collection<T> values) {
+		values.forEach(this::add);
+		return this;
 	}
 
 	@Override

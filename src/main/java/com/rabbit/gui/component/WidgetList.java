@@ -1,5 +1,7 @@
 package com.rabbit.gui.component;
 
+import java.util.Collection;
+
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -14,6 +16,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public interface WidgetList<T> {
 
 	public WidgetList<T> add(T object);
+
+	public WidgetList<T> addAll(Collection<T> values);
 
 	@SuppressWarnings("unchecked")
 	public WidgetList<T> addAll(T... objects);

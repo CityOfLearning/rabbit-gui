@@ -1,6 +1,7 @@
 package com.rabbit.gui.component.grid;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import com.rabbit.gui.component.GuiWidget;
@@ -47,6 +48,12 @@ public class Grid extends GuiWidget implements WidgetList<GridEntry> {
 	@Override
 	public Grid add(GridEntry object) {
 		content.add(object);
+		return this;
+	}
+
+	@Override
+	public WidgetList<GridEntry> addAll(Collection<GridEntry> values) {
+		values.forEach(this::add);
 		return this;
 	}
 
