@@ -215,8 +215,9 @@ public abstract class Tab extends GuiWidget {
 		return this;
 	}
 
-	public void setHidden(boolean isHidden) {
+	public Tab setHidden(boolean isHidden) {
 		this.isHidden = isHidden;
+		return this;
 	}
 
 	public Tab setHoverText(List<String> text) {
