@@ -62,18 +62,15 @@ public class CodeInterface extends MultiTextbox {
 	private Map<String, String> userVariables = Maps.newHashMap();
 	private Map<String, List<String>> classMembers = Maps.newHashMap();
 
-	private final String SYMBOL = EnumChatFormatting.WHITE.toString(); // white
-	private final String NUMBER = EnumChatFormatting.BLUE.toString(); // blue
-	private final String STRING = EnumChatFormatting.YELLOW.toString(); // yellow
-	private final String VARIABLE = EnumChatFormatting.AQUA.toString(); // cyan
-	private final String FUNCTION = EnumChatFormatting.GOLD.toString(); // gold
-	private final String MEMBER_VAR = EnumChatFormatting.LIGHT_PURPLE.toString(); // magenta
-	private final String MEMBER_FUNCTION = EnumChatFormatting.GREEN.toString(); // light
-																				// green
-	private final String SYNTAX = EnumChatFormatting.RED.toString(); // light
-																		// red
-	private final String COMMENT = EnumChatFormatting.DARK_GRAY.toString(); // dark
-																			// gray
+	private final String SYMBOL = EnumChatFormatting.WHITE.toString();
+	private final String NUMBER = EnumChatFormatting.BLUE.toString(); 
+	private final String STRING = EnumChatFormatting.YELLOW.toString(); 
+	private final String VARIABLE = EnumChatFormatting.AQUA.toString(); 
+	private final String FUNCTION = EnumChatFormatting.GOLD.toString(); 
+	private final String MEMBER_VAR = EnumChatFormatting.LIGHT_PURPLE.toString(); 
+	private final String MEMBER_FUNCTION = EnumChatFormatting.GREEN.toString(); 
+	private final String SYNTAX = EnumChatFormatting.RED.toString(); 
+	private final String COMMENT = EnumChatFormatting.DARK_GRAY.toString(); 
 	private final String RESET = EnumChatFormatting.RESET.toString();
 
 	public CodeInterface(int xPos, int yPos, int width, int height) {

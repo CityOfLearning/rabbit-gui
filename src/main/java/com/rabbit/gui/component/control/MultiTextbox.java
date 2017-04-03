@@ -154,12 +154,107 @@ public class MultiTextbox extends TextBox {
 	@Override
 	protected boolean handleInput(char typedChar, int typedKeyIndex) {
 		String originalText = getText();
-		if (typedKeyIndex == Keyboard.KEY_RETURN) {
+		switch (typedKeyIndex) {
+		case Keyboard.KEY_RETURN:
 			setTextWithEvent(originalText.substring(0, getCursorPosition()) + "\n"
 					+ originalText.substring(getCursorPosition()));
 			setCursorPosition(getCursorPosition() + 1);
+			return true;
+		case Keyboard.KEY_UP: {
+			List<String> lines = getLines();
+			int charCount = 0;
+			int lineCount = 0;
+			int startLine = getStartLineY();
+			int maxWidth = width - 4;
+			int prevLineLength = getText().length();
+			for (int i = 0; i < lines.size(); ++i) {
+				String wholeLine = lines.get(i);
+				String line = "";
+				char[] chars = wholeLine.toCharArray();
+				for (char c : chars) {
+					if (TextRenderer.getFontRenderer().getStringWidth(line + c) > maxWidth) {
+						line = "";
+						lineCount++;
+					}
+					if ((charCount == getCursorPosition())) {
+						setCursorPosition(Math.max(0,
+								charCount - (prevLineLength < line.length() ? line.length() + 1 : prevLineLength + 1)));
+						return true;
+					}
+					charCount++;
+					line += c;
+				}
+				if ((lineCount >= startLine)) {
+					if ((charCount == getCursorPosition())) {
+						setCursorPosition(Math.max(0,
+								charCount - (prevLineLength < line.length() ? line.length() + 1 : prevLineLength + 1)));
+						return true;
+					}
+				}
+				prevLineLength = wholeLine.length();
+				++lineCount;
+				++charCount;
+			}
+			return true;
 		}
-		return super.handleInput(typedChar, typedKeyIndex);
+		case Keyboard.KEY_DOWN: {
+			List<String> lines = getLines();
+			int charCount = 0;
+			int lineCount = 0;
+			int startLine = getStartLineY();
+			int maxWidth = width - 4;
+			for (int i = startLine; i < lines.size(); ++i) {
+				String wholeLine = lines.get(i);
+				String line = "";
+				char[] chars = wholeLine.toCharArray();
+				for (char c : chars) {
+					if (TextRenderer.getFontRenderer().getStringWidth(line + c) > maxWidth) {
+						line = "";
+						lineCount++;
+					}
+					if ((charCount == getCursorPosition())) {
+						if ((i + 1) >= lines.size()) {
+							setCursorPosition(getText().length());
+							return true;
+						} else {
+							String nextLine = lines.get(i + 1);
+							if (nextLine.length() >= wholeLine.length()) {
+								setCursorPosition(Math.min(getText().length(), charCount + wholeLine.length() + 1));
+								return true;
+							} else {
+								setCursorPosition(Math.min(getText().length(),
+										charCount + (wholeLine.length() - line.length()) + nextLine.length() + 1));
+								return true;
+							}
+						}
+					}
+					charCount++;
+					line += c;
+				}
+				if ((charCount == getCursorPosition())) {
+					if ((i + 1) >= lines.size()) {
+						setCursorPosition(getText().length());
+						return true;
+					} else {
+						String nextLine = lines.get(i + 1);
+						if (nextLine.length() >= wholeLine.length()) {
+							setCursorPosition(Math.min(getText().length(), charCount + wholeLine.length() + 1));
+							return true;
+						} else {
+							setCursorPosition(Math.min(getText().length(),
+									charCount + (wholeLine.length() - line.length()) + nextLine.length() + 1));
+							return true;
+						}
+					}
+				}
+				++lineCount;
+				++charCount;
+			}
+			return true;
+		}
+		default:
+			return super.handleInput(typedChar, typedKeyIndex);
+		}
 	}
 
 	@Override
@@ -230,9 +325,10 @@ public class MultiTextbox extends TextBox {
 	@Override
 	protected boolean handleSpecialCharComb(char typedChar, int typedIndex) {
 		switch (typedChar) {
-		case 1:
+		case ControlCharacters.CtrlA:
 			setCursorPosition(getText().length());
 			setSelectionPos(0);
+			System.out.println("Selected Text now set to: " + getSelectedText());
 			return true;
 		case ControlCharacters.CtrlC:
 			GuiScreen.setClipboardString(getSelectedText());
