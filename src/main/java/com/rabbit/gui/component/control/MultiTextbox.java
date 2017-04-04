@@ -200,7 +200,6 @@ public class MultiTextbox extends TextBox {
 		case Keyboard.KEY_DOWN: {
 			List<String> lines = getLines();
 			int charCount = 0;
-			int lineCount = 0;
 			int startLine = getStartLineY();
 			int maxWidth = width - 4;
 			for (int i = startLine; i < lines.size(); ++i) {
@@ -210,7 +209,6 @@ public class MultiTextbox extends TextBox {
 				for (char c : chars) {
 					if (TextRenderer.getFontRenderer().getStringWidth(line + c) > maxWidth) {
 						line = "";
-						lineCount++;
 					}
 					if ((charCount == getCursorPosition())) {
 						if ((i + 1) >= lines.size()) {
@@ -247,7 +245,6 @@ public class MultiTextbox extends TextBox {
 						}
 					}
 				}
-				++lineCount;
 				++charCount;
 			}
 			return true;

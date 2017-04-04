@@ -63,14 +63,14 @@ public class CodeInterface extends MultiTextbox {
 	private Map<String, List<String>> classMembers = Maps.newHashMap();
 
 	private final String SYMBOL = EnumChatFormatting.WHITE.toString();
-	private final String NUMBER = EnumChatFormatting.BLUE.toString(); 
-	private final String STRING = EnumChatFormatting.YELLOW.toString(); 
-	private final String VARIABLE = EnumChatFormatting.AQUA.toString(); 
-	private final String FUNCTION = EnumChatFormatting.GOLD.toString(); 
-	private final String MEMBER_VAR = EnumChatFormatting.LIGHT_PURPLE.toString(); 
-	private final String MEMBER_FUNCTION = EnumChatFormatting.GREEN.toString(); 
-	private final String SYNTAX = EnumChatFormatting.RED.toString(); 
-	private final String COMMENT = EnumChatFormatting.DARK_GRAY.toString(); 
+	private final String NUMBER = EnumChatFormatting.BLUE.toString();
+	private final String STRING = EnumChatFormatting.YELLOW.toString();
+	private final String VARIABLE = EnumChatFormatting.AQUA.toString();
+	private final String FUNCTION = EnumChatFormatting.GOLD.toString();
+	private final String MEMBER_VAR = EnumChatFormatting.LIGHT_PURPLE.toString();
+	private final String MEMBER_FUNCTION = EnumChatFormatting.GREEN.toString();
+	private final String SYNTAX = EnumChatFormatting.RED.toString();
+	private final String COMMENT = EnumChatFormatting.DARK_GRAY.toString();
 	private final String RESET = EnumChatFormatting.RESET.toString();
 
 	public CodeInterface(int xPos, int yPos, int width, int height) {
