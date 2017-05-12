@@ -102,6 +102,11 @@ public class DropDown<T> extends GuiWidget implements WidgetList<T>, Shiftable {
 			this.setDefaultItem(String.valueOf(values[0]));
 		}
 	}
+	
+	public DropDown(int xPos, int yPos, int width, int height, String text, T... values) {
+		this(xPos, yPos, width, height, text);
+		this.addAll(values);
+	}
 
 	public DropDown<T> add(String key, T value) {
 		this.getContent().put(key, new DropDownElement<>(this.getContent().size(), value, key));
