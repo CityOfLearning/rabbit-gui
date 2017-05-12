@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import com.rabbit.gui.RabbitGui;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 
@@ -83,6 +85,7 @@ public class SkinManager {
 	}
 
 	public static void setSkinTexture(String player, ResourceLocation skin) {
+		RabbitGui.logger.info("Setting Player "+player+"'s Skin to: " + skin.getResourcePath());
 		if (playerSkin.containsKey(player)) {
 			UUID textureId = UUID.randomUUID();
 			// incase its a url the texture helper will sort it all out
@@ -94,6 +97,7 @@ public class SkinManager {
 	}
 
 	public static void setSkinTexture(String player, String skin) {
+		RabbitGui.logger.info("Setting Player "+player+"'s Skin to: " + skin);
 		if (playerSkin.containsKey(player)) {
 			UUID textureId = UUID.randomUUID();
 			// incase its a url the texture helper will sort it all out
