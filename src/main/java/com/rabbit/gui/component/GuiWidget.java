@@ -6,6 +6,7 @@ import java.util.List;
 import com.rabbit.gui.base.WidgetContainer;
 import com.rabbit.gui.exception.IdAlreadyRegisteredException;
 import com.rabbit.gui.layout.LayoutComponent;
+import com.rabbit.gui.utils.Geometry;
 
 /**
  * Represents components of the screen
@@ -231,6 +232,10 @@ public abstract class GuiWidget implements IGui, WidgetContainer {
 	public GuiWidget setY(int y) {
 		this.y = y;
 		return this;
+	}
+	
+	public boolean isUnderMouse(int mouseX, int mouseY) {
+		return Geometry.isDotInArea(x, y, width, height, mouseX, mouseY);
 	}
 
 }
