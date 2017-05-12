@@ -16,8 +16,27 @@ import net.minecraft.util.EnumFacing;
 
 public class CompassTab extends Tab {
 
-	public Compass compass;
+	private Compass compass;
+	public Compass getCompass() {
+		return compass;
+	}
+
+	public void setCompass(Compass compass) {
+		int size = this.compass.getWidth();
+		this.compass = compass;
+		this.compass.setWidth(size);
+		this.compass.setHeight(size);
+	}
+
 	private String title;
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
 	public CompassTab(int x, int y, int width, int height) {
 		this(x, y, width, height, EnumFacing.NORTH);
