@@ -3,19 +3,25 @@ package com.rabbit.gui.component.display;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.lwjgl.opengl.GL20;
+
 import com.google.common.collect.Lists;
 import com.rabbit.gui.component.GuiWidget;
 import com.rabbit.gui.component.IGui;
 import com.rabbit.gui.component.control.Button;
+import com.rabbit.gui.render.ShaderProgram;
 import com.rabbit.gui.utils.Geometry;
 
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class Panel extends GuiWidget {
 
+	private static final ShaderProgram SHADER_ALPHA = new ShaderProgram("rabbit", null, "shaders/alpha.frag");
+	
 	List<GuiWidget> panelComponents = new ArrayList<>();
 	private boolean isDragging;
 	private boolean isResizing;
@@ -23,6 +29,16 @@ public class Panel extends GuiWidget {
 	private int resizeXPos;
 	private boolean isVisible;
 	private boolean isFocused;
+	private boolean doesDim;
+	
+	public boolean doesDim() {
+		return doesDim;
+	}
+
+	public void setDimming(boolean doesDim) {
+		this.doesDim = doesDim;
+	}
+
 	private int z = 0;
 
 	public Panel(int xPos, int yPos, int width, int height) {
@@ -35,6 +51,7 @@ public class Panel extends GuiWidget {
 		isResizing = false;
 		isVisible = visible;
 		isFocused = false;
+		doesDim = false;
 	}
 
 	public int getZ() {
@@ -77,7 +94,28 @@ public class Panel extends GuiWidget {
 				}
 			}
 			GlStateManager.translate(0, 0, z);
+			
+			boolean shouldDim = false;
+			
+			if(doesDim){
+			shouldDim = !Geometry.isDotInArea(x, y, width, height, xMouse, yMouse);
+			for(GuiWidget com : panelComponents){
+				if(com.isUnderMouse(xMouse, yMouse)){
+					shouldDim = false;
+				}
+			}
+			}
+			if(shouldDim){
+				if ((OpenGlHelper.shadersSupported)) {
+					
+					GL20.glUseProgram(SHADER_ALPHA.getProgram());
+					GL20.glUniform1f(GL20.glGetUniformLocation(SHADER_ALPHA.getProgram(), "alpha_multiplier"), 0.6f);
+				}
+			}
 			panelComponents.forEach(com -> com.onDraw(xMouse, yMouse, partialTicks));
+			if(shouldDim){
+					GL20.glUseProgram(0);
+				}			
 		}
 	}
 
