@@ -134,6 +134,7 @@ public abstract class Tab extends GuiWidget {
 		return isHidden;
 	}
 
+	@Override
 	public boolean isUnderMouse(int mouseX, int mouseY) {
 		if (angle == 180) {
 			return isUnderMouseHorizontal(mouseX + width, mouseY);

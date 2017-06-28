@@ -119,6 +119,7 @@ public class ChatBox extends TextBox {
 		return false;
 	}
 
+	@Override
 	public boolean isUnderMouse(int mouseX, int mouseY) {
 		return (mouseX >= getX()) && (mouseX <= (getX() + getWidth())) && (mouseY >= getY())
 				&& (mouseY <= (getY() + getHeight()));
