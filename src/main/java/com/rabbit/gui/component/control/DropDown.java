@@ -95,17 +95,17 @@ public class DropDown<T> extends GuiWidget implements WidgetList<T>, Shiftable {
 		this.initDropButton();
 	}
 
+	public DropDown(int xPos, int yPos, int width, int height, String text, T... values) {
+		this(xPos, yPos, width, height, text);
+		this.addAll(values);
+	}
+
 	public DropDown(int xPos, int yPos, int width, int height, T... values) {
 		this(xPos, yPos, width, height);
 		this.addAll(values);
 		if (values.length > 0) {
 			this.setDefaultItem(String.valueOf(values[0]));
 		}
-	}
-	
-	public DropDown(int xPos, int yPos, int width, int height, String text, T... values) {
-		this(xPos, yPos, width, height, text);
-		this.addAll(values);
 	}
 
 	public DropDown<T> add(String key, T value) {
@@ -395,6 +395,7 @@ public class DropDown<T> extends GuiWidget implements WidgetList<T>, Shiftable {
 			scrollerSize = height - 4;
 		}
 		scrollBar = new ScrollBar((getX() + width) - 10, getY() + height, 10, height * 4, scrollerSize);
+		scrollBar.setScrollWeight(((float) height / (float) (content.size() * height)));
 		registerComponent(scrollBar);
 	}
 

@@ -29,11 +29,14 @@ public class ScrollBar extends GuiWidget {
 	protected OnProgressChanged progressChangedListener = (bar, mod) -> {
 	};
 
+	protected float scrollWeight;
+
 	protected boolean handleMouseWheel;
 
 	public ScrollBar(int xPos, int yPos, int width, int height, int scrollerSize) {
 		super(xPos, yPos, width, height);
 		this.scrollerSize = scrollerSize;
+		scrollWeight = 0.05F;
 	}
 
 	/**
@@ -106,10 +109,10 @@ public class ScrollBar extends GuiWidget {
 			double delta = Mouse.getDWheel(); // getDWheel resets to 0 so only 1
 												// object responds...
 			if (delta < 0) {
-				updateProgress(0.10F);
+				updateProgress(scrollWeight);
 			}
 			if (delta > 0) {
-				updateProgress(-0.10F);
+				updateProgress(-scrollWeight);
 			}
 		}
 	}
@@ -151,6 +154,11 @@ public class ScrollBar extends GuiWidget {
 
 	public ScrollBar setScrollerSize(int size) {
 		scrollerSize = size;
+		return this;
+	}
+
+	public ScrollBar setScrollWeight(float newWeight) {
+		scrollWeight = newWeight;
 		return this;
 	}
 

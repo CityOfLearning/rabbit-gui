@@ -88,6 +88,7 @@ public class ScrollableDisplayList extends DisplayList {
 		}
 	}
 
+	@Override
 	public boolean isUnderMouse(int mouseX, int mouseY) {
 		return (mouseX >= getX()) && (mouseX <= (getX() + getWidth())) && (mouseY >= getY())
 				&& (mouseY <= (getY() + getHeight()));
@@ -116,6 +117,7 @@ public class ScrollableDisplayList extends DisplayList {
 			scrollerSize = height - 4;
 		}
 		scrollBar = new ScrollBar((getX() + width) - 10, getY(), 10, height, scrollerSize).setHandleMouseWheel(false);
+		scrollBar.setScrollWeight(((float) height / (float) (content.size() * slotHeight)) * .8F);
 		registerComponent(scrollBar);
 	}
 }

@@ -88,6 +88,7 @@ public class ScrollableGrid extends Grid {
 		}
 	}
 
+	@Override
 	public boolean isUnderMouse(int mouseX, int mouseY) {
 		return (mouseX >= getX()) && (mouseX <= (getX() + getWidth())) && (mouseY >= getY())
 				&& (mouseY <= (getY() + getHeight()));
@@ -110,6 +111,7 @@ public class ScrollableGrid extends Grid {
 			scrollerSize = height - 4;
 		}
 		scrollBar = new ScrollBar((getX() + width) - 10, getY(), 10, height, scrollerSize);
+		scrollBar.setScrollWeight(((float) height / (float) (content.size() * slotHeight)) * .8F);
 		registerComponent(scrollBar);
 	}
 }
