@@ -17,26 +17,7 @@ import net.minecraft.util.EnumFacing;
 public class CompassTab extends Tab {
 
 	private Compass compass;
-	public Compass getCompass() {
-		return compass;
-	}
-
-	public void setCompass(Compass compass) {
-		int size = this.compass.getWidth();
-		this.compass = compass;
-		this.compass.setWidth(size);
-		this.compass.setHeight(size);
-	}
-
 	private String title;
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
 
 	public CompassTab(int x, int y, int width, int height) {
 		this(x, y, width, height, EnumFacing.NORTH);
@@ -102,6 +83,14 @@ public class CompassTab extends Tab {
 		}
 	}
 
+	public Compass getCompass() {
+		return compass;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
 	@Override
 	public void onDraw(int mouseX, int mouseY, float partialTicks) {
 		beginDrawingTab(mouseX, mouseY, partialTicks);
@@ -154,5 +143,16 @@ public class CompassTab extends Tab {
 				+ StringUtils.capitalize(compass.getCurrentDir().getName()) }));
 		drawHoverText(mouseX, mouseY, partialTicks);
 
+	}
+
+	public void setCompass(Compass compass) {
+		int size = this.compass.getWidth();
+		this.compass = compass;
+		this.compass.setWidth(size);
+		this.compass.setHeight(size);
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 }

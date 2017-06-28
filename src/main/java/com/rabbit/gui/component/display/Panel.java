@@ -21,7 +21,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class Panel extends GuiWidget {
 
 	private static final ShaderProgram SHADER_ALPHA = new ShaderProgram("rabbit", null, "shaders/alpha.frag");
-	
+
 	List<GuiWidget> panelComponents = new ArrayList<>();
 	private boolean isDragging;
 	private boolean isResizing;
@@ -30,14 +30,6 @@ public class Panel extends GuiWidget {
 	private boolean isVisible;
 	private boolean isFocused;
 	private boolean doesDim;
-	
-	public boolean doesDim() {
-		return doesDim;
-	}
-
-	public void setDimming(boolean doesDim) {
-		this.doesDim = doesDim;
-	}
 
 	private int z = 0;
 
@@ -52,6 +44,10 @@ public class Panel extends GuiWidget {
 		isVisible = visible;
 		isFocused = false;
 		doesDim = false;
+	}
+
+	public boolean doesDim() {
+		return doesDim;
 	}
 
 	public int getZ() {
@@ -94,28 +90,28 @@ public class Panel extends GuiWidget {
 				}
 			}
 			GlStateManager.translate(0, 0, z);
-			
+
 			boolean shouldDim = false;
-			
-			if(doesDim){
-			shouldDim = !Geometry.isDotInArea(x, y, width, height, xMouse, yMouse);
-			for(GuiWidget com : panelComponents){
-				if(com.isUnderMouse(xMouse, yMouse)){
-					shouldDim = false;
+
+			if (doesDim) {
+				shouldDim = !Geometry.isDotInArea(x, y, width, height, xMouse, yMouse);
+				for (GuiWidget com : panelComponents) {
+					if (com.isUnderMouse(xMouse, yMouse)) {
+						shouldDim = false;
+					}
 				}
 			}
-			}
-			if(shouldDim){
+			if (shouldDim) {
 				if ((OpenGlHelper.shadersSupported)) {
-					
+
 					GL20.glUseProgram(SHADER_ALPHA.getProgram());
 					GL20.glUniform1f(GL20.glGetUniformLocation(SHADER_ALPHA.getProgram(), "alpha_multiplier"), 0.6f);
 				}
 			}
 			panelComponents.forEach(com -> com.onDraw(xMouse, yMouse, partialTicks));
-			if(shouldDim){
-					GL20.glUseProgram(0);
-				}			
+			if (shouldDim) {
+				GL20.glUseProgram(0);
+			}
 		}
 	}
 
@@ -215,6 +211,10 @@ public class Panel extends GuiWidget {
 	public Panel reverseComponents() {
 		panelComponents = Lists.reverse(panelComponents);
 		return this;
+	}
+
+	public void setDimming(boolean doesDim) {
+		this.doesDim = doesDim;
 	}
 
 	public Panel setFocused(boolean isFocused) {

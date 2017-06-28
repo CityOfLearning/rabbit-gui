@@ -98,6 +98,10 @@ public abstract class GuiWidget implements IGui, WidgetContainer {
 		return y;
 	}
 
+	public boolean isUnderMouse(int mouseX, int mouseY) {
+		return Geometry.isDotInArea(x, y, width, height, mouseX, mouseY);
+	}
+
 	/**
 	 * Called when screen is about to be closed
 	 */
@@ -232,10 +236,6 @@ public abstract class GuiWidget implements IGui, WidgetContainer {
 	public GuiWidget setY(int y) {
 		this.y = y;
 		return this;
-	}
-	
-	public boolean isUnderMouse(int mouseX, int mouseY) {
-		return Geometry.isDotInArea(x, y, width, height, mouseX, mouseY);
 	}
 
 }

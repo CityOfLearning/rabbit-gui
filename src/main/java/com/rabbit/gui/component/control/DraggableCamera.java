@@ -1,6 +1,7 @@
 package com.rabbit.gui.component.control;
 
 import com.rabbit.gui.component.GuiWidget;
+
 import net.minecraft.client.Minecraft;
 
 public class DraggableCamera extends GuiWidget {
@@ -9,7 +10,7 @@ public class DraggableCamera extends GuiWidget {
 	private boolean isDragging;
 	private int startMouseX;
 	private int startMouseY;
-	
+
 	public DraggableCamera() {
 		// TODO Auto-generated constructor stub
 	}
@@ -19,29 +20,33 @@ public class DraggableCamera extends GuiWidget {
 		// TODO Auto-generated constructor stub
 	}
 
-	
+	public boolean isEnabled() {
+		return isEnabled;
+	}
+
 	@Override
 	public void onDraw(int xMouse, int yMouse, float partialTicks) {
 		if (isEnabled && isDragging) {
-		 float f = Minecraft.getMinecraft().gameSettings.mouseSensitivity * 0.6F + 0.2F;
-         float f1 = f * f * f * 16.0F;
-         float f2 = (float)(startMouseX - xMouse) * f1;
-         float f3 = (float)(startMouseY - yMouse) * f1;
-         Minecraft.getMinecraft().thePlayer.setAngles(f2, f3 * (float) (Minecraft.getMinecraft().gameSettings.invertMouse ? 1 : -1));
-         startMouseX = xMouse;
-         startMouseY = yMouse;
-		
+			float f = (Minecraft.getMinecraft().gameSettings.mouseSensitivity * 0.6F) + 0.2F;
+			float f1 = f * f * f * 16.0F;
+			float f2 = (startMouseX - xMouse) * f1;
+			float f3 = (startMouseY - yMouse) * f1;
+			Minecraft.getMinecraft().thePlayer.setAngles(f2,
+					f3 * (Minecraft.getMinecraft().gameSettings.invertMouse ? 1 : -1));
+			startMouseX = xMouse;
+			startMouseY = yMouse;
+
 		}
 	}
-	
+
 	@Override
 	public boolean onMouseClicked(int posX, int posY, int mouseButtonIndex, boolean overlap) {
 		if (isEnabled) {
 			super.onMouseClicked(posX, posY, mouseButtonIndex, overlap);
-			
+
 			isDragging = !overlap;
-			
-			if(isDragging){
+
+			if (isDragging) {
 				startMouseX = posX;
 				startMouseY = posY;
 			}
@@ -60,14 +65,10 @@ public class DraggableCamera extends GuiWidget {
 			}
 		}
 	}
-	
-	public boolean isEnabled() {
-		return isEnabled;
-	}
 
 	public GuiWidget setEnabled(boolean isEnabled) {
 		this.isEnabled = isEnabled;
 		return this;
 	}
-	
+
 }
