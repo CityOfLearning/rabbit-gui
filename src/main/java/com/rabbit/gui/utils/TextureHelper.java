@@ -58,11 +58,19 @@ public class TextureHelper {
 				addDynamicTexture(textureId, new URL(textureLocation));
 				RabbitGui.logger.info("Added Texture " + textureLocation + " to Dynamic Textures");
 			} catch (MalformedURLException e) {
-				RabbitGui.logger.info("Adding Texture " + textureLocation + " to Static Textures");
-				staticImages.put(textureId, new ResourceLocation(textureLocation));
+				try {
+					staticImages.put(textureId, new ResourceLocation(textureLocation));
+					RabbitGui.logger.info("Added Texture " + textureLocation + " to Static Textures");
+				} catch (NullPointerException npe) {
+					RabbitGui.logger.info("Failed Adding Texture " + textureLocation + " to Textures");
+				}
 			} catch (IOException e) {
-				RabbitGui.logger.info("Adding Texture " + textureLocation + " to Static Textures 2");
-				staticImages.put(textureId, new ResourceLocation(textureLocation));
+				try {
+					staticImages.put(textureId, new ResourceLocation(textureLocation));
+					RabbitGui.logger.info("Added Texture " + textureLocation + " to Static Textures");
+				} catch (NullPointerException npe) {
+					RabbitGui.logger.info("Failed Adding Texture " + textureLocation + " to Textures");
+				}
 			}
 		}
 	}

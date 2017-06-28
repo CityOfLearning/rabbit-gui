@@ -37,7 +37,7 @@ public class SkinManager {
 	}
 
 	public static void addSkin(String player, String skin) {
-		if (skin != null && !skin.isEmpty()) {
+		if ((skin != null) && !skin.isEmpty()) {
 			UUID textureId = UUID.randomUUID();
 			// incase its a url the texture helper will sort it all out
 			TextureHelper.addTexture(textureId, skin);
@@ -72,6 +72,18 @@ public class SkinManager {
 			}
 		}
 		return null;
+	}
+
+	public static int getSkinTextureHeight(EntityPlayer player) {
+		return getSkinTextureHeight(player.getName());
+	}
+
+	public static int getSkinTextureHeight(String player) {
+		if (textureSize.containsKey(player)) {
+			return textureSize.get(player);
+		} else {
+			return 64;
+		}
 	}
 
 	public static boolean hasSkinTexture(EntityPlayer player) {
@@ -113,7 +125,7 @@ public class SkinManager {
 	}
 
 	public static void setSkinTexture(String player, String skin) {
-		if (skin != null && !skin.isEmpty()) {
+		if ((skin != null) && !skin.isEmpty()) {
 			if (playerSkin.containsKey(player)) {
 				UUID textureId = UUID.randomUUID();
 				// incase its a url the texture helper will sort it all out
@@ -123,19 +135,6 @@ public class SkinManager {
 				addSkin(player, skin);
 			}
 			setTextureDimension(player, skin);
-		}
-	}
-	
-	public static int getSkinTextureHeight(EntityPlayer player){
-		return getSkinTextureHeight(player.getName());
-	}
-	
-	public static int getSkinTextureHeight(String player){
-		if(textureSize.containsKey(player)){
-		return textureSize.get(player);
-		}
-		else {
-			return 64;
 		}
 	}
 
@@ -160,8 +159,7 @@ public class SkinManager {
 				try {
 					inputstream.close();
 				} catch (IOException e) {
-					RabbitGui.logger.error("Failed during player render, could not close inputstream",
-							e);
+					RabbitGui.logger.error("Failed during player render, could not close inputstream", e);
 				}
 			}
 		}
@@ -170,14 +168,16 @@ public class SkinManager {
 	private static void setTextureDimension(String player, String skin) {
 		try {
 			BufferedImage bufferedimage = ImageCacheHelper.fetchImage(new URL(skin));
-
-			if (textureSize.containsKey(player)) {
-				textureSize.replace(player, bufferedimage.getHeight());
-			} else {
-				textureSize.put(player, bufferedimage.getHeight());
+			if (bufferedimage != null) {
+				if (textureSize.containsKey(player)) {
+					textureSize.replace(player, bufferedimage.getHeight());
+				} else {
+					textureSize.put(player, bufferedimage.getHeight());
+				}
 			}
 		} catch (MalformedURLException e) {
-			RabbitGui.logger.error(e.getLocalizedMessage() + "\nCould not determine texture size from url, attempting resource location method");
+			RabbitGui.logger.error(e.getLocalizedMessage()
+					+ "\nCould not determine texture size from url, attempting resource location method");
 			setTextureDimension(player, new ResourceLocation(skin));
 		}
 	}

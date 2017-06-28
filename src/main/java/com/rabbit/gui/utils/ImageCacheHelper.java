@@ -54,6 +54,9 @@ public final class ImageCacheHelper {
 			RabbitGui.logger.info("Downloading image " + cachedImage.getName());
 			try {
 				conn = (HttpURLConnection) url.openConnection();
+				conn.setRequestProperty("User-Agent",
+						"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
+				conn.connect();
 				final int response = conn.getResponseCode();
 				if ((response < 200) || (response > 207)) {
 					RabbitGui.logger
