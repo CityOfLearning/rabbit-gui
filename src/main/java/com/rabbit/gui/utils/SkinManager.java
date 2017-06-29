@@ -100,6 +100,7 @@ public class SkinManager {
 
 	public static void removeSkinTexture(String player) {
 		playerSkin.remove(player);
+		textureSize.remove(player);
 	}
 
 	public static void setSkinTexture(EntityPlayer player, ResourceLocation skin) {
