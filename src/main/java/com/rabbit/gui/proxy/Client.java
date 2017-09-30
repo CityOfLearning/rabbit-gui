@@ -5,10 +5,15 @@ import com.rabbit.gui.component.display.entity.DisplayEntity;
 import com.rabbit.gui.component.display.entity.DisplayEntityHead;
 import com.rabbit.gui.component.display.entity.DisplayEntityHeadRenderer;
 import com.rabbit.gui.component.display.entity.DisplayEntityRenderer;
+import com.rabbit.gui.component.hud.overlay.Overlay;
+import com.rabbit.gui.component.notification.NotificationsManager;
 import com.rabbit.gui.show.IShow;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class Client implements Proxy {
 
@@ -56,6 +61,16 @@ public class Client implements Proxy {
 		RenderingRegistry.registerEntityRenderingHandler(DisplayEntityHead.class, new DisplayEntityHeadRenderer());
 	}
 
+	@SubscribeEvent
+	public void onRenderTick(TickEvent.RenderTickEvent event) {
+		if (Minecraft.getMinecraft().inGameHasFocus) {
+			Overlay.draw();
+		}
+		if (!(Minecraft.getMinecraft().currentScreen instanceof GuiMainMenu)) {
+			NotificationsManager.renderNotifications();
+		}
+	}
+	
 	/**
 	 * @see forge.reference.proxy.Proxy#renderGUI()
 	 */
