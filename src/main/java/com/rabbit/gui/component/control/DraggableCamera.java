@@ -31,8 +31,7 @@ public class DraggableCamera extends GuiWidget {
 			float f1 = f * f * f * 16.0F;
 			float f2 = (startMouseX - xMouse) * f1;
 			float f3 = (startMouseY - yMouse) * f1;
-			Minecraft.getMinecraft().thePlayer.setAngles(f2,
-					f3 * (Minecraft.getMinecraft().gameSettings.invertMouse ? 1 : -1));
+			Minecraft.getMinecraft().player.turn(f2, f3 * (Minecraft.getMinecraft().gameSettings.invertMouse ? 1 : -1));
 			startMouseX = xMouse;
 			startMouseY = yMouse;
 

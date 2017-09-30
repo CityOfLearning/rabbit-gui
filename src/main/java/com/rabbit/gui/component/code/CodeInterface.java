@@ -34,8 +34,8 @@ import com.rabbit.gui.render.TextRenderer;
 import com.rabbit.gui.utils.UtilityFunctions;
 
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -62,16 +62,16 @@ public class CodeInterface extends MultiTextbox {
 	private Map<String, String> userVariables = Maps.newHashMap();
 	private Map<String, List<String>> classMembers = Maps.newHashMap();
 
-	private final String SYMBOL = EnumChatFormatting.WHITE.toString();
-	private final String NUMBER = EnumChatFormatting.BLUE.toString();
-	private final String STRING = EnumChatFormatting.YELLOW.toString();
-	private final String VARIABLE = EnumChatFormatting.AQUA.toString();
-	private final String FUNCTION = EnumChatFormatting.GOLD.toString();
-	private final String MEMBER_VAR = EnumChatFormatting.LIGHT_PURPLE.toString();
-	private final String MEMBER_FUNCTION = EnumChatFormatting.GREEN.toString();
-	private final String SYNTAX = EnumChatFormatting.RED.toString();
-	private final String COMMENT = EnumChatFormatting.DARK_GRAY.toString();
-	private final String RESET = EnumChatFormatting.RESET.toString();
+	private final String SYMBOL = TextFormatting.WHITE.toString();
+	private final String NUMBER = TextFormatting.BLUE.toString();
+	private final String STRING = TextFormatting.YELLOW.toString();
+	private final String VARIABLE = TextFormatting.AQUA.toString();
+	private final String FUNCTION = TextFormatting.GOLD.toString();
+	private final String MEMBER_VAR = TextFormatting.LIGHT_PURPLE.toString();
+	private final String MEMBER_FUNCTION = TextFormatting.GREEN.toString();
+	private final String SYNTAX = TextFormatting.RED.toString();
+	private final String COMMENT = TextFormatting.DARK_GRAY.toString();
+	private final String RESET = TextFormatting.RESET.toString();
 
 	public CodeInterface(int xPos, int yPos, int width, int height) {
 		super(xPos, yPos, width, height);
@@ -223,9 +223,8 @@ public class CodeInterface extends MultiTextbox {
 							// if (drawToLeft) {
 							// int tlineWidth = 0;
 							// for (String hline : hoverText) {
-							// tlineWidth =
-							// TextRenderer.getFontRenderer().getStringWidth(hline)
-							// > tlineWidth
+							// tlineWidth = TextRenderer.getFontRenderer()
+							// .getStringWidth(hline) > tlineWidth
 							// ?
 							// TextRenderer.getFontRenderer().getStringWidth(hline)
 							// : tlineWidth;
@@ -266,9 +265,8 @@ public class CodeInterface extends MultiTextbox {
 							// if (drawToLeft) {
 							// int tlineWidth = 0;
 							// for (String hline : hoverText) {
-							// tlineWidth =
-							// TextRenderer.getFontRenderer().getStringWidth(hline)
-							// > tlineWidth
+							// tlineWidth = TextRenderer.getFontRenderer()
+							// .getStringWidth(hline) > tlineWidth
 							// ?
 							// TextRenderer.getFontRenderer().getStringWidth(hline)
 							// : tlineWidth;
@@ -440,7 +438,7 @@ public class CodeInterface extends MultiTextbox {
 	@Override
 	public int getStartLineY() {
 		if (scrollBar != null) {
-			return MathHelper.ceiling_double_int((scrollBar.getScrolledAmt() * (listHeight - getHeight()))
+			return MathHelper.ceil((scrollBar.getScrolledAmt() * (listHeight - getHeight()))
 					/ TextRenderer.getFontRenderer().FONT_HEIGHT);
 		}
 		return 0;

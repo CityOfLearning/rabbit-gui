@@ -12,10 +12,11 @@ import com.rabbit.gui.render.TextRenderer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 
 public abstract class Tab extends GuiWidget {
@@ -102,12 +103,12 @@ public abstract class Tab extends GuiWidget {
 
 	protected void drawScaledTexturedRect(int x, int y, int z, int width, int height) {
 		Tessellator tessellator = Tessellator.getInstance();
-		WorldRenderer renderer = tessellator.getWorldRenderer();
-		renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-		renderer.pos(x + width, y + height, z).tex(1, 1).endVertex();
-		renderer.pos(x + width, y, z).tex(1, 0).endVertex();
-		renderer.pos(x, y, z).tex(0, 0).endVertex();
-		renderer.pos(x, y + height, z).tex(0, 1).endVertex();
+		BufferBuilder bufferbuilder = tessellator.getBuffer();
+		bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+		bufferbuilder.pos(x + width, y + height, z).tex(1, 1).endVertex();
+		bufferbuilder.pos(x + width, y, z).tex(1, 0).endVertex();
+		bufferbuilder.pos(x, y, z).tex(0, 0).endVertex();
+		bufferbuilder.pos(x, y + height, z).tex(0, 1).endVertex();
 		tessellator.draw();
 	}
 
@@ -199,7 +200,7 @@ public abstract class Tab extends GuiWidget {
 
 	protected void playClickSound() {
 		Minecraft.getMinecraft().getSoundHandler()
-				.playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
+				.playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
 	}
 
 	public void setAngle(int angle) {

@@ -11,7 +11,7 @@ import com.rabbit.gui.render.TextRenderer;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.EnumFacing;
 
 public class CompassTab extends Tab {
@@ -139,7 +139,7 @@ public class CompassTab extends Tab {
 			}
 		}
 		finishDrawingTab(mouseX, mouseY, partialTicks);
-		setHoverText(Arrays.asList(new String[] { "Currently Facing", "       " + EnumChatFormatting.GOLD.toString()
+		setHoverText(Arrays.asList(new String[] { "Currently Facing", "       " + TextFormatting.GOLD.toString()
 				+ StringUtils.capitalize(compass.getCurrentDir().getName()) }));
 		drawHoverText(mouseX, mouseY, partialTicks);
 

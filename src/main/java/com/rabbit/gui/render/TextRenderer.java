@@ -16,7 +16,7 @@ public class TextRenderer {
 	 * @return {@link FontRenderer} instance
 	 */
 	public static FontRenderer getFontRenderer() {
-		return Minecraft.getMinecraft().fontRendererObj;
+		return Minecraft.getMinecraft().fontRenderer;
 	}
 
 	/**

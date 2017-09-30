@@ -66,6 +66,8 @@ public class EntityComponent extends GuiWidget {
 	public void onDraw(int mouseX, int mouseY, float partialTicks) {
 		super.onDraw(mouseX, mouseY, partialTicks);
 
+		// entity.onEntityUpdate();
+
 		GlStateManager.enableColorMaterial();
 		GlStateManager.color(1, 1, 1, 1);
 		GlStateManager.pushMatrix();
@@ -80,7 +82,7 @@ public class EntityComponent extends GuiWidget {
 			entity.rotationYawHead = entity.renderYawOffset;
 			RenderManager rendermanager = Minecraft.getMinecraft().getRenderManager();
 			rendermanager.setRenderShadow(false);
-			rendermanager.renderEntityWithPosYaw(entity, 0.0D, 0.0D, 0.0D, 0.0f, 1.0F);
+			rendermanager.doRenderEntity(entity, 0.0D, 0.0D, 0.0D, 0.0f, 1.0F, false);
 			rendermanager.setRenderShadow(true);
 		}
 		GlStateManager.popMatrix();
