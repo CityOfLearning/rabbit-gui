@@ -49,8 +49,7 @@ public interface IGui {
 	 * @param posY
 	 * @param mouseButtonIndex
 	 * @param overlap
-	 *            - indicates if there is any other component in the same
-	 *            location
+	 *            - indicates if there is any other component in the same location
 	 *
 	 * @return <code>true</code> if element has been clicked
 	 */
@@ -84,8 +83,8 @@ public interface IGui {
 	void setParent(WidgetContainer pane);
 
 	/**
-	 * Called on every screen resize. All components recommended to be
-	 * registered in this moment
+	 * Called on every screen resize. All components recommended to be registered in
+	 * this moment
 	 */
 	void setup();
 }

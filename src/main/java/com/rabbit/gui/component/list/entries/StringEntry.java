@@ -1,6 +1,9 @@
 package com.rabbit.gui.component.list.entries;
 
+import java.awt.Color;
+
 import com.rabbit.gui.component.list.DisplayList;
+import com.rabbit.gui.layout.LayoutComponent;
 import com.rabbit.gui.render.TextAlignment;
 import com.rabbit.gui.render.TextRenderer;
 
@@ -10,9 +13,11 @@ import com.rabbit.gui.render.TextRenderer;
  */
 public class StringEntry implements ListEntry {
 
-	public static interface OnClickListener {
-		void onClick(DisplayList list, int mouseX, int mouseY);
-	}
+	@LayoutComponent
+	protected boolean isEnabled = true;
+
+	@LayoutComponent
+	protected TextAlignment align = TextAlignment.CENTER;
 
 	/**
 	 * String which would be drawn in the center of the entry <br>
@@ -20,30 +25,55 @@ public class StringEntry implements ListEntry {
 	 */
 	private final String title;
 
-	/**
-	 * Listener which would be called when user click the entry
-	 */
-	private OnClickListener listener;
-
 	public StringEntry(String title) {
-		this(title, null);
+		this.title = title;
 	}
 
-	public StringEntry(String title, OnClickListener listener) {
-		this.title = title;
-		this.listener = listener;
+	@Override
+	public boolean isEnabled() {
+		return isEnabled;
 	}
 
 	@Override
 	public void onClick(DisplayList list, int mouseX, int mouseY) {
-		if (listener != null) {
-			listener.onClick(list, mouseX, mouseY);
-		}
+		// nothing happens its not a selectable component
 	}
 
 	@Override
 	public void onDraw(DisplayList list, int posX, int posY, int width, int height, int mouseX, int mouseY) {
-		TextRenderer.renderString(posX + (width / 2), (posY + (height / 2)) - 5,
-				TextRenderer.getFontRenderer().trimStringToWidth(title, width), TextAlignment.CENTER);
+		if (isEnabled()) {
+			if (align == TextAlignment.CENTER) {
+				TextRenderer.renderString(posX + (width / 2), (posY + (height / 2)) - 5,
+						TextRenderer.getFontRenderer().trimStringToWidth(title, width), align);
+			} else if (align == TextAlignment.LEFT) {
+				TextRenderer.renderString(posX + 2, (posY + (height / 2)) - 5,
+						TextRenderer.getFontRenderer().trimStringToWidth(title, width), align);
+			} else if (align == TextAlignment.RIGHT) {
+				TextRenderer.renderString((posX + width) - 2, (posY + (height / 2)) - 5,
+						TextRenderer.getFontRenderer().trimStringToWidth(title, width), align);
+			}
+		} else {
+			if (align == TextAlignment.CENTER) {
+				TextRenderer.renderString(posX + (width / 2), (posY + (height / 2)) - 5,
+						TextRenderer.getFontRenderer().trimStringToWidth(title, width), Color.gray, align);
+			} else if (align == TextAlignment.LEFT) {
+				TextRenderer.renderString(posX + 2, (posY + (height / 2)) - 5,
+						TextRenderer.getFontRenderer().trimStringToWidth(title, width), Color.gray, align);
+			} else if (align == TextAlignment.RIGHT) {
+				TextRenderer.renderString((posX + width) - 2, (posY + (height / 2)) - 5,
+						TextRenderer.getFontRenderer().trimStringToWidth(title, width), Color.gray, align);
+			}
+		}
+	}
+
+	@Override
+	public StringEntry setIsEnabled(boolean isEnabled) {
+		this.isEnabled = isEnabled;
+		return this;
+	}
+
+	public StringEntry setTextAlignment(TextAlignment align) {
+		this.align = align;
+		return this;
 	}
 }

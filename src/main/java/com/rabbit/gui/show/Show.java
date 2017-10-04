@@ -75,7 +75,7 @@ public abstract class Show implements IShow, WidgetContainer {
 	@Override
 	public void onClose() {
 		getComponentsList().forEach(com -> com.onClose());
-		Display.setTitle("Minecraft 1.8");
+		Display.setTitle("Minecraft 1.8.9");
 	}
 
 	@Override
@@ -183,7 +183,7 @@ public abstract class Show implements IShow, WidgetContainer {
 	}
 
 	private void updateDisplayTitle() {
-		Display.setTitle("Minecraft 1.8" + " - " + title);
+		Display.setTitle("Minecraft 1.8.9" + " - " + title);
 	}
 
 }

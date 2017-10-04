@@ -1,15 +1,24 @@
 package com.rabbit.gui.proxy;
 
 import com.rabbit.gui.base.Stage;
+import com.rabbit.gui.component.display.entity.DisplayEntity;
+import com.rabbit.gui.component.display.entity.DisplayEntityHead;
+import com.rabbit.gui.component.display.entity.DisplayEntityHeadRenderer;
+import com.rabbit.gui.component.display.entity.DisplayEntityRenderer;
+import com.rabbit.gui.component.hud.overlay.Overlay;
+import com.rabbit.gui.component.notification.NotificationsManager;
 import com.rabbit.gui.show.IShow;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiMainMenu;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class Client implements Proxy {
 
 	/**
-	 * If there are any currently opened Stage it will display given show in it
-	 * <br>
+	 * If there are any currently opened Stage it will display given show in it <br>
 	 * Otherwise will create new Stage
 	 *
 	 * @param show
@@ -37,7 +46,28 @@ public class Client implements Proxy {
 	@Override
 	public void init() {
 		// TODO Auto-generated method stub
+	}
 
+	@SubscribeEvent
+	public void onRenderTick(TickEvent.RenderTickEvent event) {
+		if (Minecraft.getMinecraft().inGameHasFocus) {
+			Overlay.draw();
+		}
+		if (!(Minecraft.getMinecraft().currentScreen instanceof GuiMainMenu)) {
+			NotificationsManager.renderNotifications();
+		}
+	}
+
+	@Override
+	public void postInit() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void preInit() {
+		RenderingRegistry.registerEntityRenderingHandler(DisplayEntity.class, new DisplayEntityRenderer());
+		RenderingRegistry.registerEntityRenderingHandler(DisplayEntityHead.class, new DisplayEntityHeadRenderer());
 	}
 
 	/**

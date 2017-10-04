@@ -13,7 +13,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class Line extends GuiWidget {
 
 	private Color color;
-	
+
 	@LayoutComponent
 	private float lineWidth;
 
@@ -24,7 +24,7 @@ public class Line extends GuiWidget {
 	protected int y2;
 
 	public Line(int x, int y, int x2, int y2, int lineWidth, Color color) {
-		super(x, y, Math.abs(x-x2), Math.abs(y-y2));
+		super(x, y, Math.abs(x - x2), Math.abs(y - y2));
 		this.lineWidth = lineWidth;
 		this.color = color;
 	}

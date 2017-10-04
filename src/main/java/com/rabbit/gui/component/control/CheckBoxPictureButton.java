@@ -1,20 +1,13 @@
 package com.rabbit.gui.component.control;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import javax.imageio.ImageIO;
-
-import org.lwjgl.opengl.GL11;
-
+import com.rabbit.gui.component.display.Picture;
 import com.rabbit.gui.layout.LayoutComponent;
 import com.rabbit.gui.render.Renderer;
 import com.rabbit.gui.render.TextRenderer;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
 
 @SideOnly(Side.CLIENT)
 @LayoutComponent
@@ -26,7 +19,7 @@ public class CheckBoxPictureButton extends Button {
 	}
 
 	private CheckBox checkbox;
-	private ResourceLocation pictureTexture;
+	private Picture picture;
 
 	/** Dummy constructor. Used in layout */
 	protected CheckBoxPictureButton() {
@@ -35,17 +28,22 @@ public class CheckBoxPictureButton extends Button {
 
 	public CheckBoxPictureButton(int xPos, int yPos, int width, int height, ResourceLocation texture, boolean checked) {
 		super(xPos, yPos, width, height, "");
-		pictureTexture = texture;
-		try {
-			BufferedImage image = ImageIO
-					.read(Minecraft.getMinecraft().getResourceManager().getResource(texture).getInputStream());
-		} catch (IOException ioex) {
-			throw new RuntimeException("Can't get resource", ioex);
-		}
-		if(width <= height){
-			checkbox = new CheckBox(xPos + 2, (int)(yPos + height*.66 - 2), height /3, height /3, "", checked);
+		picture = new Picture(xPos + (width / 5), yPos + 1, (int) (width * .8) - 1, (int) (height * .8) - 1, texture);
+		if (width <= height) {
+			checkbox = new CheckBox(xPos + 2, (int) ((yPos + (height * .66)) - 2), height / 3, height / 3, "", checked);
 		} else {
-			checkbox = new CheckBox(xPos + 2, yPos + height/2 - 2, height /2, height /2, "", checked);
+			checkbox = new CheckBox(xPos + 2, (yPos + (height / 2)) - 2, height / 2, height / 2, "", checked);
+		}
+		checkbox.setIsEnabled(false);
+	}
+
+	public CheckBoxPictureButton(int xPos, int yPos, int width, int height, String texture, boolean checked) {
+		super(xPos, yPos, width, height, "");
+		picture = new Picture(xPos + (width / 5), yPos + 1, (int) (width * .8) - 1, (int) (height * .8) - 1, texture);
+		if (width <= height) {
+			checkbox = new CheckBox(xPos + 2, (int) ((yPos + (height * .66)) - 2), height / 3, height / 3, "", checked);
+		} else {
+			checkbox = new CheckBox(xPos + 2, (yPos + (height / 2)) - 2, height / 2, height / 2, "", checked);
 		}
 		checkbox.setIsEnabled(false);
 	}
@@ -55,12 +53,12 @@ public class CheckBoxPictureButton extends Button {
 		if (isVisible()) {
 			prepareRender();
 			if (!isEnabled()) {
-				drawButton(DISABLED_STATE);
-				renderPicture();
+				drawButton(Button.DISABLED_STATE);
+				picture.onDraw(mouseX, mouseY, partialTicks);
 				checkbox.onDraw(mouseX, mouseY, partialTicks);
 			} else if (isButtonUnderMouse(mouseX, mouseY)) {
-				drawButton(HOVER_STATE);
-				renderPicture();
+				drawButton(Button.HOVER_STATE);
+				picture.onDraw(mouseX, mouseY, partialTicks);
 				checkbox.onDraw(mouseX, mouseY, partialTicks);
 				if (drawHoverText) {
 					verifyHoverText(mouseX, mouseY);
@@ -68,7 +66,8 @@ public class CheckBoxPictureButton extends Button {
 						int tlineWidth = 0;
 						for (String line : hoverText) {
 							tlineWidth = TextRenderer.getFontRenderer().getStringWidth(line) > tlineWidth
-									? TextRenderer.getFontRenderer().getStringWidth(line) : tlineWidth;
+									? TextRenderer.getFontRenderer().getStringWidth(line)
+									: tlineWidth;
 						}
 						Renderer.drawHoveringText(hoverText, mouseX - tlineWidth - 20, mouseY + 12);
 					} else {
@@ -76,14 +75,14 @@ public class CheckBoxPictureButton extends Button {
 					}
 				}
 			} else {
-				if(checkbox.isChecked()){
-					drawButton(DISABLED_STATE);
+				if (checkbox.isChecked()) {
+					drawButton(Button.DISABLED_STATE);
 				} else {
-					drawButton(IDLE_STATE);
+					drawButton(Button.IDLE_STATE);
 				}
-				renderPicture();
+				picture.onDraw(mouseX, mouseY, partialTicks);
 				checkbox.onDraw(mouseX, mouseY, partialTicks);
-			}	
+			}
 		}
 	}
 
@@ -100,14 +99,7 @@ public class CheckBoxPictureButton extends Button {
 		return clicked;
 	}
 
-	private void renderPicture() {
-		GL11.glPushMatrix();
-		GL11.glColor4f(1, 1, 1, 1);
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		Minecraft.getMinecraft().renderEngine.bindTexture(pictureTexture);
-		Renderer.drawScaledTexturedRect(getX() + getWidth()/5, getY() + 1, (int)(getWidth()*.8)-1, (int)(getHeight()*.8)-1);
-		GL11.glPopMatrix();
+	public void setToggle(boolean toggle) {
+		checkbox.setIsChecked(toggle);
 	}
 }

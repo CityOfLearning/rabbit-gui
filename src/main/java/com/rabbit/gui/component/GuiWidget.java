@@ -6,6 +6,7 @@ import java.util.List;
 import com.rabbit.gui.base.WidgetContainer;
 import com.rabbit.gui.exception.IdAlreadyRegisteredException;
 import com.rabbit.gui.layout.LayoutComponent;
+import com.rabbit.gui.utils.Geometry;
 
 /**
  * Represents components of the screen
@@ -95,6 +96,10 @@ public abstract class GuiWidget implements IGui, WidgetContainer {
 
 	public int getY() {
 		return y;
+	}
+
+	public boolean isUnderMouse(int mouseX, int mouseY) {
+		return Geometry.isDotInArea(x, y, width, height, mouseX, mouseY);
 	}
 
 	/**
@@ -210,8 +215,8 @@ public abstract class GuiWidget implements IGui, WidgetContainer {
 	}
 
 	/**
-	 * Called on every screen resize. All components recommended to be
-	 * registered in this moment
+	 * Called on every screen resize. All components recommended to be registered in
+	 * this moment
 	 */
 	@Override
 	public void setup() {

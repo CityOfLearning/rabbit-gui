@@ -12,6 +12,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public interface ListEntry {
 
 	/**
+	 * @return <code> true</code> if can be clicked/selected
+	 */
+	public boolean isEnabled();
+
+	/**
 	 * Called when user clicks on the list entry
 	 *
 	 * @param list
@@ -44,6 +49,8 @@ public interface ListEntry {
 	 */
 	public default void onDraw(DisplayList list, int posX, int posY, int width, int height, int mouseX, int mouseY) {
 	}
+
+	public ListEntry setIsEnabled(boolean isEnabled);
 
 	/**
 	 * Called when user clicks on the list entry

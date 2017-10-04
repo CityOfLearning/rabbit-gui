@@ -1,13 +1,27 @@
 package com.rabbit.gui.utils;
 
+import java.awt.Color;
+
+import net.minecraft.client.renderer.GlStateManager;
+
 public class ColourHelper {
+	/**
+	 * Evaluates rgb from given color and bind it to GL
+	 *
+	 * @param color
+	 *            - awt color
+	 */
+	public static int AWTColor2RGBInt(Color color) {
+		return ColourHelper.RGB(color.getRed(), color.getGreen(), color.getBlue());
+	}
+
 	/**
 	 * Blends given int colours
 	 *
 	 * @param colours
 	 *            an amount of colours
-	 * @return the mix int colour value or an IllegalArgumentException if
-	 *         colours is empty
+	 * @return the mix int colour value or an IllegalArgumentException if colours is
+	 *         empty
 	 */
 	public static int blend(final int... colours) {
 		if (colours.length < 1) {
@@ -63,8 +77,7 @@ public class ColourHelper {
 	}
 
 	/**
-	 * Gives a colour based of {@link System#currentTimeMillis()} and given
-	 * params
+	 * Gives a colour based of {@link System#currentTimeMillis()} and given params
 	 *
 	 * @param freqR
 	 *            strength of the reds
@@ -92,7 +105,7 @@ public class ColourHelper {
 		final double r = (Math.sin((freqR * i) + phaseR) * width) + center;
 		final double g = (Math.sin((freqG * i) + phaseG) * width) + center;
 		final double b = (Math.sin((freqB * i) + phaseB) * width) + center;
-		return RGB((float) r, (float) g, (float) b);
+		return ColourHelper.RGB((float) r, (float) g, (float) b);
 	}
 
 	/**
@@ -104,8 +117,8 @@ public class ColourHelper {
 	 * @return an int rainbow colour
 	 */
 	public static int getRainbowColour(final float[] params) {
-		return getRainbowColour(params[0], params[1], params[2], params[3], params[4], params[5], params[6], params[7],
-				params[8]);
+		return ColourHelper.getRainbowColour(params[0], params[1], params[2], params[3], params[4], params[5],
+				params[6], params[7], params[8]);
 	}
 
 	/**
@@ -130,6 +143,30 @@ public class ColourHelper {
 	}
 
 	/**
+	 * Evaluates rgb from given color and bind it to GL
+	 *
+	 * @param color
+	 *            - awt color
+	 */
+	public static void glColorAWT(Color color) {
+		ColourHelper.glColorRGB(color.getRGB());
+	}
+
+	/**
+	 * Evaluates red, green, blue and alpha from given color and binds them to GL
+	 *
+	 * @param rgb
+	 *            - rgb color
+	 */
+	public static void glColorRGB(int rgb) {
+		float alpha = ((rgb >> 24) & 255) / 255.0F;
+		float red = ((rgb >> 16) & 255) / 255.0F;
+		float green = ((rgb >> 8) & 255) / 255.0F;
+		float blue = (rgb & 255) / 255.0F;
+		GlStateManager.color(red, green, blue, alpha);
+	}
+
+	/**
 	 * Convert to integer RGBA value Uses 1.0F as A value
 	 *
 	 * @param red
@@ -142,7 +179,7 @@ public class ColourHelper {
 	 * @return single integer representation of the given floats
 	 */
 	public static int RGB(final float red, final float green, final float blue) {
-		return RGBA((int) red * 255, (int) green * 255, (int) blue * 255, 255);
+		return ColourHelper.RGBA((int) red * 255, (int) green * 255, (int) blue * 255, 255);
 	}
 
 	/**
@@ -160,7 +197,7 @@ public class ColourHelper {
 	 * @return single integer representation of the given floats
 	 */
 	public static int RGB(final float red, final float green, final float blue, final float alpha) {
-		return RGBA((int) red * 255, (int) green * 255, (int) blue * 255, (int) alpha * 255);
+		return ColourHelper.RGBA((int) red * 255, (int) green * 255, (int) blue * 255, (int) alpha * 255);
 	}
 
 	/**
@@ -176,7 +213,7 @@ public class ColourHelper {
 	 * @return single integer representation of the given ints
 	 */
 	public static int RGB(final int r, final int g, final int b) {
-		return RGBA(r, g, b, 255);
+		return ColourHelper.RGBA(r, g, b, 255);
 	}
 
 	/**
@@ -184,16 +221,15 @@ public class ColourHelper {
 	 *
 	 * @param colour
 	 *            the #RRGGBB value
-	 * @return the int colour value or an
-	 *         {@link java.lang.IllegalArgumentException} if a mal formed input
-	 *         is given
+	 * @return the int colour value or an {@link java.lang.IllegalArgumentException}
+	 *         if a mal formed input is given
 	 */
 	public static int RGB(final String colour) {
 		if (!colour.startsWith("#") || !(colour.length() == 7)) {
 			throw new IllegalArgumentException("Use #RRGGBB format");
 		}
-		return RGB(Integer.parseInt(colour.substring(1, 3), 16), Integer.parseInt(colour.substring(3, 5), 16),
-				Integer.parseInt(colour.substring(5, 7), 16));
+		return ColourHelper.RGB(Integer.parseInt(colour.substring(1, 3), 16),
+				Integer.parseInt(colour.substring(3, 5), 16), Integer.parseInt(colour.substring(5, 7), 16));
 	}
 
 	/**
@@ -227,6 +263,6 @@ public class ColourHelper {
 		final float r = (colour >> 16) & 255;
 		final float g = (colour >> 8) & 255;
 		final float b = colour & 255;
-		return RGB(r * scale, g * scale, b * scale);
+		return ColourHelper.RGB(r * scale, g * scale, b * scale);
 	}
 }

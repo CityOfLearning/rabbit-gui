@@ -2,8 +2,10 @@ package com.rabbit.gui.component.display;
 
 import java.util.List;
 
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import com.rabbit.gui.component.GuiWidget;
 import com.rabbit.gui.component.control.ScrollBar;
 import com.rabbit.gui.render.TextAlignment;
 import com.rabbit.gui.render.TextRenderer;
@@ -39,6 +41,7 @@ public class ScrollTextLabel extends TextLabel {
 	@Override
 	protected void drawMultilined() {
 		scrollBar.setVisiblie(!canFit());
+		scrollBar.setHandleMouseWheel(!canFit() && isUnderMouse(Mouse.getX(), Mouse.getY()));
 		List<String> displayLines = getLines();
 		int scale = Geometry.computeScaleFactor();
 		for (int i = 0; i < displayLines.size(); i++) {
@@ -59,6 +62,12 @@ public class ScrollTextLabel extends TextLabel {
 	}
 
 	@Override
+	public boolean isUnderMouse(int mouseX, int mouseY) {
+		return (mouseX >= getX()) && (mouseX <= (getX() + getWidth())) && (mouseY >= getY())
+				&& (mouseY <= (getY() + getHeight()));
+	}
+
+	@Override
 	public void setup() {
 		super.setup();
 		if (isMultilined()) {
@@ -67,5 +76,19 @@ public class ScrollTextLabel extends TextLabel {
 					.setHandleMouseWheel(false);
 			registerComponent(scrollBar);
 		}
+	}
+
+	@Override
+	public GuiWidget setX(int x) {
+		super.setX(x);
+		scrollBar.setX(x);
+		return this;
+	}
+
+	@Override
+	public GuiWidget setY(int y) {
+		super.setY(y);
+		scrollBar.setY(y);
+		return this;
 	}
 }

@@ -18,7 +18,7 @@ public class ScrollBar extends GuiWidget {
 		void onProgressChanged(ScrollBar bar, float modifier);
 	}
 
-	protected float scrolled = 0;
+	private float scrolled = 0;
 
 	protected int scrollerSize;
 
@@ -29,11 +29,14 @@ public class ScrollBar extends GuiWidget {
 	protected OnProgressChanged progressChangedListener = (bar, mod) -> {
 	};
 
+	protected float scrollWeight;
+
 	protected boolean handleMouseWheel;
 
 	public ScrollBar(int xPos, int yPos, int width, int height, int scrollerSize) {
 		super(xPos, yPos, width, height);
 		this.scrollerSize = scrollerSize;
+		scrollWeight = 0.05F;
 	}
 
 	/**
@@ -44,7 +47,7 @@ public class ScrollBar extends GuiWidget {
 	private void calculateScroller(int mouseY) {
 		if (isScrolling) {
 			float magic = (((mouseY - getY()) + 2) - 10F) / ((getY() + height) - (getY() + 2) - 15.0F);
-			updateProgress(magic - scrolled);
+			updateProgress(magic - getScrolledAmt());
 		}
 	}
 
@@ -58,11 +61,15 @@ public class ScrollBar extends GuiWidget {
 	 * Returns a float value between 0 and 1,
 	 */
 	public float getProgress() {
-		return scrolled;
+		return getScrolledAmt();
 	}
 
 	public OnProgressChanged getProgressChangedListener() {
 		return progressChangedListener;
+	}
+
+	public float getScrolledAmt() {
+		return scrolled;
 	}
 
 	public boolean isScrolling() {
@@ -82,7 +89,7 @@ public class ScrollBar extends GuiWidget {
 					.bindTexture(new ResourceLocation("textures/gui/container/creative_inventory/tab_items.png"));
 			Renderer.drawContinuousTexturedBox(getX(), getY(), 174 - 1, 17 - 1, width, height, 14 + 2, 112 + 2, 2, 2, 2,
 					2);
-			int scrollerHeight = (int) (getY() + 2 + (scrolled * (height - 4 - scrollerSize)));
+			int scrollerHeight = (int) (getY() + 2 + (getScrolledAmt() * (height - 4 - scrollerSize)));
 			drawScroller(getX() + 2, scrollerHeight, width - 4, scrollerSize);
 		}
 	}
@@ -91,7 +98,7 @@ public class ScrollBar extends GuiWidget {
 	public boolean onMouseClicked(int posX, int posY, int mouseButtonIndex, boolean overlap) {
 		super.onMouseClicked(posX, posY, mouseButtonIndex, overlap);
 		isScrolling = !overlap && Geometry.isDotInArea(getX() + 2,
-				(int) (getY() + 2 + (scrolled * (height - scrollerSize))), width - 4, scrollerSize, posX, posY);
+				(int) (getY() + 2 + (getScrolledAmt() * (height - scrollerSize))), width - 4, scrollerSize, posX, posY);
 		return isScrolling;
 	}
 
@@ -99,12 +106,13 @@ public class ScrollBar extends GuiWidget {
 	public void onMouseInput() {
 		super.onMouseInput();
 		if (shouldHandleMouseWheel()) {
-			double delta = Mouse.getDWheel();
+			double delta = Mouse.getDWheel(); // getDWheel resets to 0 so only 1
+												// object responds...
 			if (delta < 0) {
-				updateProgress(0.10F);
+				updateProgress(scrollWeight);
 			}
 			if (delta > 0) {
-				updateProgress(-0.10F);
+				updateProgress(-scrollWeight);
 			}
 		}
 	}
@@ -116,11 +124,11 @@ public class ScrollBar extends GuiWidget {
 	}
 
 	private void revalidateScroller() {
-		if (scrolled < 0) {
-			scrolled = 0;
+		if (getScrolledAmt() < 0) {
+			setScrolledAmt(0);
 		}
-		if (scrolled > 1) {
-			scrolled = 1;
+		if (getScrolledAmt() > 1) {
+			setScrolledAmt(1);
 		}
 	}
 
@@ -130,7 +138,7 @@ public class ScrollBar extends GuiWidget {
 	}
 
 	public ScrollBar setProgress(float scroll) {
-		scrolled = scroll;
+		setScrolledAmt(scroll);
 		revalidateScroller();
 		return this;
 	}
@@ -140,8 +148,17 @@ public class ScrollBar extends GuiWidget {
 		return this;
 	}
 
+	public void setScrolledAmt(float scrolled) {
+		this.scrolled = scrolled;
+	}
+
 	public ScrollBar setScrollerSize(int size) {
 		scrollerSize = size;
+		return this;
+	}
+
+	public ScrollBar setScrollWeight(float newWeight) {
+		scrollWeight = newWeight;
 		return this;
 	}
 
@@ -155,7 +172,7 @@ public class ScrollBar extends GuiWidget {
 	}
 
 	public void updateProgress(float modifier) {
-		setProgress(scrolled + modifier);
+		setProgress(getScrolledAmt() + modifier);
 		getProgressChangedListener().onProgressChanged(this, modifier);
 	}
 

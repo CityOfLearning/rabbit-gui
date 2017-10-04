@@ -28,7 +28,7 @@ public class Table extends GuiWidget {
 
 	public Table(int xPos, int yPos, int width, int height, Row... rows) {
 		super(xPos, yPos, width, height);
-		this.rows = new ArrayList<Row>(Arrays.asList(rows));
+		this.rows = new ArrayList<>(Arrays.asList(rows));
 	}
 
 	public Table addRow(Row row) {

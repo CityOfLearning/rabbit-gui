@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
-import com.rabbit.gui.GuiFoundation;
+import com.rabbit.gui.RabbitGui;
 import com.rabbit.gui.component.GuiWidget;
 import com.rabbit.gui.component.Shiftable;
 import com.rabbit.gui.layout.LayoutComponent;
@@ -15,7 +15,7 @@ import com.rabbit.gui.render.TextRenderer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -44,9 +44,8 @@ public class Button extends GuiWidget implements Shiftable {
 	protected final static int HOVER_STATE = 2;
 
 	protected boolean drawHoverText = false;
-	protected List<String> originalHoverText = new ArrayList<String>();
-
-	protected List<String> hoverText = new ArrayList<String>();
+	protected List<String> originalHoverText = new ArrayList<>();
+	protected List<String> hoverText = new ArrayList<>();
 
 	protected ResourceLocation buttonTexture = new ResourceLocation("textures/gui/widgets.png");
 
@@ -77,19 +76,14 @@ public class Button extends GuiWidget implements Shiftable {
 		return this;
 	}
 
-	public Button doesDrawHoverText(boolean state) {
-		drawHoverText = state;
-		return this;
-	}
-
 	protected void drawButton(int state) {
 		Renderer.drawContinuousTexturedBox(getX(), getY(), 0, 46 + (20 * state), getWidth(), getHeight(), 200, 20, 2, 3,
 				2, 2);
 	}
 
 	protected void endRender() {
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		GL11.glDisable(GL11.GL_BLEND);
+		GlStateManager.resetColor();
+		GlStateManager.disableBlend();
 	}
 
 	public ResourceLocation getButtonTexture() {
@@ -130,29 +124,34 @@ public class Button extends GuiWidget implements Shiftable {
 	@Override
 	public void onDraw(int mouseX, int mouseY, float partialTicks) {
 		if (isVisible()) {
-			prepareRender();
-			if (!isEnabled()) {
-				drawButton(DISABLED_STATE);
-			} else if (isButtonUnderMouse(mouseX, mouseY)) {
-				drawButton(HOVER_STATE);
-				if (drawHoverText) {
-					verifyHoverText(mouseX, mouseY);
-					if (drawToLeft) {
-						int tlineWidth = 0;
-						for (String line : hoverText) {
-							tlineWidth = TextRenderer.getFontRenderer().getStringWidth(line) > tlineWidth
-									? TextRenderer.getFontRenderer().getStringWidth(line) : tlineWidth;
+			GlStateManager.pushMatrix();
+			{
+				prepareRender();
+				if (!isEnabled()) {
+					drawButton(Button.DISABLED_STATE);
+				} else if (isButtonUnderMouse(mouseX, mouseY)) {
+					drawButton(Button.HOVER_STATE);
+					if (drawHoverText) {
+						verifyHoverText(mouseX, mouseY);
+						if (drawToLeft) {
+							int tlineWidth = 0;
+							for (String line : hoverText) {
+								tlineWidth = TextRenderer.getFontRenderer().getStringWidth(line) > tlineWidth
+										? TextRenderer.getFontRenderer().getStringWidth(line)
+										: tlineWidth;
+							}
+							Renderer.drawHoveringText(hoverText, mouseX - tlineWidth - 20, mouseY + 12);
+						} else {
+							Renderer.drawHoveringText(hoverText, mouseX, mouseY + 12);
 						}
-						Renderer.drawHoveringText(hoverText, mouseX - tlineWidth - 20, mouseY + 12);
-					} else {
-						Renderer.drawHoveringText(hoverText, mouseX, mouseY + 12);
 					}
+				} else {
+					drawButton(Button.IDLE_STATE);
 				}
-			} else {
-				drawButton(IDLE_STATE);
+				TextRenderer.renderString(getX() + (getWidth() / 2), (getY() + (getHeight() / 2)) - 4, getText(),
+						TextAlignment.CENTER);
 			}
-			TextRenderer.renderString(getX() + (getWidth() / 2), (getY() + (getHeight() / 2)) - 4, getText(),
-					TextAlignment.CENTER);
+			GlStateManager.popMatrix();
 		}
 	}
 
@@ -175,10 +174,10 @@ public class Button extends GuiWidget implements Shiftable {
 
 	protected void prepareRender() {
 		Minecraft.getMinecraft().getTextureManager().bindTexture(getButtonTexture());
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		GL11.glEnable(GL11.GL_BLEND);
-		OpenGlHelper.glBlendFunc(770, 771, 1, 0);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GlStateManager.resetColor();
+		GlStateManager.enableBlend();
+		GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 	}
 
 	/**
@@ -195,6 +194,11 @@ public class Button extends GuiWidget implements Shiftable {
 
 	public Button setCustomTexture(ResourceLocation res) {
 		buttonTexture = res;
+		return this;
+	}
+
+	public Button setDoesDrawHoverText(boolean state) {
+		drawHoverText = state;
 		return this;
 	}
 
@@ -238,14 +242,15 @@ public class Button extends GuiWidget implements Shiftable {
 		int tlineWidth = 0;
 		for (String line : originalHoverText) {
 			tlineWidth = TextRenderer.getFontRenderer().getStringWidth(line) > tlineWidth
-					? TextRenderer.getFontRenderer().getStringWidth(line) : tlineWidth;
+					? TextRenderer.getFontRenderer().getStringWidth(line)
+					: tlineWidth;
 		}
-		int dWidth = GuiFoundation.proxy.getCurrentStage().width;
+		int dWidth = RabbitGui.proxy.getCurrentStage().width;
 		if (((tlineWidth + mouseX) > dWidth) && ((mouseX + 1) > (dWidth / 2))) {
 			// the button is on the right half of the screen
 			drawToLeft = true;
 		}
-		List<String> newHoverText = new ArrayList<String>();
+		List<String> newHoverText = new ArrayList<>();
 		if (drawToLeft) {
 			for (String line : originalHoverText) {
 				int lineWidth = TextRenderer.getFontRenderer().getStringWidth(line) + 12;

@@ -10,5 +10,9 @@ public interface Proxy {
 
 	public void init();
 
+	public void postInit();
+
+	public void preInit();
+
 	public void renderGUI();
 }

@@ -11,6 +11,7 @@ import com.rabbit.gui.component.grid.Grid;
 import com.rabbit.gui.render.Renderer;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -69,14 +70,16 @@ public class PictureGridEntry implements GridEntry {
 
 	@Override
 	public void onDraw(Grid grid, int posX, int posY, int width, int height, int mouseX, int mouseY) {
-		GL11.glPushMatrix();
-		GL11.glColor4f(1, 1, 1, 1);
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		Minecraft.getMinecraft().renderEngine.bindTexture(texture);
-		Renderer.drawScaledTexturedRect(posX, posY, width, height);
-		GL11.glPopMatrix();
+		GlStateManager.pushMatrix();
+		{
+			GlStateManager.color(1, 1, 1, 1);
+			GlStateManager.enableTexture2D();
+			GlStateManager.enableBlend();
+			GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+			Minecraft.getMinecraft().renderEngine.bindTexture(texture);
+			Renderer.drawScaledTexturedRect(posX, posY, width, height);
+		}
+		GlStateManager.popMatrix();
 	}
 
 	public void setImageHeight(int imageHeight) {

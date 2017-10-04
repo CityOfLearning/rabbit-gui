@@ -15,8 +15,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class PieChart extends GuiWidget {
 
 	/**
-	 * Contains colors which will be used in diagram, by default it's filled
-	 * with six common colors from java.awt.Color class
+	 * Contains colors which will be used in diagram, by default it's filled with
+	 * six common colors from java.awt.Color class
 	 */
 	protected Color[] colors = { Color.BLUE, Color.RED, Color.ORANGE, Color.MAGENTA, Color.GREEN, Color.pink };
 	/**
@@ -28,13 +28,11 @@ public class PieChart extends GuiWidget {
 	 */
 	protected double[] data = new double[0];
 	/**
-	 * Contains display angle for each data value, usually calculated in
-	 * constructor
+	 * Contains display angle for each data value, usually calculated in constructor
 	 */
 	protected double[] angles = new double[0];
 	/**
-	 * Contains titles per each value, titles length may be differ from value
-	 * length
+	 * Contains titles per each value, titles length may be differ from value length
 	 */
 	protected String[] titles = new String[0];
 

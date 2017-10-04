@@ -47,7 +47,7 @@ public class LayoutComponentWrapper {
 	public IGui create(IShow show) throws Exception {
 		IGui com;
 
-		com = instantiateType(type);
+		com = LayoutComponentWrapper.instantiateType(type);
 		for (ILayoutArgument arg : args) {
 			Object value = null;
 			if (arg instanceof LayoutArgument) {

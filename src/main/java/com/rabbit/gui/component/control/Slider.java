@@ -14,12 +14,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class Slider extends GuiWidget {
 
-	public static interface OnProgressChanged {
-		void onProgressChanged(Slider bar, float modifier);
-	}
-	
 	public static interface OnMouseReleased {
 		void onMouseReleased(Slider bar, float modifier);
+	}
+
+	public static interface OnProgressChanged {
+		void onProgressChanged(Slider bar, float modifier);
 	}
 
 	protected float sliderValue = 1.0F;
@@ -37,7 +37,7 @@ public class Slider extends GuiWidget {
 
 	protected OnProgressChanged progressChangedListener = (bar, mod) -> {
 	};
-	
+
 	protected OnMouseReleased mouseReleasedListener = (bar, mod) -> {
 	};
 
@@ -66,6 +66,10 @@ public class Slider extends GuiWidget {
 		Renderer.drawContinuousTexturedBox(xPos, yPos, isScrolling() ? 244 : 232, 0, width, height, 12, 15, 1, 2, 2, 2);
 	}
 
+	public OnMouseReleased getMouseReleasedListener() {
+		return mouseReleasedListener;
+	}
+
 	/**
 	 * Returns a float value between 0 and 1,
 	 */
@@ -76,13 +80,15 @@ public class Slider extends GuiWidget {
 	public OnProgressChanged getProgressChangedListener() {
 		return progressChangedListener;
 	}
-	
-	public OnMouseReleased getMouseReleasedListener() {
-		return mouseReleasedListener;
-	}
 
 	public boolean isScrolling() {
 		return isScrolling;
+	}
+
+	@Override
+	public boolean isUnderMouse(int mouseX, int mouseY) {
+		return (mouseX >= getX()) && (mouseX <= (getX() + getWidth())) && (mouseY >= getY())
+				&& (mouseY <= (getY() + getHeight()));
 	}
 
 	public boolean isVisible() {
@@ -93,6 +99,7 @@ public class Slider extends GuiWidget {
 	public void onDraw(int mouseX, int mouseY, float partialTicks) {
 		super.onDraw(mouseX, mouseY, partialTicks);
 		if (isVisible()) {
+			setHandleMouseWheel(isUnderMouse(mouseX, mouseY));
 			calculateScroller(mouseX);
 			Minecraft.getMinecraft().renderEngine
 					.bindTexture(new ResourceLocation("textures/gui/container/creative_inventory/tab_items.png"));
@@ -151,6 +158,11 @@ public class Slider extends GuiWidget {
 		return this;
 	}
 
+	public Slider setMouseReleasedListener(OnMouseReleased mouseReleasedListener) {
+		this.mouseReleasedListener = mouseReleasedListener;
+		return this;
+	}
+
 	public Slider setProgress(float scroll) {
 		scrolled = scroll;
 		revalidateScroller();
@@ -159,11 +171,6 @@ public class Slider extends GuiWidget {
 
 	public Slider setProgressChangedListener(OnProgressChanged progressChangedListener) {
 		this.progressChangedListener = progressChangedListener;
-		return this;
-	}
-	
-	public Slider setMouseReleasedListener(OnMouseReleased mouseReleasedListener) {
-		this.mouseReleasedListener = mouseReleasedListener;
 		return this;
 	}
 
@@ -185,5 +192,4 @@ public class Slider extends GuiWidget {
 		setProgress(scrolled + modifier);
 		getProgressChangedListener().onProgressChanged(this, scrolled);
 	}
-
 }

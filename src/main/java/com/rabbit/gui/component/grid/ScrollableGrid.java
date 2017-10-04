@@ -10,6 +10,7 @@ import com.rabbit.gui.layout.LayoutComponent;
 import com.rabbit.gui.utils.Geometry;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -25,8 +26,7 @@ public class ScrollableGrid extends Grid {
 	}
 
 	/**
-	 * Returns true if content height of list is not more that list actual
-	 * height
+	 * Returns true if content height of list is not more that list actual height
 	 */
 	private boolean canFit() {
 		return ((content.size() / xSlots) * slotHeight) < height;
@@ -35,7 +35,7 @@ public class ScrollableGrid extends Grid {
 	@Override
 	protected void drawGridContent(int mouseX, int mouseY) {
 		scrollBar.setVisiblie(!canFit());
-		scrollBar.setHandleMouseWheel(!canFit());
+		scrollBar.setHandleMouseWheel(!canFit() && isUnderMouse(mouseX, mouseY));
 		scrollBar.setScrollerSize(getScrollerSize());
 		int scale = Geometry.computeScaleFactor();
 		for (int i = 0; i < content.size(); i++) {
@@ -46,16 +46,19 @@ public class ScrollableGrid extends Grid {
 			int slotWidth = this.slotWidth;
 			int slotHeight = this.slotHeight;
 			if ((slotPosY < (getY() + height)) && ((slotPosY + slotHeight) > getY())) {
-				GL11.glPushMatrix();
-				GL11.glEnable(GL11.GL_SCISSOR_TEST);
-				Minecraft mc = Minecraft.getMinecraft();
-				GL11.glScissor(getX() * scale, mc.displayHeight - ((getY() + getHeight()) * scale), getWidth() * scale,
-						getHeight() * scale);
-				entry.onDraw(this, slotPosX + 1, slotPosY + 1, slotWidth - 2, slotHeight - 2, mouseX, mouseY);
-				// entry.onDraw(this, slotPosX, slotPosY, slotWidth, slotHeight,
-				// mouseX, mouseY);
-				GL11.glDisable(GL11.GL_SCISSOR_TEST);
-				GL11.glPopMatrix();
+				GlStateManager.pushMatrix();
+				{
+					GL11.glEnable(GL11.GL_SCISSOR_TEST);
+					Minecraft mc = Minecraft.getMinecraft();
+					GL11.glScissor(getX() * scale, mc.displayHeight - ((getY() + getHeight()) * scale),
+							getWidth() * scale, getHeight() * scale);
+					entry.onDraw(this, slotPosX + 1, slotPosY + 1, slotWidth - 2, slotHeight - 2, mouseX, mouseY);
+					// entry.onDraw(this, slotPosX, slotPosY, slotWidth,
+					// slotHeight,
+					// mouseX, mouseY);
+					GL11.glDisable(GL11.GL_SCISSOR_TEST);
+				}
+				GlStateManager.popMatrix();
 			}
 		}
 	}
@@ -85,6 +88,12 @@ public class ScrollableGrid extends Grid {
 	}
 
 	@Override
+	public boolean isUnderMouse(int mouseX, int mouseY) {
+		return (mouseX >= getX()) && (mouseX <= (getX() + getWidth())) && (mouseY >= getY())
+				&& (mouseY <= (getY() + getHeight()));
+	}
+
+	@Override
 	public void onDraw(int mouseX, int mouseY, float partialTicks) {
 		super.onDraw(mouseX, mouseY, partialTicks);
 
@@ -101,7 +110,7 @@ public class ScrollableGrid extends Grid {
 			scrollerSize = height - 4;
 		}
 		scrollBar = new ScrollBar((getX() + width) - 10, getY(), 10, height, scrollerSize);
+		scrollBar.setScrollWeight(((float) height / (float) (content.size() * slotHeight)) * .8F);
 		registerComponent(scrollBar);
 	}
-
 }

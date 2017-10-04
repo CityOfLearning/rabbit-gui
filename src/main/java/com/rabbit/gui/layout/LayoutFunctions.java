@@ -15,7 +15,7 @@ public class LayoutFunctions {
 	public static final Function width = new Function("width", 0) {
 		@Override
 		public double apply(double... args) {
-			IShow currentShow = getCurrentlyOpenedShow();
+			IShow currentShow = LayoutFunctions.getCurrentlyOpenedShow();
 			return currentShow != null ? currentShow.getWidth() : 0;
 		}
 	};
@@ -23,7 +23,7 @@ public class LayoutFunctions {
 	public static final Function height = new Function("height", 0) {
 		@Override
 		public double apply(double... args) {
-			IShow currentShow = getCurrentlyOpenedShow();
+			IShow currentShow = LayoutFunctions.getCurrentlyOpenedShow();
 			return currentShow != null ? currentShow.getHeight() : 0;
 		}
 	};

@@ -2,6 +2,7 @@ package com.rabbit.gui.component.table;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import com.rabbit.gui.component.WidgetList;
@@ -31,6 +32,12 @@ public class Row<T> implements WidgetList<T> {
 	}
 
 	@Override
+	public WidgetList<T> addAll(Collection<T> values) {
+		values.forEach(this::add);
+		return this;
+	}
+
+	@Override
 	public Row<T> addAll(T... objects) {
 		this.content.addAll(Arrays.asList(objects));
 		return this;
@@ -52,7 +59,7 @@ public class Row<T> implements WidgetList<T> {
 	}
 
 	public List<String> getStringContent() {
-		List<String> strings = new ArrayList<String>();
+		List<String> strings = new ArrayList<>();
 		this.getContent().forEach(element -> strings.add(String.valueOf(element)));
 		return strings;
 	}

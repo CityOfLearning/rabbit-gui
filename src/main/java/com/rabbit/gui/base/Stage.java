@@ -188,14 +188,14 @@ public class Stage extends GuiScreen {
 	}
 
 	/**
-	 * Reinitialized currently opened shows, updates it's resolution and
-	 * re-setups it. <br>
-	 * If <code>forceInit</code> is <code>true</code> show#onInit() will be
-	 * called even if it's been already initialized
+	 * Reinitialized currently opened shows, updates it's resolution and re-setups
+	 * it. <br>
+	 * If <code>forceInit</code> is <code>true</code> show#onInit() will be called
+	 * even if it's been already initialized
 	 *
 	 * @param forceInit
-	 *            - if <code>true</code> show#onInit() will be called event if
-	 *            it's been already initialized
+	 *            - if <code>true</code> show#onInit() will be called event if it's
+	 *            been already initialized
 	 */
 	public void reinitShow(boolean forceInit) {
 		show.setSize(width, height);

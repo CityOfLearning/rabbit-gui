@@ -1,19 +1,14 @@
 package com.rabbit.gui.component.grid.entries;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.List;
-
-import javax.imageio.ImageIO;
-
-import org.lwjgl.opengl.GL11;
+import java.util.UUID;
 
 import com.rabbit.gui.component.control.Button;
+import com.rabbit.gui.component.display.Picture;
 import com.rabbit.gui.component.grid.Grid;
 import com.rabbit.gui.render.Renderer;
 import com.rabbit.gui.render.TextRenderer;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -33,7 +28,7 @@ public class PictureButtonGridEntry extends Button implements GridEntry {
 	 * Listener which would be called when user click the entry
 	 */
 	private OnClickListener listener;
-	private ResourceLocation pictureTexture;
+	private Picture picture;
 	private int imageWidth;
 
 	private int imageHeight;
@@ -44,27 +39,33 @@ public class PictureButtonGridEntry extends Button implements GridEntry {
 
 	public PictureButtonGridEntry(int width, int height, ResourceLocation texture, OnClickListener listener) {
 		super(0, 0, width, height, "");
-		pictureTexture = texture;
-		try {
-			BufferedImage image = ImageIO
-					.read(Minecraft.getMinecraft().getResourceManager().getResource(texture).getInputStream());
-			setImageWidth(image.getWidth());
-			setImageHeight(image.getHeight());
-		} catch (IOException ioex) {
-			throw new RuntimeException("Can't get resource", ioex);
-		}
+		picture = new Picture(0, 0, width - 2, height - 2, texture);
+		this.listener = listener;
+	}
+
+	public PictureButtonGridEntry(int width, int height, String texture) {
+		this(width, height, texture, null);
+	}
+
+	public PictureButtonGridEntry(int width, int height, String texture, OnClickListener listener) {
+		super(0, 0, width, height, "");
+		picture = new Picture(0, 0, width - 2, height - 2, texture);
+		this.listener = listener;
+	}
+
+	public PictureButtonGridEntry(int width, int height, UUID textureId) {
+		this(width, height, textureId, null);
+	}
+
+	public PictureButtonGridEntry(int width, int height, UUID textureId, OnClickListener listener) {
+		super(0, 0, width, height, "");
+		picture = new Picture(0, 0, width - 2, height - 2, textureId);
 		this.listener = listener;
 	}
 
 	@Override
 	public PictureButtonGridEntry addHoverText(String text) {
 		originalHoverText.add(text);
-		return this;
-	}
-
-	@Override
-	public PictureButtonGridEntry doesDrawHoverText(boolean state) {
-		drawHoverText = state;
 		return this;
 	}
 
@@ -81,10 +82,6 @@ public class PictureButtonGridEntry extends Button implements GridEntry {
 		return imageWidth;
 	}
 
-	public ResourceLocation getPictureTexture() {
-		return pictureTexture;
-	}
-
 	@Override
 	public void onClick(Grid grid, int mouseX, int mouseY) {
 		if (listener != null) {
@@ -96,31 +93,36 @@ public class PictureButtonGridEntry extends Button implements GridEntry {
 	public void onDraw(Grid grid, int posX, int posY, int width, int height, int mouseX, int mouseY) {
 		if (getX() != posX) {
 			setX(posX);
+			picture.setX(posX + 1);
 		}
 		if (getY() != posY) {
 			setY(posY);
+			picture.setY(posY + 1);
 		}
 		if (getWidth() != width) {
 			setWidth(width);
+			picture.setWidth(width - 2);
 		}
 		if (getHeight() != height) {
 			setHeight(height);
+			picture.setHeight(height - 2);
 		}
 		if (isVisible()) {
 			prepareRender();
 			if (!isEnabled()) {
-				drawButton(DISABLED_STATE);
-				renderPicture();
+				drawButton(Button.DISABLED_STATE);
+				picture.onDraw(mouseX, mouseY, 0);
 			} else if (isButtonUnderMouse(mouseX, mouseY)) {
-				drawButton(HOVER_STATE);
-				renderPicture();
+				drawButton(Button.HOVER_STATE);
+				picture.onDraw(mouseX, mouseY, 0);
 				if (drawHoverText) {
 					verifyHoverText(mouseX, mouseY);
 					if (drawToLeft) {
 						int tlineWidth = 0;
 						for (String line : hoverText) {
 							tlineWidth = TextRenderer.getFontRenderer().getStringWidth(line) > tlineWidth
-									? TextRenderer.getFontRenderer().getStringWidth(line) : tlineWidth;
+									? TextRenderer.getFontRenderer().getStringWidth(line)
+									: tlineWidth;
 						}
 						Renderer.drawHoveringTextInScissoredArea(hoverText, mouseX - tlineWidth - 20, mouseY);
 					} else {
@@ -128,25 +130,20 @@ public class PictureButtonGridEntry extends Button implements GridEntry {
 					}
 				}
 			} else {
-				drawButton(IDLE_STATE);
-				renderPicture();
+				drawButton(Button.IDLE_STATE);
+				picture.onDraw(mouseX, mouseY, 0);
 			}
 		}
 	}
 
-	private void renderPicture() {
-		GL11.glPushMatrix();
-		GL11.glColor4f(1, 1, 1, 1);
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		Minecraft.getMinecraft().renderEngine.bindTexture(pictureTexture);
-		Renderer.drawScaledTexturedRect(getX() + 1, getY() + 1, getWidth()-2, getHeight()-2);
-		GL11.glPopMatrix();
-	}
-
 	public PictureButtonGridEntry setClickListener(OnClickListener onClicked) {
 		listener = onClicked;
+		return this;
+	}
+
+	@Override
+	public PictureButtonGridEntry setDoesDrawHoverText(boolean state) {
+		drawHoverText = state;
 		return this;
 	}
 
@@ -165,7 +162,14 @@ public class PictureButtonGridEntry extends Button implements GridEntry {
 	}
 
 	public PictureButtonGridEntry setPictureTexture(ResourceLocation res) {
-		pictureTexture = res;
+		picture.setImageTexture(res);
+		;
+		return this;
+	}
+
+	public PictureButtonGridEntry setPictureTexture(String res) {
+		picture.setImageTexture(res);
+		;
 		return this;
 	}
 }

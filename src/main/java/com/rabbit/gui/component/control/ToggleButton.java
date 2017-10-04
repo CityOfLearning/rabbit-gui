@@ -1,22 +1,10 @@
 package com.rabbit.gui.component.control;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.lwjgl.opengl.GL11;
-
-import com.rabbit.gui.GuiFoundation;
-import com.rabbit.gui.component.GuiWidget;
-import com.rabbit.gui.component.Shiftable;
 import com.rabbit.gui.layout.LayoutComponent;
 import com.rabbit.gui.render.Renderer;
 import com.rabbit.gui.render.TextAlignment;
 import com.rabbit.gui.render.TextRenderer;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -33,7 +21,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 @LayoutComponent
 public class ToggleButton extends Button {
-	
+
 	protected boolean toggle;
 
 	/** Dummy constructor. Used in layout */
@@ -44,22 +32,27 @@ public class ToggleButton extends Button {
 		super(xPos, yPos, width, height, title);
 		this.toggle = toggle;
 	}
-	
+
+	public boolean getToggleState() {
+		return toggle;
+	}
+
 	@Override
 	public void onDraw(int mouseX, int mouseY, float partialTicks) {
 		if (isVisible()) {
 			prepareRender();
 			if (!isEnabled()) {
-				drawButton(DISABLED_STATE);
+				drawButton(Button.DISABLED_STATE);
 			} else if (isButtonUnderMouse(mouseX, mouseY)) {
-				drawButton(HOVER_STATE);
+				drawButton(Button.HOVER_STATE);
 				if (drawHoverText) {
 					verifyHoverText(mouseX, mouseY);
 					if (drawToLeft) {
 						int tlineWidth = 0;
 						for (String line : hoverText) {
 							tlineWidth = TextRenderer.getFontRenderer().getStringWidth(line) > tlineWidth
-									? TextRenderer.getFontRenderer().getStringWidth(line) : tlineWidth;
+									? TextRenderer.getFontRenderer().getStringWidth(line)
+									: tlineWidth;
 						}
 						Renderer.drawHoveringText(hoverText, mouseX - tlineWidth - 20, mouseY + 12);
 					} else {
@@ -67,12 +60,12 @@ public class ToggleButton extends Button {
 					}
 				}
 			} else {
-				if(toggle){
-					drawButton(IDLE_STATE);
+				if (toggle) {
+					drawButton(Button.IDLE_STATE);
 				} else {
-					drawButton(DISABLED_STATE);
+					drawButton(Button.DISABLED_STATE);
 				}
-				
+
 			}
 			TextRenderer.renderString(getX() + (getWidth() / 2), (getY() + (getHeight() / 2)) - 4, getText(),
 					TextAlignment.CENTER);
