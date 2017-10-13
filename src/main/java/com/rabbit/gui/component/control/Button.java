@@ -16,6 +16,7 @@ import com.rabbit.gui.render.TextRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -169,7 +170,7 @@ public class Button extends GuiWidget implements Shiftable {
 
 	protected void playClickSound() {
 		Minecraft.getMinecraft().getSoundHandler()
-				.playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
+				.playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
 	}
 
 	protected void prepareRender() {

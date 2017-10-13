@@ -5,17 +5,16 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 
 public class GenericNotification extends Gui implements INotification {
 	private static final ResourceLocation guiTexture = new ResourceLocation(
 			"textures/gui/achievement/achievement_background.png");
-	private final Minecraft mc;
 	private final ResourceLocation image;
 	private final String notificationTitle;
 	private final String notificationText;
@@ -23,9 +22,7 @@ public class GenericNotification extends Gui implements INotification {
 	private int windowHeight;
 	private long notificationTime;
 
-	public GenericNotification(Minecraft minecraft, ResourceLocation image, String notificationTitle,
-			String notificationText) {
-		mc = minecraft;
+	public GenericNotification(ResourceLocation image, String notificationTitle, String notificationText) {
 		this.image = image;
 		this.notificationTitle = notificationTitle;
 		this.notificationText = notificationText;
@@ -33,14 +30,14 @@ public class GenericNotification extends Gui implements INotification {
 	}
 
 	@Override
-	public void drawNotification() {
+	public void drawNotification(Minecraft mc) {
 		// if (notificationTime != 0L) {
 		double d0 = (Minecraft.getSystemTime() - notificationTime) / 10000.0D;
 
 		if ((d0 < 0.0D) || (d0 > 1.0D)) {
 			notificationTime = 0L;
 		} else {
-			updateWindowScale();
+			updateWindowScale(mc);
 			GlStateManager.disableDepth();
 			GlStateManager.depthMask(false);
 			double d1 = d0 * 2.0D;
@@ -66,11 +63,11 @@ public class GenericNotification extends Gui implements INotification {
 			GlStateManager.disableLighting();
 			drawScaledTexturedRectWithUV(i, j, j, 0.375, 0.7890625, 1, 0.9140625, 180, 50);
 
-			mc.fontRendererObj.drawString(notificationTitle, i + 30, j + 7, 15482167);
-			// mc.fontRendererObj.drawString(notificationText, i + 30, j + 19,
+			mc.fontRenderer.drawString(notificationTitle, i + 30, j + 7, 15482167);
+			// mc.fontRenderer.drawString(notificationText, i + 30, j + 19,
 			// -1);
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-			mc.fontRendererObj.drawSplitString(notificationText, i + 30, j + 17, 144, -1);
+			mc.fontRenderer.drawSplitString(notificationText, i + 30, j + 17, 144, -1);
 
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 			RenderHelper.enableGUIStandardItemLighting();
@@ -93,29 +90,29 @@ public class GenericNotification extends Gui implements INotification {
 
 	private void drawScaledTexturedRect(int x, int y, int z, int width, int height) {
 		Tessellator tessellator = Tessellator.getInstance();
-		WorldRenderer renderer = tessellator.getWorldRenderer();
-		renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-		renderer.pos(x + width, y + height, z).tex(1, 1).endVertex();
-		renderer.pos(x + width, y, z).tex(1, 0).endVertex();
-		renderer.pos(x, y, z).tex(0, 0).endVertex();
-		renderer.pos(x, y + height, z).tex(0, 1).endVertex();
+		BufferBuilder bufferbuilder = tessellator.getBuffer();
+		bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+		bufferbuilder.pos(x + width, y + height, z).tex(1, 1).endVertex();
+		bufferbuilder.pos(x + width, y, z).tex(1, 0).endVertex();
+		bufferbuilder.pos(x, y, z).tex(0, 0).endVertex();
+		bufferbuilder.pos(x, y + height, z).tex(0, 1).endVertex();
 		tessellator.draw();
 	}
 
 	private void drawScaledTexturedRectWithUV(int x, int y, int z, double ustart, double vstart, double uend,
 			double vend, int width, int height) {
 		Tessellator tessellator = Tessellator.getInstance();
-		WorldRenderer renderer = tessellator.getWorldRenderer();
-		renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-		renderer.pos(x + width, y + height, z).tex(uend, vend).endVertex();
-		renderer.pos(x + width, y, z).tex(uend, vstart).endVertex();
-		renderer.pos(x, y, z).tex(ustart, vstart).endVertex();
-		renderer.pos(x, y + height, z).tex(ustart, vend).endVertex();
+		BufferBuilder bufferbuilder = tessellator.getBuffer();
+		bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+		bufferbuilder.pos(x + width, y + height, z).tex(uend, vend).endVertex();
+		bufferbuilder.pos(x + width, y, z).tex(uend, vstart).endVertex();
+		bufferbuilder.pos(x, y, z).tex(ustart, vstart).endVertex();
+		bufferbuilder.pos(x, y + height, z).tex(ustart, vend).endVertex();
 		tessellator.draw();
 	}
 
 	@Override
-	public void updateWindowScale() {
+	public void updateWindowScale(Minecraft mc) {
 		GlStateManager.viewport(0, 0, mc.displayWidth, mc.displayHeight);
 		GlStateManager.matrixMode(5889);
 		GlStateManager.loadIdentity();

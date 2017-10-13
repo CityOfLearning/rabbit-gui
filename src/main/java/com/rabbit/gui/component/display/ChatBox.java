@@ -11,7 +11,7 @@ import com.rabbit.gui.render.Renderer;
 import com.rabbit.gui.render.TextRenderer;
 
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -109,7 +109,7 @@ public class ChatBox extends TextBox {
 	private int getStartLineY() {
 		if (scrollBar != null) {
 			float scrolled = scrollBar.getScrolledAmt();
-			return MathHelper.ceiling_double_int((scrolled * getHeight()) / TextRenderer.getFontRenderer().FONT_HEIGHT);
+			return MathHelper.ceil((scrolled * getHeight()) / TextRenderer.getFontRenderer().FONT_HEIGHT);
 		}
 		return 0;
 	}

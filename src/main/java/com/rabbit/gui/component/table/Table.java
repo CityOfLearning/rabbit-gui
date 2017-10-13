@@ -9,7 +9,7 @@ import com.rabbit.gui.render.Renderer;
 import com.rabbit.gui.render.TextAlignment;
 import com.rabbit.gui.render.TextRenderer;
 
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -46,7 +46,7 @@ public class Table extends GuiWidget {
 	}
 
 	private void drawRow(int xPos, int yPos, int width, int height, int oneLineHeight, Row row) {
-		TextRenderer.renderString(xPos + (width / 2), yPos + 5, EnumChatFormatting.UNDERLINE + row.getName(),
+		TextRenderer.renderString(xPos + (width / 2), yPos + 5, TextFormatting.UNDERLINE + row.getName(),
 				TextAlignment.CENTER);
 		List<String> lines = row.getStringContent();
 		for (int i = 0; i < row.getContent().size(); i++) {

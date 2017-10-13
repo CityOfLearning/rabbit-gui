@@ -17,7 +17,7 @@ public class ItemTab extends Tab {
 	private DisplayItem disItem;
 
 	public ItemTab(int x, int y, int width, int height) {
-		this(x, y, width, height, Blocks.barrier);
+		this(x, y, width, height, Blocks.BARRIER);
 	}
 
 	public ItemTab(int x, int y, int width, int height, Block block) {

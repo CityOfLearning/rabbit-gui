@@ -11,7 +11,7 @@ import com.rabbit.gui.utils.Geometry;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -100,7 +100,7 @@ public class ScrollableDisplayList extends DisplayList {
 	}
 
 	public ScrollableDisplayList setScrollAmount(float amt) {
-		amt = MathHelper.clamp_float(amt, 0, 1.0f);
+		amt = MathHelper.clamp(amt, 0, 1.0f);
 		scrollBar.setProgress(amt);
 		return this;
 	}
