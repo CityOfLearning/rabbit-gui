@@ -45,7 +45,7 @@ aws {
 def myBucketName = 'broad-participation'
 
 
-version = "1.12.0"
+version = "1.12.1"
 group = 'com.rabbit'
 archivesBaseName = "rabbit-gui"
 
