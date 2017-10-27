@@ -25,8 +25,11 @@ public class Panel extends GuiWidget {
 	List<GuiWidget> panelComponents = new ArrayList<>();
 	private boolean isDragging;
 	private boolean isResizing;
+	private boolean canDrag;
+	private boolean canResize;
 	private int dragXDelta, dragYDelta;
 	private int resizeXPos;
+	private int resizeYPos;
 	private boolean isVisible;
 	private boolean isFocused;
 	private boolean doesDim;
@@ -41,6 +44,8 @@ public class Panel extends GuiWidget {
 		super(xPos, yPos, width, height);
 		isDragging = false;
 		isResizing = false;
+		canDrag = false;
+		canResize = false;
 		isVisible = visible;
 		isFocused = false;
 		doesDim = false;
@@ -80,9 +85,10 @@ public class Panel extends GuiWidget {
 					movePanel(xMouse - dragXDelta, yMouse - dragYDelta);
 				}
 				if (isResizing) {
-					movePanel(xMouse - dragXDelta, y);
-					resize(width + (resizeXPos - xMouse), height);
+//					movePanel(xMouse - dragXDelta, y);
+					resize(width - (resizeXPos - xMouse), height- (resizeYPos - yMouse));
 					resizeXPos = xMouse;
+					resizeYPos = yMouse;
 					// movePanel(xMouse - dragXDelta, yMouse - dragYDelta);
 					// setSize(width + (resizeXPos-xMouse), height + (resizeYPos
 					// -
@@ -128,20 +134,20 @@ public class Panel extends GuiWidget {
 		if (isVisible && isFocused) {
 			super.onMouseClicked(posX, posY, mouseButtonIndex, overlap);
 
-			// is it in the upper left corner
-			// isDragging = !overlap && Geometry.isDotInArea(x + 5, y, width -
-			// 5, 10, posX, posY);
-			isDragging = !overlap && Geometry.isDotInArea(x, y + 10, 5, height - 10, posX, posY);
-			// isResizing = !overlap && Geometry.isDotInArea(x, y + 10, 5,
-			// height - 10, posX, posY);
+			if (canDrag) {
+				isDragging = !overlap && Geometry.isDotInArea(x, y + 10, 5, height - 10, posX, posY);
+			}
+			if (canResize) {
+				isResizing = !overlap && Geometry.isDotInArea((int) (x + width - (width * .1)), height - 10,
+						(int) (width * .1), 10, posX, posY);
+			}
 			if (isDragging) {
 				dragXDelta = posX - x;
 				dragYDelta = posY - y;
 			}
 			if (isResizing) {
-				dragXDelta = posX - x;
-				dragYDelta = posY - y;
 				resizeXPos = posX;
+				resizeYPos = posY;
 			}
 
 			panelComponents.forEach(com -> {
@@ -245,6 +251,25 @@ public class Panel extends GuiWidget {
 
 	public Panel setZ(int zPos) {
 		z = zPos;
+		return this;
+	}
+
+	public boolean canResize() {
+		return canResize;
+	}
+
+	//resizing doesnt work appropriately yet
+//	public Panel setCanResize(boolean canResize) {
+//		this.canResize = canResize;
+//		return this;
+//	}
+
+	public boolean canDrag() {
+		return canDrag;
+	}
+
+	public Panel setCanDrag(boolean canDrag) {
+		this.canDrag = canDrag;
 		return this;
 	}
 }
