@@ -94,17 +94,17 @@ public class CodeInterface extends MultiTextbox {
 		}
 	}
 
+	public CodeInterface addHoverText(String text) {
+		originalHoverText.add(text);
+		return this;
+	}
+
 	public void addPredefinedUserVariables(String variableName, String clazz) {
 		if (predefinedUserVariables.containsKey(clazz)) {
 			predefinedUserVariables.replace(variableName, clazz);
 		} else {
 			predefinedUserVariables.put(variableName, clazz);
 		}
-	}
-
-	public CodeInterface addHoverText(String text) {
-		originalHoverText.add(text);
-		return this;
 	}
 
 	public void clearError() {
@@ -222,7 +222,7 @@ public class CodeInterface extends MultiTextbox {
 											cursorY + TextRenderer.getFontRenderer().FONT_HEIGHT, 0xFFFFFFFF);
 								}
 							}
-							if (this.suggestionCooldown <= 0 && !wholeLine.isEmpty() && !wholeLine.trim().isEmpty()) {
+							if ((suggestionCooldown <= 0) && !wholeLine.isEmpty() && !wholeLine.trim().isEmpty()) {
 								setHoverText(getRecommendation(wholeLine));
 								if (drawHoverText) {
 									verifyHoverText(cursorX + 5, cursorY);
@@ -261,7 +261,7 @@ public class CodeInterface extends MultiTextbox {
 											cursorY + TextRenderer.getFontRenderer().FONT_HEIGHT, 0xFFFFFFFF);
 								}
 							}
-							if (this.suggestionCooldown <= 0 && !wholeLine.isEmpty() && !wholeLine.trim().isEmpty()) {
+							if ((suggestionCooldown <= 0) && !wholeLine.isEmpty() && !wholeLine.trim().isEmpty()) {
 								setHoverText(getRecommendation(wholeLine));
 								if (drawHoverText) {
 									verifyHoverText(cursorX + 5, cursorY);
@@ -361,7 +361,7 @@ public class CodeInterface extends MultiTextbox {
 							&& (token.getText().equals("\"") || token.getText().equals("'"))) {
 						builder.append(STRING + token.getText());
 					} else {
-						if (token.getType() != Python3Parser.NEWLINE && token.getType() != Python3Parser.DEDENT) {
+						if ((token.getType() != Python3Parser.NEWLINE) && (token.getType() != Python3Parser.DEDENT)) {
 							RabbitGui.logger.info("Attempting to format unhandled token: " + token.getType() + ", "
 									+ token.getText());
 						}
@@ -392,11 +392,12 @@ public class CodeInterface extends MultiTextbox {
 		// suggester adds a fake token at the end, drop it
 		List<Token> tokens = UtilityFunctions.minusLast(context.preceedingTokens());
 		Token curText = null;
-		if (tokens.size() > 1 && UtilityFunctions.getLastElement(UtilityFunctions.minusLast(tokens)).getType() == Python3Lexer.DOT) {
+		if ((tokens.size() > 1) && (UtilityFunctions.getLastElement(UtilityFunctions.minusLast(tokens))
+				.getType() == Python3Lexer.DOT)) {
 			curText = UtilityFunctions.getLastElement(tokens);
 			tokens = UtilityFunctions.minusLast(tokens);
 		}
-		if (tokens.size() > 1 && UtilityFunctions.getLastElement(tokens).getType() == Python3Lexer.DOT) {
+		if ((tokens.size() > 1) && (UtilityFunctions.getLastElement(tokens).getType() == Python3Lexer.DOT)) {
 			// The last element is a dot so we are probably
 			// accessing member variables
 			if (curText == null) {
@@ -553,7 +554,7 @@ public class CodeInterface extends MultiTextbox {
 						if (!userVariables.containsKey(res.get(i - 1).getText())) {
 							userVariables.put(res.get(i - 1).getText(), res.get(i + 1).getText());
 						} else {
-							this.notifyError(getText().lastIndexOf(res.get(i - 1).getText()), res.get(i - 1).getText(),
+							notifyError(getText().lastIndexOf(res.get(i - 1).getText()), res.get(i - 1).getText(),
 									"Redefinition Error: variable was already defined");
 							break;
 						}

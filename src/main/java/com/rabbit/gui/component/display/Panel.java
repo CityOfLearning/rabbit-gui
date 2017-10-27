@@ -51,6 +51,14 @@ public class Panel extends GuiWidget {
 		doesDim = false;
 	}
 
+	public boolean canDrag() {
+		return canDrag;
+	}
+
+	public boolean canResize() {
+		return canResize;
+	}
+
 	public boolean doesDim() {
 		return doesDim;
 	}
@@ -85,8 +93,8 @@ public class Panel extends GuiWidget {
 					movePanel(xMouse - dragXDelta, yMouse - dragYDelta);
 				}
 				if (isResizing) {
-//					movePanel(xMouse - dragXDelta, y);
-					resize(width - (resizeXPos - xMouse), height- (resizeYPos - yMouse));
+					// movePanel(xMouse - dragXDelta, y);
+					resize(width - (resizeXPos - xMouse), height - (resizeYPos - yMouse));
 					resizeXPos = xMouse;
 					resizeYPos = yMouse;
 					// movePanel(xMouse - dragXDelta, yMouse - dragYDelta);
@@ -138,7 +146,7 @@ public class Panel extends GuiWidget {
 				isDragging = !overlap && Geometry.isDotInArea(x, y + 10, 5, height - 10, posX, posY);
 			}
 			if (canResize) {
-				isResizing = !overlap && Geometry.isDotInArea((int) (x + width - (width * .1)), height - 10,
+				isResizing = !overlap && Geometry.isDotInArea((int) ((x + width) - (width * .1)), height - 10,
 						(int) (width * .1), 10, posX, posY);
 			}
 			if (isDragging) {
@@ -220,6 +228,11 @@ public class Panel extends GuiWidget {
 		return this;
 	}
 
+	public Panel setCanDrag(boolean canDrag) {
+		this.canDrag = canDrag;
+		return this;
+	}
+
 	public void setDimming(boolean doesDim) {
 		this.doesDim = doesDim;
 	}
@@ -240,6 +253,12 @@ public class Panel extends GuiWidget {
 		panelComponents.forEach(com -> com.setup());
 	}
 
+	// resizing doesnt work appropriately yet
+	// public Panel setCanResize(boolean canResize) {
+	// this.canResize = canResize;
+	// return this;
+	// }
+
 	public Panel setVisible(boolean state) {
 		if (!state) {
 			// cant be invisible and focused
@@ -251,25 +270,6 @@ public class Panel extends GuiWidget {
 
 	public Panel setZ(int zPos) {
 		z = zPos;
-		return this;
-	}
-
-	public boolean canResize() {
-		return canResize;
-	}
-
-	//resizing doesnt work appropriately yet
-//	public Panel setCanResize(boolean canResize) {
-//		this.canResize = canResize;
-//		return this;
-//	}
-
-	public boolean canDrag() {
-		return canDrag;
-	}
-
-	public Panel setCanDrag(boolean canDrag) {
-		this.canDrag = canDrag;
 		return this;
 	}
 }
