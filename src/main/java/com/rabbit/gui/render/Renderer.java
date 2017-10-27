@@ -194,7 +194,7 @@ public class Renderer {
 		if (!content.isEmpty()) {
 			GlStateManager.pushMatrix();
 			{
-				GlStateManager.translate(0, 0, 1);
+				GlStateManager.translate(0, 0, 1000);
 
 				int width = 0;
 				for (String line : content) {
