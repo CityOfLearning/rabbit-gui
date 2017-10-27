@@ -17,6 +17,7 @@ import org.lwjgl.input.Mouse;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.rabbit.gui.RabbitGui;
 import com.rabbit.gui.component.GuiWidget;
 import com.rabbit.gui.component.code.parser.AntlrAutoCompletionSuggester;
 import com.rabbit.gui.component.code.parser.AntlrAutoCompletionSuggester.EditorContext;
@@ -59,6 +60,7 @@ public class CodeInterface extends MultiTextbox {
 	private int suggestionCooldown = 50;
 
 	// the variable name and its respective class
+	private Map<String, String> predefinedUserVariables = Maps.newHashMap();
 	private Map<String, String> userVariables = Maps.newHashMap();
 	private Map<String, List<String>> classMembers = Maps.newHashMap();
 
@@ -89,6 +91,14 @@ public class CodeInterface extends MultiTextbox {
 			classMembers.replace(clazz, mappings);
 		} else {
 			classMembers.put(clazz, mappings);
+		}
+	}
+
+	public void addPredefinedUserVariables(String variableName, String clazz) {
+		if (predefinedUserVariables.containsKey(clazz)) {
+			predefinedUserVariables.replace(variableName, clazz);
+		} else {
+			predefinedUserVariables.put(variableName, clazz);
 		}
 	}
 
@@ -212,27 +222,24 @@ public class CodeInterface extends MultiTextbox {
 											cursorY + TextRenderer.getFontRenderer().FONT_HEIGHT, 0xFFFFFFFF);
 								}
 							}
-							// if (this.suggestionCooldown <= 0) {
-							// setHoverText(getRecommendation(wholeLine));
-							// if (drawHoverText) {
-							// verifyHoverText(cursorX + 5, cursorY);
-							// if (drawToLeft) {
-							// int tlineWidth = 0;
-							// for (String hline : hoverText) {
-							// tlineWidth = TextRenderer.getFontRenderer()
-							// .getStringWidth(hline) > tlineWidth
-							// ?
-							// TextRenderer.getFontRenderer().getStringWidth(hline)
-							// : tlineWidth;
-							// }
-							// Renderer.drawHoveringText(hoverText, cursorX -
-							// tlineWidth - 20, cursorY + 12);
-							// } else {
-							// Renderer.drawHoveringText(hoverText, cursorX + 5,
-							// cursorY + 12);
-							// }
-							// }
-							// }
+							if (this.suggestionCooldown <= 0 && !wholeLine.isEmpty() && !wholeLine.trim().isEmpty()) {
+								setHoverText(getRecommendation(wholeLine));
+								if (drawHoverText) {
+									verifyHoverText(cursorX + 5, cursorY);
+									if (drawToLeft) {
+										int tlineWidth = 0;
+										for (String hline : hoverText) {
+											tlineWidth = TextRenderer.getFontRenderer()
+													.getStringWidth(hline) > tlineWidth
+															? TextRenderer.getFontRenderer().getStringWidth(hline)
+															: tlineWidth;
+										}
+										Renderer.drawHoveringText(hoverText, cursorX - tlineWidth - 20, cursorY + 12);
+									} else {
+										Renderer.drawHoveringText(hoverText, cursorX + 5, cursorY + 12);
+									}
+								}
+							}
 						}
 						charCount++;
 						line += c;
@@ -254,27 +261,24 @@ public class CodeInterface extends MultiTextbox {
 											cursorY + TextRenderer.getFontRenderer().FONT_HEIGHT, 0xFFFFFFFF);
 								}
 							}
-							// if (this.suggestionCooldown <= 0) {
-							// setHoverText(getRecommendation(wholeLine));
-							// if (drawHoverText) {
-							// verifyHoverText(cursorX + 5, cursorY);
-							// if (drawToLeft) {
-							// int tlineWidth = 0;
-							// for (String hline : hoverText) {
-							// tlineWidth = TextRenderer.getFontRenderer()
-							// .getStringWidth(hline) > tlineWidth
-							// ?
-							// TextRenderer.getFontRenderer().getStringWidth(hline)
-							// : tlineWidth;
-							// }
-							// Renderer.drawHoveringText(hoverText, cursorX -
-							// tlineWidth - 20, cursorY + 12);
-							// } else {
-							// Renderer.drawHoveringText(hoverText, cursorX + 5,
-							// cursorY + 12);
-							// }
-							// }
-							// }
+							if (this.suggestionCooldown <= 0 && !wholeLine.isEmpty() && !wholeLine.trim().isEmpty()) {
+								setHoverText(getRecommendation(wholeLine));
+								if (drawHoverText) {
+									verifyHoverText(cursorX + 5, cursorY);
+									if (drawToLeft) {
+										int tlineWidth = 0;
+										for (String hline : hoverText) {
+											tlineWidth = TextRenderer.getFontRenderer()
+													.getStringWidth(hline) > tlineWidth
+															? TextRenderer.getFontRenderer().getStringWidth(hline)
+															: tlineWidth;
+										}
+										Renderer.drawHoveringText(hoverText, cursorX - tlineWidth - 20, cursorY + 12);
+									} else {
+										Renderer.drawHoveringText(hoverText, cursorX + 5, cursorY + 12);
+									}
+								}
+							}
 						}
 					}
 					++lineCount;
@@ -357,7 +361,10 @@ public class CodeInterface extends MultiTextbox {
 							&& (token.getText().equals("\"") || token.getText().equals("'"))) {
 						builder.append(STRING + token.getText());
 					} else {
-						System.out.println("Attempting to format token: " + token.getType() + ", " + token.getText());
+						if (token.getType() != Python3Parser.NEWLINE && token.getType() != Python3Parser.DEDENT) {
+							RabbitGui.logger.info("Attempting to format unhandled token: " + token.getType() + ", "
+									+ token.getText());
+						}
 					}
 				}
 			}
@@ -382,26 +389,44 @@ public class CodeInterface extends MultiTextbox {
 		Set<TokenType> suggestions = autoComplete.suggestions(context);
 		List<String> recommendations = Lists.newArrayList();
 
-		try {
-			// suggester adds a fake token at the end, drop it
-			List<Token> tokens = UtilityFunctions.minusLast(context.preceedingTokens());
-			Token curText = null;
-			if (UtilityFunctions.getLastElement(UtilityFunctions.minusLast(tokens)).getType() == Python3Lexer.DOT) {
-				curText = UtilityFunctions.getLastElement(tokens);
-				tokens = UtilityFunctions.minusLast(tokens);
-			}
-			if (UtilityFunctions.getLastElement(tokens).getType() == Python3Lexer.DOT) {
-				// The last element is a dot so we are probably
-				// accessing member variables
-				if (curText == null) {
-					if (UtilityFunctions.getLastElement(UtilityFunctions.minusLast(tokens))
-							.getType() == Python3Lexer.NAME) {
-						// and the thing preceeding the dot is name so we
-						// are accessing a classes variables
+		// suggester adds a fake token at the end, drop it
+		List<Token> tokens = UtilityFunctions.minusLast(context.preceedingTokens());
+		Token curText = null;
+		if (tokens.size() > 1 && UtilityFunctions.getLastElement(UtilityFunctions.minusLast(tokens)).getType() == Python3Lexer.DOT) {
+			curText = UtilityFunctions.getLastElement(tokens);
+			tokens = UtilityFunctions.minusLast(tokens);
+		}
+		if (tokens.size() > 1 && UtilityFunctions.getLastElement(tokens).getType() == Python3Lexer.DOT) {
+			// The last element is a dot so we are probably
+			// accessing member variables
+			if (curText == null) {
+				if (UtilityFunctions.getLastElement(UtilityFunctions.minusLast(tokens))
+						.getType() == Python3Lexer.NAME) {
+					// and the thing preceeding the dot is name so we
+					// are accessing a classes variables
+					if (userVariables.containsKey(
+							UtilityFunctions.getLastElement(UtilityFunctions.minusLast(tokens)).getText())) {
 						recommendations.addAll(classMembers.get(userVariables
 								.get(UtilityFunctions.getLastElement(UtilityFunctions.minusLast(tokens)).getText())));
 					}
-				} else {
+					if (predefinedUserVariables.containsKey(
+							UtilityFunctions.getLastElement(UtilityFunctions.minusLast(tokens)).getText())) {
+						recommendations.addAll(classMembers.get(predefinedUserVariables
+								.get(UtilityFunctions.getLastElement(UtilityFunctions.minusLast(tokens)).getText())));
+					}
+				}
+			} else {
+				if (predefinedUserVariables
+						.containsKey(UtilityFunctions.getLastElement(UtilityFunctions.minusLast(tokens)).getText())) {
+					for (String elem : classMembers.get(predefinedUserVariables
+							.get(UtilityFunctions.getLastElement(UtilityFunctions.minusLast(tokens)).getText()))) {
+						if (elem.contains(curText.getText())) {
+							recommendations.add(elem);
+						}
+					}
+				}
+				if (userVariables
+						.containsKey(UtilityFunctions.getLastElement(UtilityFunctions.minusLast(tokens)).getText())) {
 					for (String elem : classMembers.get(userVariables
 							.get(UtilityFunctions.getLastElement(UtilityFunctions.minusLast(tokens)).getText()))) {
 						if (elem.contains(curText.getText())) {
@@ -410,9 +435,6 @@ public class CodeInterface extends MultiTextbox {
 					}
 				}
 			}
-		} catch (Exception e) {
-			// eh we dont really care if we dont get a recommendation
-			// that badly
 		}
 		if (recommendations.isEmpty()) {
 			for (TokenType token : suggestions) {
@@ -528,10 +550,12 @@ public class CodeInterface extends MultiTextbox {
 							&& (res.get(i + 1).getType() == Python3Parser.NAME)) {
 						// ok we have an assignment lets remember the object map
 						// now
-						try {
+						if (!userVariables.containsKey(res.get(i - 1).getText())) {
 							userVariables.put(res.get(i - 1).getText(), res.get(i + 1).getText());
-						} catch (Exception e) {
-							// TODO handle user variables named the same thing
+						} else {
+							this.notifyError(getText().lastIndexOf(res.get(i - 1).getText()), res.get(i - 1).getText(),
+									"Redefinition Error: variable was already defined");
+							break;
 						}
 					}
 				} catch (IndexOutOfBoundsException e) {
