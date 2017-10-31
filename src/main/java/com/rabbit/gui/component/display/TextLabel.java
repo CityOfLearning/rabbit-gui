@@ -71,6 +71,15 @@ public class TextLabel extends GuiWidget implements Shiftable {
 		}
 	}
 
+	public Color getColor() {
+		return color;
+	}
+
+	public TextLabel setColor(Color color) {
+		this.color = color;
+		return this;
+	}
+
 	private void drawBackground() {
 		Renderer.drawRect(getX() - 2, getY() - 2, getX() + width + 2, getY() + height + 3, -6250336);
 		Renderer.drawRect(getX() - 1, getY() - 1, getX() + width + 1, getY() + height + 2, -0xFFFFFF - 1);
