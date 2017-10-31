@@ -80,9 +80,9 @@ public class SelectElementEntry<T> extends SelectListEntry {
 	}
 
 	@Override
-	public void onClick(DisplayList list, int mouseX, int mouseY) {
+	public void onClick(DisplayList list, int mouseX, int mouseY, int mouseButtonIndex) {
 		if (isEnabled) {
-			super.onClick(list, mouseX, mouseY);
+			super.onClick(list, mouseX, mouseY, mouseButtonIndex);
 			if (listener != null) {
 				listener.onClick(this, list, mouseX, mouseY);
 			}
@@ -129,5 +129,11 @@ public class SelectElementEntry<T> extends SelectListEntry {
 	public SelectElementEntry<T> setIsEnabled(boolean isEnabled) {
 		this.isEnabled = isEnabled;
 		return this;
+	}
+
+	@Override
+	public void onUpdate() {
+		// TODO Auto-generated method stub
+		
 	}
 }

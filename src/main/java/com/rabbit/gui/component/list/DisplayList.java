@@ -59,6 +59,10 @@ public class DisplayList extends GuiWidget implements WidgetList<ListEntry> {
 		content.clear();
 		return this;
 	}
+	@Override
+	public void onUpdate() {
+		content.forEach(com -> com.onUpdate());
+	}
 
 	protected void drawListBackground() {
 		Renderer.drawRect(getX() - 1, getY() - 1, getX() + width + 1, getY() + height + 1, -6250336);
@@ -82,7 +86,7 @@ public class DisplayList extends GuiWidget implements WidgetList<ListEntry> {
 		return content;
 	}
 
-	protected void handleMouseClickList(int mouseX, int mouseY) {
+	protected void handleMouseClickList(int mouseX, int mouseY, int mouseButtonIndex) {
 		for (int i = 0; i < content.size(); i++) {
 			ListEntry entry = content.get(i);
 			entry.setSelected(false);
@@ -92,7 +96,7 @@ public class DisplayList extends GuiWidget implements WidgetList<ListEntry> {
 			int slotHeight = this.slotHeight;
 			boolean clickedOnEntry = Geometry.isDotInArea(slotPosX, slotPosY, slotWidth, slotHeight, mouseX, mouseY);
 			if (clickedOnEntry) {
-				entry.onClick(this, mouseX, mouseY);
+				entry.onClick(this, mouseX, mouseY, mouseButtonIndex);
 			}
 		}
 	}
@@ -115,7 +119,7 @@ public class DisplayList extends GuiWidget implements WidgetList<ListEntry> {
 		super.onMouseClicked(posX, posY, mouseButtonIndex, overlap);
 		boolean clickedOnList = !overlap && Geometry.isDotInArea(getX(), getY(), width, height, posX, posY);
 		if (clickedOnList) {
-			handleMouseClickList(posX, posY);
+			handleMouseClickList(posX, posY, mouseButtonIndex);
 		}
 		return clickedOnList;
 	}

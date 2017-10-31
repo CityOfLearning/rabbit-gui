@@ -20,7 +20,7 @@ public abstract class SelectListEntry<T> implements ListEntry {
 	}
 
 	@Override
-	public void onClick(DisplayList list, int mouseX, int mouseY) {
+	public void onClick(DisplayList list, int mouseX, int mouseY, int mouseButtonIndex) {
 		selected = !selected;
 	}
 

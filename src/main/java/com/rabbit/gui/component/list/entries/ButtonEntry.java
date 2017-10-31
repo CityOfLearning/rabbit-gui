@@ -24,10 +24,10 @@ public class ButtonEntry extends Button implements ListEntry {
 	}
 
 	@Override
-	public void onClick(DisplayList list, int mouseX, int mouseY) {
+	public void onClick(DisplayList list, int mouseX, int mouseY, int mouseButtonIndex) {
 		if (isEnabled) {
 			if (super.getClickListener() != null) {
-				super.onMouseClicked(mouseX, mouseY, 1, false);
+				super.onMouseClicked(mouseX, mouseY, mouseButtonIndex, false);
 			}
 		} else {
 			setSelected(false);

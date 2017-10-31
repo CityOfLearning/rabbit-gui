@@ -35,7 +35,7 @@ public class StringEntry implements ListEntry {
 	}
 
 	@Override
-	public void onClick(DisplayList list, int mouseX, int mouseY) {
+	public void onClick(DisplayList list, int mouseX, int mouseY, int mouseButtonIndex) {
 		// nothing happens its not a selectable component
 	}
 
@@ -75,5 +75,11 @@ public class StringEntry implements ListEntry {
 	public StringEntry setTextAlignment(TextAlignment align) {
 		this.align = align;
 		return this;
+	}
+
+	@Override
+	public void onUpdate() {
+		// TODO Auto-generated method stub
+		
 	}
 }

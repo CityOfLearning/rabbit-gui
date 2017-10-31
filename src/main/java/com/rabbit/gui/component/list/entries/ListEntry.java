@@ -25,8 +25,9 @@ public interface ListEntry {
 	 *            - user's click position x
 	 * @param mouseY
 	 *            - user's click position y
+	 * @param mouseButtonIndex 
 	 */
-	public default void onClick(DisplayList list, int mouseX, int mouseY) {
+	public default void onClick(DisplayList list, int mouseX, int mouseY, int mouseButtonIndex) {
 	}
 
 	/**
@@ -60,4 +61,6 @@ public interface ListEntry {
 	 */
 	public default void setSelected(boolean state) {
 	}
+
+	public void onUpdate();
 }
