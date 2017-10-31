@@ -81,14 +81,18 @@ public class ScrollTextLabel extends TextLabel {
 	@Override
 	public GuiWidget setX(int x) {
 		super.setX(x);
-		scrollBar.setX(x);
+		if (scrollBar != null) {
+			scrollBar.setX(x + width - 10);
+		}
 		return this;
 	}
 
 	@Override
 	public GuiWidget setY(int y) {
 		super.setY(y);
-		scrollBar.setY(y);
+		if (scrollBar != null) {
+			scrollBar.setY(y);
+		}
 		return this;
 	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.lwjgl.input.Mouse;
 
+import com.rabbit.gui.component.GuiWidget;
 import com.rabbit.gui.component.control.ScrollBar;
 import com.rabbit.gui.component.control.TextBox;
 import com.rabbit.gui.render.Renderer;
@@ -131,4 +132,21 @@ public class ChatBox extends TextBox {
 				scrollBar = new ScrollBar(getX() + getWidth(), getY(), 15, getHeight(), 20).setVisiblie(false));
 	}
 
+	@Override
+	public GuiWidget setX(int x) {
+		super.setX(x);
+		if (scrollBar != null) {
+			scrollBar.setX(x + width);
+		}
+		return this;
+	}
+
+	@Override
+	public GuiWidget setY(int y) {
+		super.setY(y);
+		if (scrollBar != null) {
+			scrollBar.setY(y);
+		}
+		return this;
+	}
 }

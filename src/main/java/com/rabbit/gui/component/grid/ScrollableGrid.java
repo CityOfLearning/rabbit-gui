@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
+import com.rabbit.gui.component.GuiWidget;
 import com.rabbit.gui.component.control.ScrollBar;
 import com.rabbit.gui.component.grid.entries.GridEntry;
 import com.rabbit.gui.layout.LayoutComponent;
@@ -112,5 +113,23 @@ public class ScrollableGrid extends Grid {
 		scrollBar = new ScrollBar((getX() + width) - 10, getY(), 10, height, scrollerSize);
 		scrollBar.setScrollWeight(((float) height / (float) (content.size() * slotHeight)) * .8F);
 		registerComponent(scrollBar);
+	}
+	
+	@Override
+	public GuiWidget setX(int x) {
+		super.setX(x);
+		if (scrollBar != null) {
+			scrollBar.setX(x + width - 10);
+		}
+		return this;
+	}
+
+	@Override
+	public GuiWidget setY(int y) {
+		super.setY(y);
+		if (scrollBar != null) {
+			scrollBar.setY(y);
+		}
+		return this;
 	}
 }

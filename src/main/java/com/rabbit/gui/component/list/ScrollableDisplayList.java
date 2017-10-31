@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
+import com.rabbit.gui.component.GuiWidget;
 import com.rabbit.gui.component.control.ScrollBar;
 import com.rabbit.gui.component.list.entries.ListEntry;
 import com.rabbit.gui.layout.LayoutComponent;
@@ -67,7 +68,7 @@ public class ScrollableDisplayList extends DisplayList {
 	}
 
 	@Override
-	protected void handleMouseClickList(int mouseX, int mouseY) {
+	protected void handleMouseClickList(int mouseX, int mouseY, int mouseButtonIndex) {
 		for (int i = 0; i < content.size(); i++) {
 			ListEntry entry = content.get(i);
 			entry.setSelected(false);
@@ -81,7 +82,7 @@ public class ScrollableDisplayList extends DisplayList {
 				boolean clickedOnEntry = Geometry.isDotInArea(slotPosX, slotPosY, slotWidth, slotHeight, mouseX,
 						mouseY);
 				if (clickedOnEntry) {
-					entry.onClick(this, mouseX, mouseY);
+					entry.onClick(this, mouseX, mouseY, mouseButtonIndex);
 				}
 			}
 		}
@@ -119,4 +120,23 @@ public class ScrollableDisplayList extends DisplayList {
 		scrollBar.setScrollWeight(((float) height / (float) (content.size() * slotHeight)) * .8F);
 		registerComponent(scrollBar);
 	}
+
+	@Override
+	public GuiWidget setX(int x) {
+		super.setX(x);
+		if (scrollBar != null) {
+			scrollBar.setX(x + width - 10);
+		}
+		return this;
+	}
+
+	@Override
+	public GuiWidget setY(int y) {
+		super.setY(y);
+		if (scrollBar != null) {
+			scrollBar.setY(y);
+		}
+		return this;
+	}
+
 }
