@@ -171,9 +171,7 @@ public class AntlrAutoCompletionSuggester {
 	private String describe(ATNState s) {
 		if (s instanceof RuleStartState) {
 			return "rule start (stop -> " + ((RuleStartState) s).stopState + ") isLeftRec "
-					+ ((RuleStartState) s).isPrecedenceRule/*
-															 * ((RuleStartState) s). isLeftRecursiveRule
-															 */ + "  (ruleIndex=" + s.ruleIndex + ")";
+					+ ((RuleStartState) s).isLeftRecursiveRule + "  (ruleIndex=" + s.ruleIndex + ")";
 		} else if (s instanceof RuleStopState) {
 			return "rule stop (ruleIndex=" + s.ruleIndex + ")";
 		} else if (s instanceof BasicState) {
@@ -184,7 +182,7 @@ public class AntlrAutoCompletionSuggester {
 			return "star block start";
 		} else if (s instanceof StarLoopEntryState) {
 			return "star loop entry start (loopback " + ((StarLoopEntryState) s).loopBackState + ") prec "
-					+ ((StarLoopEntryState) s).precedenceRuleDecision;
+					+ ((StarLoopEntryState) s).isPrecedenceDecision;
 		} else if (s instanceof StarLoopbackState) {
 			return "star loopback";
 		} else if (s instanceof BasicBlockStartState) {

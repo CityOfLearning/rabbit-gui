@@ -68,7 +68,7 @@ configurations {
 }
 
 dependencies {
-	antlr "org.antlr:antlr4:4.5" // use ANTLR version 4
+	antlr "org.antlr:antlr4:4.5.3" // use ANTLR version 4
     shade 'net.objecthunter:exp4j:0.4.5'
 	shade "org.antlr:antlr4-runtime:4.5.3"
 }
