@@ -3,6 +3,7 @@ package com.rabbit.gui.component.control;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
+import com.rabbit.gui.RabbitGui;
 import com.rabbit.gui.component.GuiWidget;
 import com.rabbit.gui.component.Shiftable;
 import com.rabbit.gui.layout.LayoutComponent;
@@ -266,11 +267,7 @@ public class TextBox extends GuiWidget implements Shiftable {
 			}
 			return true;
 		case Keyboard.KEY_HOME:
-			if (GuiScreen.isShiftKeyDown()) {
-				setSelectionPos(0);
-			} else {
 				setCursorPosition(0);
-			}
 			return true;
 		case Keyboard.KEY_LEFT:
 			handleKeyboardArrow(-1);
@@ -279,11 +276,7 @@ public class TextBox extends GuiWidget implements Shiftable {
 			handleKeyboardArrow(1);
 			return true;
 		case Keyboard.KEY_END:
-			if (GuiScreen.isShiftKeyDown()) {
-				setSelectionPos(getText().length());
-			} else {
 				setCursorPosition(getText().length());
-			}
 			return true;
 		case Keyboard.KEY_DELETE:
 			if (isEnabled()) {
@@ -324,7 +317,7 @@ public class TextBox extends GuiWidget implements Shiftable {
 		} else if (GuiScreen.isCtrlKeyDown()) {
 			setCursorPosition(this.getAmountOfWordsFromPos(n, getCursorPosition(), true));
 		} else {
-			setCursorPosition(selectionEnd + (n));
+			setCursorPosition(cursorPos + (n));
 		}
 	}
 
@@ -335,7 +328,8 @@ public class TextBox extends GuiWidget implements Shiftable {
 			int lenght = posX - getX();
 			TextRenderer.getFontRenderer().setUnicodeFlag(drawUnicode);
 			String temp = TextRenderer.getFontRenderer().trimStringToWidth(text.substring(scrollOffset), getWidth());
-			setCursorPosition(TextRenderer.getFontRenderer().trimStringToWidth(temp, lenght).length() + scrollOffset);
+				setCursorPosition(
+						TextRenderer.getFontRenderer().trimStringToWidth(temp, lenght).length() + scrollOffset);
 			TextRenderer.getFontRenderer().setUnicodeFlag(false);
 		}
 		return clicked;
@@ -343,7 +337,7 @@ public class TextBox extends GuiWidget implements Shiftable {
 
 	protected boolean handleSpecialCharComb(char typedChar, int typedIndex) {
 		switch (typedChar) {
-		case 1:
+		case ControlCharacters.CtrlA:
 			setCursorPosition(getText().length());
 			setSelectionPos(0);
 			return true;
@@ -387,7 +381,7 @@ public class TextBox extends GuiWidget implements Shiftable {
 	}
 
 	public void moveCursorBy(int amount) {
-		setCursorPosition(selectionEnd + amount);
+		setCursorPosition(Math.max(selectionEnd, cursorPos) + amount);
 	}
 
 	@Override
@@ -444,8 +438,8 @@ public class TextBox extends GuiWidget implements Shiftable {
 	}
 
 	protected void renderSelectionRect(int xTop, int yTop, int xBot, int yBot) {
-		Renderer.drawRectWithSpecialGL(xTop, yTop, xBot, yBot, -0x5555FF, () -> {
-			GlStateManager.color(0.0F, 0.0F, 255.0F, 255.0F);
+		Renderer.drawRectWithSpecialGL(xTop, yTop, xBot, yBot, -0xffffff, () -> {
+			GlStateManager.color(255.0F, 255.0F, 255.0F, 255.0F);
 			GlStateManager.disableTexture2D();
 			GL11.glEnable(GL11.GL_COLOR_LOGIC_OP);
 			GL11.glLogicOp(GL11.GL_OR_REVERSE);
@@ -460,13 +454,15 @@ public class TextBox extends GuiWidget implements Shiftable {
 
 	public TextBox setCursorPosition(int pos) {
 		cursorPos = pos;
-		if (getCursorPosition() < 0) {
+		if (cursorPos < 0) {
 			cursorPos = 0;
 		}
-		if (getCursorPosition() > getText().length()) {
+		if (cursorPos > getText().length()) {
 			cursorPos = getText().length();
 		}
-		setSelectionPos(getCursorPosition());
+		if (!GuiScreen.isShiftKeyDown()) {
+			setSelectionPos(cursorPos);
+		}
 		return this;
 	}
 
@@ -526,32 +522,34 @@ public class TextBox extends GuiWidget implements Shiftable {
 		}
 
 		selectionEnd = pos;
-
-		if (scrollOffset > getText().length()) {
-			scrollOffset = getText().length();
-		}
-
-		String trimmed = TextRenderer.getFontRenderer().trimStringToWidth(getText().substring(scrollOffset),
-				getWidth());
-		int length = trimmed.length() + scrollOffset;
-
-		if (pos == scrollOffset) {
-			scrollOffset -= TextRenderer.getFontRenderer().trimStringToWidth(getText(), getWidth(), true).length();
-		}
-
-		if (pos > length) {
-			scrollOffset += pos - length;
-		} else if (pos <= scrollOffset) {
-			scrollOffset -= scrollOffset - pos;
-		}
-
-		if (scrollOffset < 0) {
-			scrollOffset = 0;
-		}
-
-		if (scrollOffset > getText().length()) {
-			scrollOffset = getText().length();
-		}
+		
+		// if (scrollOffset > getText().length()) {
+		// scrollOffset = getText().length();
+		// }
+		//
+		// String trimmed =
+		// TextRenderer.getFontRenderer().trimStringToWidth(getText().substring(scrollOffset),
+		// getWidth());
+		// int length = trimmed.length() + scrollOffset;
+		//
+		// if (pos == scrollOffset) {
+		// scrollOffset -= TextRenderer.getFontRenderer().trimStringToWidth(getText(),
+		// getWidth(), true).length();
+		// }
+		//
+		// if (pos > length) {
+		// scrollOffset += pos - length;
+		// } else if (pos <= scrollOffset) {
+		// scrollOffset -= scrollOffset - pos;
+		// }
+		//
+		// if (scrollOffset < 0) {
+		// scrollOffset = 0;
+		// }
+		//
+		// if (scrollOffset > getText().length()) {
+		// scrollOffset = getText().length();
+		// }
 
 		return this;
 	}

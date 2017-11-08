@@ -3,6 +3,7 @@ package com.rabbit.gui.component.control;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -24,17 +25,17 @@ public class MultiTextbox extends TextBox {
 
 	protected int maxStringLength = 1000;
 
-	protected int listHeight;
+	protected int textAreaHeight;
 
 	public MultiTextbox(int xPos, int yPos, int width, int height) {
 		super(xPos, yPos, width, height);
-		listHeight = height;
+		textAreaHeight = height;
 		scrollBar = new ScrollBar((getX() + getWidth()) - 5, getY(), 10, getHeight(), 20).setVisiblie(false);
 	}
 
 	public MultiTextbox(int xPos, int yPos, int width, int height, String initialText) {
 		super(xPos, yPos, width, height, initialText);
-		listHeight = height;
+		textAreaHeight = height;
 		scrollBar = new ScrollBar((getX() + getWidth()) - 5, getY(), 10, getHeight(), 20).setVisiblie(false);
 	}
 
@@ -54,20 +55,82 @@ public class MultiTextbox extends TextBox {
 				List<String> lines = getLines();
 				int charCount = 0;
 				int lineCount = 0;
-				int maxWidth = width - 4;
-				for (int i = 0; i < lines.size(); ++i) {
-					String wholeLine = lines.get(i);
+				int from = Math.min(getCursorPosition(), selectionEnd);
+				int to = Math.max(getCursorPosition(), selectionEnd);
+				boolean renderSelection = !getSelectedText().isEmpty();
+				boolean renderSelectionLine = false;
+				int maxWidth = scrollBar.isVisible() ? width - 14 : width - 4;
+				for (String wholeLine : lines) {
 					String line = "";
-					char[] chars = wholeLine.toCharArray();
-					for (char c : chars) {
+					if (TextRenderer.getFontRenderer().getStringWidth(wholeLine) > maxWidth
+							|| (getCursorPosition() > charCount && getCursorPosition() < charCount + wholeLine.length())
+							|| (renderSelection && (from >= charCount && from <= charCount + wholeLine.length())
+									|| (to >= charCount && to <= charCount + wholeLine.length()))) {
+					for (char c :  wholeLine.toCharArray()) {
 						if (TextRenderer.getFontRenderer().getStringWidth(line + c) > maxWidth) {
 							if ((lineCount >= startLine) && (lineCount < maxLineAmount)) {
 								TextRenderer.getFontRenderer().drawString(line, getX() + 4, getY() + 4
 										+ ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT),
 										color);
 							}
+							if (renderSelectionLine) {
+								if (from <= charCount - line.length()) {
+									int startX = getX() + 3;
+									int lineY = getY()
+											+ ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT)
+											+ 4;
+									renderSelectionRect(startX, lineY,
+											startX + TextRenderer.getFontRenderer().getStringWidth(line) + 2,
+											lineY + TextRenderer.getFontRenderer().FONT_HEIGHT);
+								} else {
+									int startX = getX() + TextRenderer.getFontRenderer().getStringWidth(line) + 3;
+									int lineY = getY()
+											+ ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT)
+											+ 4;
+									renderSelectionRect(startX, lineY,
+											startX + TextRenderer.getFontRenderer()
+													.getStringWidth(line.substring(charCount - from)) + 2,
+											lineY + TextRenderer.getFontRenderer().FONT_HEIGHT);
+								}
+							}
 							line = "";
 							lineCount++;
+						}
+						if (renderSelection) {
+							if (charCount == from) {
+								renderSelectionLine = true;
+								int startX = getX() + TextRenderer.getFontRenderer().getStringWidth(line) + 3;
+								int lineY = getY()
+										+ ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT)
+										+ 4;
+
+								if (TextRenderer.getFontRenderer().getStringWidth(wholeLine) > maxWidth) {
+
+								}
+
+								if (wholeLine.contains(getSelectedText())) {
+									renderSelectionLine = false;
+									renderSelection = false;
+									// the selection is only on this line
+									renderSelectionRect(startX, lineY,
+											startX + TextRenderer.getFontRenderer()
+													.getStringWidth(getSelectedText()) + 2,
+											lineY + TextRenderer.getFontRenderer().FONT_HEIGHT);
+								}
+							} else if (charCount == to) {
+								renderSelectionLine = false;
+								renderSelection = false;
+								int startX = getX() + 3;
+								int lineY = getY()
+										+ ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT)
+										+ 4;
+								renderSelectionRect(startX, lineY,
+										startX + TextRenderer.getFontRenderer().getStringWidth(line) + 2,
+										lineY + TextRenderer.getFontRenderer().FONT_HEIGHT);
+							} else if (charCount > to) {
+								renderSelectionLine = false;
+								renderSelection = false;
+							}
 						}
 						if (renderCursor && (charCount == getCursorPosition()) && (lineCount >= startLine)
 								&& (lineCount < maxLineAmount)) {
@@ -82,6 +145,7 @@ public class MultiTextbox extends TextBox {
 						}
 						charCount++;
 						line += c;
+					}
 					}
 					if ((lineCount >= startLine) && (lineCount < maxLineAmount)) {
 						TextRenderer.getFontRenderer().drawString(line, getX() + 4,
@@ -100,12 +164,39 @@ public class MultiTextbox extends TextBox {
 							}
 						}
 					}
+					if (renderSelectionLine) {
+						if (from <= charCount - line.length()) {
+							// render the whole line
+							int startX = getX() + 3;
+							int lineY = getY() + ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT)
+									+ 4;
+							renderSelectionRect(startX, lineY,
+									startX + TextRenderer.getFontRenderer().getStringWidth(line) + 2,
+									lineY + TextRenderer.getFontRenderer().FONT_HEIGHT);
+						} else {
+							// render from the selection over
+							String substring = line.substring(line.length() - (charCount - from));
+							int startX = getX()
+									+ TextRenderer.getFontRenderer().getStringWidth(line.replace(substring, "")) + 3;
+							int lineY = getY() + ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT)
+									+ 4;
+							renderSelectionRect(startX, lineY,
+									startX + TextRenderer.getFontRenderer().getStringWidth(substring) + 2,
+									lineY + TextRenderer.getFontRenderer().FONT_HEIGHT);
+						}
+						if (renderSelectionLine && charCount >= to) {
+							renderSelectionLine = false;
+							renderSelection = false;
+						}
+						
+					}
 					++lineCount;
 					++charCount;
 				}
-				listHeight = lineCount * TextRenderer.getFontRenderer().FONT_HEIGHT;
-				scrollBar.setVisiblie(listHeight > (height - 4));
-				scrollBar.setHandleMouseWheel((listHeight > (height - 4)) && isUnderMouse(Mouse.getX(), Mouse.getY()));
+				textAreaHeight = lineCount * TextRenderer.getFontRenderer().FONT_HEIGHT;
+				scrollBar.setVisiblie(textAreaHeight > (height - 4));
+				scrollBar.setHandleMouseWheel(
+						(textAreaHeight > (height - 4)) && isUnderMouse(Mouse.getX(), Mouse.getY()));
 				scrollBar.setScrollerSize((getScrollerSize()));
 				GlStateManager.resetColor();
 			}
@@ -136,11 +227,11 @@ public class MultiTextbox extends TextBox {
 	}
 
 	protected int getScrollerSize() {
-		return (int) (((1F * height) / listHeight) * (height - 4));
+		return (int) (((1F * height) / textAreaHeight) * (height - 4));
 	}
 
 	public int getStartLineY() {
-		if (scrollBar != null) {
+		if (scrollBar != null && scrollBar.isVisible()) {
 			float scrolled = scrollBar.getScrolledAmt();
 			return MathHelper.ceil((scrolled * getHeight()) / TextRenderer.getFontRenderer().FONT_HEIGHT);
 		}
@@ -175,6 +266,7 @@ public class MultiTextbox extends TextBox {
 					if ((charCount == getCursorPosition())) {
 						setCursorPosition(Math.max(0,
 								charCount - (prevLineLength < line.length() ? line.length() + 1 : prevLineLength + 1)));
+
 						return true;
 					}
 					charCount++;
@@ -251,27 +343,16 @@ public class MultiTextbox extends TextBox {
 	}
 
 	@Override
-	protected void handleKey(char typedChar, int typedIndex) {
-		if (!isFocused()) {
-			return;
-		}
-
-		boolean isSpecialCharCombination = handleSpecialCharComb(typedChar, typedIndex);
-		if (!isSpecialCharCombination) {
-			handleInput(typedChar, typedIndex);
-		}
-	}
-
-	@Override
 	protected boolean handleMouseClick(int posX, int posY, int mouseButtonIndex, boolean overlap) {
-		boolean clicked = isEnabled() && !overlap && isTextBoxUnderMouse(posX, posY);
+		boolean clicked = isEnabled() && !overlap && isTextBoxUnderMouse(posX, posY)
+				&& !scrollBar.isUnderMouse(posX, posY);
 		setIsFocused(clicked);
 		if (isFocused() && (mouseButtonIndex == 0)) {
 			TextRenderer.getFontRenderer().setUnicodeFlag(drawUnicode);
-			int lenght = posX - getX();
+			int length = posX - getX();
 			String temp = TextRenderer.getFontRenderer()
 					.trimStringToWidth(text.substring(Math.max(0, Math.min(scrollOffset, text.length()))), getWidth());
-			setCursorPosition(TextRenderer.getFontRenderer().trimStringToWidth(temp, lenght).length()
+			setCursorPosition(TextRenderer.getFontRenderer().trimStringToWidth(temp, length).length()
 					+ Math.max(0, Math.min(scrollOffset, text.length())));
 			int x = posX - getX();
 			int y = ((posY - getY() - 4) / TextRenderer.getFontRenderer().FONT_HEIGHT) + getStartLineY();
@@ -285,7 +366,6 @@ public class MultiTextbox extends TextBox {
 				String line = "";
 				char[] chars = wholeLine.toCharArray();
 				for (char c : chars) {
-					setCursorPosition(charCount);
 					if (TextRenderer.getFontRenderer().getStringWidth(line + c) > maxWidth) {
 						lineCount++;
 						line = "";
@@ -294,12 +374,17 @@ public class MultiTextbox extends TextBox {
 						}
 					}
 					if ((lineCount == y) && (x <= TextRenderer.getFontRenderer().getStringWidth(line + c))) {
+						setCursorPosition(charCount);
 						return clicked;
 					}
 					charCount++;
 					line += c;
 				}
-				setCursorPosition(charCount);
+				if (lineCount == y) {
+					setCursorPosition(charCount);
+					return clicked;
+				}
+
 				charCount++;
 				lineCount++;
 				if (y < lineCount) {
@@ -313,32 +398,6 @@ public class MultiTextbox extends TextBox {
 			TextRenderer.getFontRenderer().setUnicodeFlag(false);
 		}
 		return clicked;
-	}
-
-	@Override
-	protected boolean handleSpecialCharComb(char typedChar, int typedIndex) {
-		switch (typedChar) {
-		case ControlCharacters.CtrlA:
-			setCursorPosition(getText().length());
-			setSelectionPos(0);
-			System.out.println("Selected Text now set to: " + getSelectedText());
-			return true;
-		case ControlCharacters.CtrlC:
-			GuiScreen.setClipboardString(getSelectedText());
-			return true;
-		case ControlCharacters.CtrlV:
-			if (isEnabled()) {
-				pushText(GuiScreen.getClipboardString());
-			}
-			return true;
-		case ControlCharacters.CtrlX:
-			GuiScreen.setClipboardString(getSelectedText());
-			if (isEnabled()) {
-				pushText("");
-			}
-			return true;
-		}
-		return false;
 	}
 
 	@Override

@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -17,6 +18,7 @@ import org.lwjgl.input.Mouse;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.rabbit.gui.RabbitGui;
 import com.rabbit.gui.component.GuiWidget;
 import com.rabbit.gui.component.code.parser.AntlrAutoCompletionSuggester;
@@ -133,41 +135,180 @@ public class CodeInterface extends MultiTextbox {
 				int startLine = getStartLineY();
 				int maxLineAmount = (height / TextRenderer.getFontRenderer().FONT_HEIGHT) + startLine;
 				List<String> lines = getFormattedLines();
-				int charCount = 0;
 				int lineCount = 0;
 				int maxWidth = scrollBar.isVisible() ? width - 14 : width - 4;
 				for (String wholeLine : lines) {
 					String line = "";
-					char[] chars = wholeLine.toCharArray();
-					for (char c : chars) {
-						if (TextRenderer.getFontRenderer().getStringWidth(line + c) > maxWidth) {
-							if (hasError && (Math.abs(lineCount - errLine) <= 1)) {
-								if (!errCode.isEmpty() && wholeLine.contains(errCode) && (lineCount != errLine)) {
-									errLine = lineCount;
-									errorBox.setY(getY() + 4
-											+ ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT));
-									errorBox.setHeight(TextRenderer.getFontRenderer().FONT_HEIGHT * 2);
-								} else if (lineCount == errLine) {
-									errorBox.setY(getY() + 4
-											+ ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT));
-									errorBox.setHeight(TextRenderer.getFontRenderer().FONT_HEIGHT * 2);
+					if (TextRenderer.getFontRenderer().getStringWidth(wholeLine) > maxWidth) {
+						for (char c : wholeLine.toCharArray()) {
+							if (TextRenderer.getFontRenderer().getStringWidth(line + c) > maxWidth) {
+
+								if ((lineCount >= startLine) && (lineCount < maxLineAmount)) {
+									TextRenderer.getFontRenderer().drawString(line, getX() + 4, getY() + 4
+											+ ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT),
+											color);
 								}
+								line = "";
+								lineCount++;
 							}
-							if ((lineCount >= startLine) && (lineCount < maxLineAmount)) {
-								TextRenderer.getFontRenderer().drawString(line, getX() + 4, getY() + 4
-										+ ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT),
-										color);
-							}
-							line = "";
-							lineCount++;
+							line += c;
 						}
-						charCount++;
-						line += c;
+					} else {
+						line = wholeLine;
 					}
 					if ((lineCount >= startLine) && (lineCount < maxLineAmount)) {
+						TextRenderer.getFontRenderer().drawString(line, getX() + 4,
+								getY() + 4 + ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT),
+								color);
+					}
+					++lineCount;
+				}
+				textAreaHeight = (lineCount * TextRenderer.getFontRenderer().FONT_HEIGHT) + (height / 2);
+
+				/*
+				 * Find and render the cursor for some reason the formatted text doesnt render
+				 * the cursor in the right place
+				 */
+				lines = getLines();
+				int charCount = 0;
+				lineCount = 0;
+				int from = Math.min(getCursorPosition(), selectionEnd);
+				int to = Math.max(getCursorPosition(), selectionEnd);
+				boolean renderSelection = !getSelectedText().isEmpty();
+				boolean renderSelectionLine = false;
+				for (String wholeLine : lines) {
+					String line = "";
+					if (TextRenderer.getFontRenderer().getStringWidth(wholeLine) > maxWidth
+							|| (getCursorPosition() > charCount && getCursorPosition() < charCount + wholeLine.length())
+							|| (renderSelection && (from >= charCount && from <= charCount + wholeLine.length())
+									|| (to >= charCount && to <= charCount + wholeLine.length()))) {
+
+						for (char c : wholeLine.toCharArray()) {
+							if (TextRenderer.getFontRenderer().getStringWidth(line + c) > maxWidth) {
+								if (hasError && (Math.abs(lineCount - errLine) <= 1)) {
+									if (!errCode.isEmpty() && wholeLine.contains(errCode) && (lineCount != errLine)) {
+										errLine = lineCount;
+										errorBox.setY(getY() + 4 + ((lineCount - startLine)
+												* TextRenderer.getFontRenderer().FONT_HEIGHT));
+										errorBox.setHeight(TextRenderer.getFontRenderer().FONT_HEIGHT * 2);
+									} else if (lineCount == errLine) {
+										errorBox.setY(getY() + 4 + ((lineCount - startLine)
+												* TextRenderer.getFontRenderer().FONT_HEIGHT));
+										errorBox.setHeight(TextRenderer.getFontRenderer().FONT_HEIGHT * 2);
+									}
+								}
+								if (renderSelectionLine) {
+									if (from <= charCount - line.length()) {
+										int startX = getX() + 3;
+										int lineY = getY()
+												+ ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT)
+												+ 4;
+										renderSelectionRect(startX, lineY,
+												startX + TextRenderer.getFontRenderer().getStringWidth(line) + 2,
+												lineY + TextRenderer.getFontRenderer().FONT_HEIGHT);
+									} else {
+										int startX = getX() + TextRenderer.getFontRenderer().getStringWidth(line) + 3;
+										int lineY = getY()
+												+ ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT)
+												+ 4;
+										renderSelectionRect(startX, lineY,
+												startX + TextRenderer.getFontRenderer()
+														.getStringWidth(line.substring(charCount - from)) + 2,
+												lineY + TextRenderer.getFontRenderer().FONT_HEIGHT);
+									}
+								}
+								line = "";
+								lineCount++;
+							}
+							if (renderSelection) {
+								if (charCount == from) {
+									renderSelectionLine = true;
+									int startX = getX() + TextRenderer.getFontRenderer().getStringWidth(line) + 3;
+									int lineY = getY()
+											+ ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT)
+											+ 4;
+
+									if (TextRenderer.getFontRenderer().getStringWidth(wholeLine) > maxWidth) {
+
+									}
+
+									if (wholeLine.contains(getSelectedText())) {
+										renderSelectionLine = false;
+										renderSelection = false;
+										// the selection is only on this line
+										renderSelectionRect(startX, lineY,
+												startX + TextRenderer.getFontRenderer()
+														.getStringWidth(getSelectedText()) + 2,
+												lineY + TextRenderer.getFontRenderer().FONT_HEIGHT);
+									}
+								} else if (charCount == to) {
+									renderSelectionLine = false;
+									renderSelection = false;
+									int startX = getX() + 3;
+									int lineY = getY()
+											+ ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT)
+											+ 4;
+									renderSelectionRect(startX, lineY,
+											startX + TextRenderer.getFontRenderer().getStringWidth(line) + 2,
+											lineY + TextRenderer.getFontRenderer().FONT_HEIGHT);
+								} else if (charCount > to) {
+									renderSelectionLine = false;
+									renderSelection = false;
+								}
+							}
+							if ((charCount == getCursorPosition()) && (lineCount >= startLine)
+									&& (lineCount < maxLineAmount)) {
+
+								int cursorX = getX() + TextRenderer.getFontRenderer().getStringWidth(line) + 3;
+								int cursorY = getY()
+										+ ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT) + 4;
+								if (renderCursor) {
+									if (suggestionCooldown > 0) {
+										suggestionCooldown -= 2;
+									}
+									if ((getText().length() == getCursorPosition()) || (c == '\n')) {
+										TextRenderer.getFontRenderer().drawString("_", cursorX, cursorY, 0xFFFFFFFF);
+									} else {
+										Renderer.drawRect(cursorX, cursorY, cursorX + 1,
+												cursorY + TextRenderer.getFontRenderer().FONT_HEIGHT, 0xFFFFFFFF);
+									}
+								}
+								if ((suggestionCooldown <= 0) && !wholeLine.isEmpty() && !wholeLine.trim().isEmpty()
+										&& from == to) {
+									setHoverText(Lists.newArrayList(getRecommendation(wholeLine)));
+									if (drawHoverText) {
+										verifyHoverText(cursorX + 5, cursorY);
+										if (drawToLeft) {
+											int tlineWidth = 0;
+											for (String hline : hoverText) {
+												tlineWidth = TextRenderer.getFontRenderer()
+														.getStringWidth(hline) > tlineWidth
+																? TextRenderer.getFontRenderer().getStringWidth(hline)
+																: tlineWidth;
+											}
+											Renderer.drawHoveringText(hoverText, cursorX - tlineWidth - 20,
+													cursorY + 12);
+										} else {
+											Renderer.drawHoveringText(hoverText, cursorX + 5, cursorY + 12);
+										}
+									}
+								}
+							}
+							charCount++;
+							line += c;
+						}
+					} else {
+						line = wholeLine;
+						charCount += wholeLine.length();
+						if (renderSelectionLine && charCount >= to) {
+							renderSelectionLine = false;
+							renderSelection = false;
+						}
+					}
+
+					if ((lineCount >= startLine) && (lineCount < maxLineAmount)) {
 						if (hasError && (Math.abs(lineCount - errLine) <= 1)) {
-							// its possible the code error is empty because the
-							// way
+							// its possible the code error is empty because the way
 							// python shell reports its errors...
 							if (!errCode.isEmpty() && wholeLine.contains(errCode) && (lineCount != errLine)) {
 								errLine = lineCount;
@@ -180,71 +321,6 @@ public class CodeInterface extends MultiTextbox {
 								errorBox.setHeight(TextRenderer.getFontRenderer().FONT_HEIGHT);
 							}
 						}
-						TextRenderer.getFontRenderer().drawString(line, getX() + 4,
-								getY() + 4 + ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT),
-								color);
-					}
-					++lineCount;
-					++charCount;
-				}
-				listHeight = (lineCount * TextRenderer.getFontRenderer().FONT_HEIGHT) + (height / 2);
-
-				/*
-				 * Find and render the cursor for some reason the formatted text doesnt render
-				 * the cursor in the right place
-				 */
-				lines = getLines();
-				charCount = 0;
-				lineCount = 0;
-				maxWidth = scrollBar.isVisible() ? width - 14 : width - 4;
-				for (String wholeLine : lines) {
-					String line = "";
-					char[] chars = wholeLine.toCharArray();
-					for (char c : chars) {
-						if (TextRenderer.getFontRenderer().getStringWidth(line + c) > maxWidth) {
-							line = "";
-							lineCount++;
-						}
-						if ((charCount == getCursorPosition()) && (lineCount >= startLine)
-								&& (lineCount < maxLineAmount)) {
-
-							int cursorX = getX() + TextRenderer.getFontRenderer().getStringWidth(line) + 3;
-							int cursorY = getY()
-									+ ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT) + 4;
-							if (renderCursor) {
-								if (suggestionCooldown > 0) {
-									suggestionCooldown -= 2;
-								}
-								if ((getText().length() == getCursorPosition()) || (c == '\n')) {
-									TextRenderer.getFontRenderer().drawString("_", cursorX, cursorY, 0xFFFFFFFF);
-								} else {
-									Renderer.drawRect(cursorX, cursorY, cursorX + 1,
-											cursorY + TextRenderer.getFontRenderer().FONT_HEIGHT, 0xFFFFFFFF);
-								}
-							}
-							if ((suggestionCooldown <= 0) && !wholeLine.isEmpty() && !wholeLine.trim().isEmpty()) {
-								setHoverText(getRecommendation(wholeLine));
-								if (drawHoverText) {
-									verifyHoverText(cursorX + 5, cursorY);
-									if (drawToLeft) {
-										int tlineWidth = 0;
-										for (String hline : hoverText) {
-											tlineWidth = TextRenderer.getFontRenderer()
-													.getStringWidth(hline) > tlineWidth
-															? TextRenderer.getFontRenderer().getStringWidth(hline)
-															: tlineWidth;
-										}
-										Renderer.drawHoveringText(hoverText, cursorX - tlineWidth - 20, cursorY + 12);
-									} else {
-										Renderer.drawHoveringText(hoverText, cursorX + 5, cursorY + 12);
-									}
-								}
-							}
-						}
-						charCount++;
-						line += c;
-					}
-					if ((lineCount >= startLine) && (lineCount < maxLineAmount)) {
 						if (charCount == getCursorPosition()) {
 							int cursorX = getX() + TextRenderer.getFontRenderer().getStringWidth(line) + 3;
 							int cursorY = getY()
@@ -261,8 +337,9 @@ public class CodeInterface extends MultiTextbox {
 											cursorY + TextRenderer.getFontRenderer().FONT_HEIGHT, 0xFFFFFFFF);
 								}
 							}
-							if ((suggestionCooldown <= 0) && !wholeLine.isEmpty() && !wholeLine.trim().isEmpty()) {
-								setHoverText(getRecommendation(wholeLine));
+							if ((suggestionCooldown <= 0) && !wholeLine.isEmpty() && !wholeLine.trim().isEmpty()
+									&& from == to) {
+								setHoverText(Lists.newArrayList(getRecommendation(wholeLine)));
 								if (drawHoverText) {
 									verifyHoverText(cursorX + 5, cursorY);
 									if (drawToLeft) {
@@ -281,11 +358,38 @@ public class CodeInterface extends MultiTextbox {
 							}
 						}
 					}
+					if (renderSelectionLine) {
+						if (from <= charCount - line.length()) {
+							// render the whole line
+							int startX = getX() + 3;
+							int lineY = getY() + ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT)
+									+ 4;
+							renderSelectionRect(startX, lineY,
+									startX + TextRenderer.getFontRenderer().getStringWidth(line) + 2,
+									lineY + TextRenderer.getFontRenderer().FONT_HEIGHT);
+						} else {
+							// render from the selection over
+							String substring = line.substring(line.length() - (charCount - from));
+							int startX = getX()
+									+ TextRenderer.getFontRenderer().getStringWidth(line.replace(substring, "")) + 3;
+							int lineY = getY() + ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT)
+									+ 4;
+							renderSelectionRect(startX, lineY,
+									startX + TextRenderer.getFontRenderer().getStringWidth(substring) + 2,
+									lineY + TextRenderer.getFontRenderer().FONT_HEIGHT);
+						}
+						if (renderSelectionLine && charCount >= to) {
+							renderSelectionLine = false;
+							renderSelection = false;
+						}
+						
+					}
 					++lineCount;
 					++charCount;
 				}
-				scrollBar.setVisiblie(listHeight > (height - 4));
-				scrollBar.setHandleMouseWheel((listHeight > (height - 4)) && isUnderMouse(Mouse.getX(), Mouse.getY()));
+				scrollBar.setVisiblie(textAreaHeight > (height - 4));
+				scrollBar.setHandleMouseWheel(
+						(textAreaHeight > (height - 4)) && isUnderMouse(Mouse.getX(), Mouse.getY()));
 				scrollBar.setScrollerSize((super.getScrollerSize()));
 				GlStateManager.resetColor();
 			}
@@ -381,13 +485,13 @@ public class CodeInterface extends MultiTextbox {
 		return Arrays.asList(formattedText.split("\n"));
 	}
 
-	public List<String> getRecommendation(String line) {
+	public Set<String> getRecommendation(String line) {
 		AntlrAutoCompletionSuggester autoComplete = new AntlrAutoCompletionSuggester(Python3Parser.ruleNames,
 				Python3Parser.VOCABULARY, Python3Parser._ATN);
 
 		EditorContext context = autoComplete.new EditorContext(line);
 		Set<TokenType> suggestions = autoComplete.suggestions(context);
-		List<String> recommendations = Lists.newArrayList();
+		Set<String> recommendations = new TreeSet();
 
 		// suggester adds a fake token at the end, drop it
 		List<Token> tokens = UtilityFunctions.minusLast(context.preceedingTokens());
@@ -397,7 +501,8 @@ public class CodeInterface extends MultiTextbox {
 			curText = UtilityFunctions.getLastElement(tokens);
 			tokens = UtilityFunctions.minusLast(tokens);
 		}
-		if ((tokens.size() > 1) && (UtilityFunctions.getLastElement(tokens).getType() == Python3Lexer.DOT)) {
+		if (classMembers.size() > 0 && (tokens.size() > 1)
+				&& (UtilityFunctions.getLastElement(tokens).getType() == Python3Lexer.DOT)) {
 			// The last element is a dot so we are probably
 			// accessing member variables
 			if (curText == null) {
@@ -450,14 +555,14 @@ public class CodeInterface extends MultiTextbox {
 				}
 			}
 		}
-		Collections.sort(recommendations);
+
 		return recommendations;
 	}
 
 	@Override
 	public int getStartLineY() {
-		if (scrollBar != null) {
-			return MathHelper.ceil((scrollBar.getScrolledAmt() * (listHeight - getHeight()))
+		if (scrollBar != null && scrollBar.isVisible()) {
+			return MathHelper.ceil((scrollBar.getScrolledAmt() * (textAreaHeight - getHeight()))
 					/ TextRenderer.getFontRenderer().FONT_HEIGHT);
 		}
 		return 0;
