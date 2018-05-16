@@ -3,7 +3,6 @@ package com.rabbit.gui.component.code;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +17,6 @@ import org.lwjgl.input.Mouse;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.rabbit.gui.RabbitGui;
 import com.rabbit.gui.component.GuiWidget;
 import com.rabbit.gui.component.code.parser.AntlrAutoCompletionSuggester;
@@ -491,7 +489,7 @@ public class CodeInterface extends MultiTextbox {
 
 		EditorContext context = autoComplete.new EditorContext(line);
 		Set<TokenType> suggestions = autoComplete.suggestions(context);
-		Set<String> recommendations = new TreeSet();
+		Set<String> recommendations = new TreeSet<String>();
 
 		// suggester adds a fake token at the end, drop it
 		List<Token> tokens = UtilityFunctions.minusLast(context.preceedingTokens());

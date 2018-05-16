@@ -3,16 +3,12 @@ package com.rabbit.gui.component.control;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import com.rabbit.gui.component.GuiWidget;
 import com.rabbit.gui.render.Renderer;
 import com.rabbit.gui.render.TextRenderer;
-import com.rabbit.gui.utils.ControlCharacters;
-
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;

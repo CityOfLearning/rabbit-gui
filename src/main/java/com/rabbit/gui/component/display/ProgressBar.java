@@ -26,7 +26,6 @@ public class ProgressBar extends GuiWidget {
 	public ProgressBar(int x, int y, int width, int height) {
 		super(x, y, width, height);
 		DoubleChangeListener listener = event -> {
-
 			progress = event.getDispatcher().getValue();
 		};
 

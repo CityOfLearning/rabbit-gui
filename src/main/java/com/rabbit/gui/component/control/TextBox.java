@@ -3,7 +3,6 @@ package com.rabbit.gui.component.control;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import com.rabbit.gui.RabbitGui;
 import com.rabbit.gui.component.GuiWidget;
 import com.rabbit.gui.component.Shiftable;
 import com.rabbit.gui.layout.LayoutComponent;
@@ -382,6 +381,7 @@ public class TextBox extends GuiWidget implements Shiftable {
 
 	public void moveCursorBy(int amount) {
 		setCursorPosition(Math.max(selectionEnd, cursorPos) + amount);
+		setSelectionPos(cursorPos);
 	}
 
 	@Override

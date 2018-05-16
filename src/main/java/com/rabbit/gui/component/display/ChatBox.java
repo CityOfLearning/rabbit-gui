@@ -43,7 +43,7 @@ public class ChatBox extends TextBox {
 				int startLine = getStartLineY();
 				int maxLineAmount = (height / TextRenderer.getFontRenderer().FONT_HEIGHT) + startLine;
 				List<String> lines = getLines();
-				List<String> newlines = new ArrayList();
+				List<String> newlines = new ArrayList<String>();
 				int lineCount = 0;
 				int maxWidth = width - 10;
 				for (int i = 0; i < lines.size(); ++i) {
