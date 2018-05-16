@@ -1,29 +1,52 @@
 buildscript {
     repositories {
-        mavenCentral()
+        jcenter()
+        mavenCentral()		
         maven {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
         }
-        maven {
-            name = "sonatype"
-            url = "https://oss.sonatype.org/content/repositories/snapshots/"
-        }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
 
-apply plugin: 'forge'
+repositories {
+    jcenter()
+		
+	maven { 
+		name = "jitpack"
+		url "https://jitpack.io" 
+	}
+}
 
-version = "v1.3.0"
-group= "com.rabbit"
+apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'maven'
+apply plugin: 'antlr'
+
+
+version = "1.12.2"
+group = 'com.rabbit'
 archivesBaseName = "rabbit-gui"
 
+
+sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+compileJava {
+    sourceCompatibility = targetCompatibility = '1.8'
+}
+
 minecraft {
-    version = "1.7.10-10.13.3.1408-1.7.10"
-    runDir = "eclipse"
+    version = "1.12.2-14.23.3.2678"
+    runDir = "run"
+    
+    // the mappings can be changed at any time, and must be in the following format.
+    // snapshot_YYYYMMDD   snapshot are built nightly.
+    // stable_#            stables are built at the discretion of the MCP team.
+    // Use non-default mappings at your own risk. they may not always work.
+    // simply re-run your setup task after changing the mappings to update your workspace.
+    mappings = "snapshot_20171003"
+    makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 
 configurations {
@@ -32,59 +55,38 @@ configurations {
 }
 
 dependencies {
+	antlr "org.antlr:antlr4:4.5.3" // use ANTLR version 4
     shade 'net.objecthunter:exp4j:0.4.5'
+	shade "org.antlr:antlr4-runtime:4.5.3"
 }
 
-task shadedJar(type: Jar){
+jar {	
+	
     from (sourceSets.main.output) {
         setDuplicatesStrategy(DuplicatesStrategy.EXCLUDE)
     }
+    
     configurations.shade.each{ dep ->
         from(project.zipTree(dep)){
-            exclude 'META-ING', 'META-INF/**'
+            exclude 'META-ING', 'META-INF/**', '**/LICENSE.txt'
         }
     }
-    classifier = 'shaded'
 }
 
-task sourceJar(type: Jar) { 
-    from sourceSets.main.allSource
-    classifier = 'sources'
-}
-
-def action = new Action<net.minecraftforge.gradle.tasks.user.reobf.ArtifactSpec>(){
-    void execute(net.minecraftforge.gradle.tasks.user.reobf.ArtifactSpec artifactSpec) {
-        artifactSpec.classpath = sourceSets.main.compileClasspath
-    }
-}
-
-reobf.reobf(shadedJar, action)
-
-tasks.jar.dependsOn('sourceJar', 'shadedJar')
-
-artifacts {
-    archives jar
-    archives sourceJar
-    archives shadedJar
-}
-
-
-compileJava {
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
-}
-
-
-processResources
-{
+processResources {
+    // this will ensure that this task is redone when the versions change.
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
 
+    // replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
+                
+        // replace version and mcversion
         expand 'version':project.version, 'mcversion':project.minecraft.version
     }
-
+        
+    // copy everything else except the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }

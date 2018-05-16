@@ -1,16 +1,20 @@
 package com.rabbit.gui.component.grid;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
 import com.rabbit.gui.component.GuiWidget;
 import com.rabbit.gui.component.WidgetList;
 import com.rabbit.gui.component.grid.entries.GridEntry;
-import com.rabbit.gui.component.table.Table;
 import com.rabbit.gui.layout.LayoutComponent;
 import com.rabbit.gui.render.Renderer;
 import com.rabbit.gui.utils.Geometry;
 
-import java.util.Arrays;
-import java.util.List;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 @LayoutComponent
 public class Grid extends GuiWidget implements WidgetList<GridEntry> {
 
@@ -43,31 +47,73 @@ public class Grid extends GuiWidget implements WidgetList<GridEntry> {
 
 	@Override
 	public Grid add(GridEntry object) {
-		this.content.add(object);
+		content.add(object);
+		return this;
+	}
+
+	@Override
+	public WidgetList<GridEntry> addAll(Collection<GridEntry> values) {
+		values.forEach(this::add);
 		return this;
 	}
 
 	@Override
 	public Grid addAll(GridEntry... objects) {
-		this.content.addAll(Arrays.asList(objects));
-		return this;
-	}
-
-	@Override
-	public Grid remove(GridEntry object) {
-		this.content.remove(object);
+		content.addAll(Arrays.asList(objects));
 		return this;
 	}
 
 	@Override
 	public Grid clear() {
-		this.content.clear();
+		content.clear();
 		return this;
+	}
+
+	protected void drawGridBackground() {
+		Renderer.drawRect(getX() - 1, getY() - 1, getX() + width + 1, getY() + height + 1, -6250336);
+		Renderer.drawRect(getX(), getY(), getX() + width, getY() + height, -0xFFFFFF - 1);
+	}
+
+	protected void drawGridContent(int mouseX, int mouseY) {
+		for (int i = 0; i < content.size(); i++) {
+			GridEntry entry = content.get(i);
+			int slotPosX = getX() + ((i % xSlots) * slotWidth);
+			int slotPosY = getY() + ((i / xSlots) * slotHeight);
+			int slotWidth = this.slotWidth;
+			int slotHeight = this.slotHeight;
+			entry.onDraw(this, slotPosX + 1, slotPosY + 1, slotWidth - 2, slotHeight - 2, mouseX, mouseY);
+		}
+	}
+
+	public boolean drawHorizontalLines() {
+		return horizontalLines;
+	}
+
+	public boolean drawVerticalLines() {
+		return verticalLines;
 	}
 
 	@Override
 	public List<GridEntry> getContent() {
 		return content;
+	}
+
+	protected void handleMouseClickGrid(int mouseX, int mouseY) {
+		for (int i = 0; i < content.size(); i++) {
+			GridEntry entry = content.get(i);
+			int slotPosX = getX() + ((i % xSlots) * slotWidth);
+			int slotPosY = getY() + ((i / xSlots) * slotHeight);
+			int slotWidth = width;
+			int slotHeight = this.slotHeight;
+			boolean clickedOnEntry = Geometry.isDotInArea(slotPosX, slotPosY, slotWidth, slotHeight, mouseX, mouseY);
+			if (clickedOnEntry) {
+				entry.onClick(this, mouseX, mouseY);
+			}
+		}
+	}
+
+	public boolean isVisibleBackground() {
+		return visibleBackground;
 	}
 
 	@Override
@@ -79,61 +125,30 @@ public class Grid extends GuiWidget implements WidgetList<GridEntry> {
 		super.onDraw(mouseX, mouseY, partialTicks);
 	}
 
-	protected void drawGridBackground() {
-		Renderer.drawRect(getX() - 1, getY() - 1, getX() + this.width + 1, getY() + this.height + 1, -6250336);
-		Renderer.drawRect(getX(), getY(), getX() + this.width, getY() + this.height, -0xFFFFFF - 1);
-	}
-
-	protected void drawGridContent(int mouseX, int mouseY) {
-		for (int i = 0; i < content.size(); i++) {
-			GridEntry entry = content.get(i);
-			int slotPosX = getX() + (i % xSlots) * slotWidth;
-			int slotPosY = getY() + (i / xSlots) * slotHeight;
-			int slotWidth = this.slotWidth;
-			int slotHeight = this.slotHeight;
-			entry.onDraw(this, slotPosX + 1, slotPosY + 1, slotWidth - 2, slotHeight - 2, mouseX, mouseY);
-		}
-	}
-
 	@Override
 	public boolean onMouseClicked(int posX, int posY, int mouseButtonIndex, boolean overlap) {
 		super.onMouseClicked(posX, posY, mouseButtonIndex, overlap);
-		boolean clickedOnGrid = !overlap && Geometry.isDotInArea(getX(), getY(), this.width, this.height, posX, posY);
+		boolean clickedOnGrid = !overlap && Geometry.isDotInArea(getX(), getY(), width, height, posX, posY);
 		if (clickedOnGrid) {
 			handleMouseClickGrid(posX, posY);
 		}
 		return clickedOnGrid;
 	}
 
-	protected void handleMouseClickGrid(int mouseX, int mouseY) {
-		for (int i = 0; i < content.size(); i++) {
-			GridEntry entry = content.get(i);
-			int slotPosX = getX() + (i % xSlots) * slotWidth;
-			int slotPosY = getY() + (i / xSlots) * slotHeight;
-			int slotWidth = this.width;
-			int slotHeight = this.slotHeight;
-			boolean clickedOnEntry = Geometry.isDotInArea(slotPosX, slotPosY, slotWidth, slotHeight, mouseX, mouseY);
-			if (clickedOnEntry)
-				entry.onClick(this, mouseX, mouseY);
-		}
-	}
-
-	public Grid setDrawVerticalLines(boolean flag) {
-		this.verticalLines = flag;
+	@Override
+	public Grid remove(GridEntry object) {
+		content.remove(object);
 		return this;
 	}
 
 	public Grid setDrawHorizontalLines(boolean flag) {
-		this.horizontalLines = flag;
+		horizontalLines = flag;
 		return this;
 	}
 
-	public boolean drawVerticalLines() {
-		return verticalLines;
-	}
-
-	public boolean drawHorizontalLines() {
-		return horizontalLines;
+	public Grid setDrawVerticalLines(boolean flag) {
+		verticalLines = flag;
+		return this;
 	}
 
 	@Override
@@ -145,9 +160,5 @@ public class Grid extends GuiWidget implements WidgetList<GridEntry> {
 	public Grid setVisibleBackground(boolean visibleBackground) {
 		this.visibleBackground = visibleBackground;
 		return this;
-	}
-
-	public boolean isVisibleBackground() {
-		return this.visibleBackground;
 	}
 }
