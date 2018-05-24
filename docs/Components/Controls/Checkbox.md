@@ -18,7 +18,7 @@ CheckBox(int xPos, int yPos, String title, Color checkColor, Color textColor, bo
 Similar to the button a checkbox also has its own listener which takes one parameter, the checkbox that was just checked/unchecked
 
 ```
-CheckBoxStatusChangedListener( chkbox -> {
+setStatusChangedListener(chkbox -> {
 //perform some action here
 });
 ```
