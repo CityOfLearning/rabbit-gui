@@ -57,6 +57,6 @@ This should look something like this:
     }
 ```
 
-Note the order of how things are registered. Things registered last are registered in the background and things registered first are in the foreground. The GUI will scale dynamically with the window size but only if the X, Y and Width/Height are computed from the width and height. **Static values will not scale**
+Note the order of how things are registered. Things registered last are rendered in the background and things registered first are in the foreground. The GUI will scale dynamically with the window size but only if the X, Y and Width/Height are computed from the width and height. **Static values will not scale**
 
 Some elements have callbacks that can be used for whatever purpose you see fit. In our example clicking the close window button will close the GUI, though hitting escape will also do that. The example also shows that a text box can update some variable from the previous text which was in the textbox.
