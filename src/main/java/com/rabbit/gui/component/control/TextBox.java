@@ -266,7 +266,7 @@ public class TextBox extends GuiWidget implements Shiftable {
 			}
 			return true;
 		case Keyboard.KEY_HOME:
-				setCursorPosition(0);
+			setCursorPosition(0);
 			return true;
 		case Keyboard.KEY_LEFT:
 			handleKeyboardArrow(-1);
@@ -275,7 +275,7 @@ public class TextBox extends GuiWidget implements Shiftable {
 			handleKeyboardArrow(1);
 			return true;
 		case Keyboard.KEY_END:
-				setCursorPosition(getText().length());
+			setCursorPosition(getText().length());
 			return true;
 		case Keyboard.KEY_DELETE:
 			if (isEnabled()) {
@@ -327,8 +327,7 @@ public class TextBox extends GuiWidget implements Shiftable {
 			int lenght = posX - getX();
 			TextRenderer.getFontRenderer().setUnicodeFlag(drawUnicode);
 			String temp = TextRenderer.getFontRenderer().trimStringToWidth(text.substring(scrollOffset), getWidth());
-				setCursorPosition(
-						TextRenderer.getFontRenderer().trimStringToWidth(temp, lenght).length() + scrollOffset);
+			setCursorPosition(TextRenderer.getFontRenderer().trimStringToWidth(temp, lenght).length() + scrollOffset);
 			TextRenderer.getFontRenderer().setUnicodeFlag(false);
 		}
 		return clicked;
@@ -522,7 +521,7 @@ public class TextBox extends GuiWidget implements Shiftable {
 		}
 
 		selectionEnd = pos;
-		
+
 		// if (scrollOffset > getText().length()) {
 		// scrollOffset = getText().length();
 		// }

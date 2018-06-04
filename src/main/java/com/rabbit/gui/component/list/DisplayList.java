@@ -59,10 +59,6 @@ public class DisplayList extends GuiWidget implements WidgetList<ListEntry> {
 		content.clear();
 		return this;
 	}
-	@Override
-	public void onUpdate() {
-		content.forEach(com -> com.onUpdate());
-	}
 
 	protected void drawListBackground() {
 		Renderer.drawRect(getX() - 1, getY() - 1, getX() + width + 1, getY() + height + 1, -6250336);
@@ -122,6 +118,11 @@ public class DisplayList extends GuiWidget implements WidgetList<ListEntry> {
 			handleMouseClickList(posX, posY, mouseButtonIndex);
 		}
 		return clickedOnList;
+	}
+
+	@Override
+	public void onUpdate() {
+		content.forEach(com -> com.onUpdate());
 	}
 
 	@Override

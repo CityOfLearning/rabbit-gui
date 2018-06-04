@@ -67,6 +67,12 @@ public class StringEntry implements ListEntry {
 	}
 
 	@Override
+	public void onUpdate() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
 	public StringEntry setIsEnabled(boolean isEnabled) {
 		this.isEnabled = isEnabled;
 		return this;
@@ -75,11 +81,5 @@ public class StringEntry implements ListEntry {
 	public StringEntry setTextAlignment(TextAlignment align) {
 		this.align = align;
 		return this;
-	}
-
-	@Override
-	public void onUpdate() {
-		// TODO Auto-generated method stub
-		
 	}
 }

@@ -125,7 +125,7 @@ public class ScrollableDisplayList extends DisplayList {
 	public GuiWidget setX(int x) {
 		super.setX(x);
 		if (scrollBar != null) {
-			scrollBar.setX(x + width - 10);
+			scrollBar.setX((x + width) - 10);
 		}
 		return this;
 	}

@@ -25,7 +25,7 @@ public interface ListEntry {
 	 *            - user's click position x
 	 * @param mouseY
 	 *            - user's click position y
-	 * @param mouseButtonIndex 
+	 * @param mouseButtonIndex
 	 */
 	public default void onClick(DisplayList list, int mouseX, int mouseY, int mouseButtonIndex) {
 	}
@@ -51,6 +51,8 @@ public interface ListEntry {
 	public default void onDraw(DisplayList list, int posX, int posY, int width, int height, int mouseX, int mouseY) {
 	}
 
+	public void onUpdate();
+
 	public ListEntry setIsEnabled(boolean isEnabled);
 
 	/**
@@ -61,6 +63,4 @@ public interface ListEntry {
 	 */
 	public default void setSelected(boolean state) {
 	}
-
-	public void onUpdate();
 }

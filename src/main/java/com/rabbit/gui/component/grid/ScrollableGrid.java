@@ -48,10 +48,11 @@ public class ScrollableGrid extends Grid {
 						getHeight() * scale);
 				GridEntry entry = content.get(i);
 				int slotPosX = getX() + ((i % xSlots) * slotWidth);
-				int slotPosY = ((getY() + ((i / xSlots) * slotHeight))
-						- (int) (((slotHeight * scrollBar.getProgress() * Math.ceil(content.size()) / (float) xSlots))) + (int) (scrollBar.getProgress() * height * .92));
+				int slotPosY = (((getY() + ((i / xSlots) * slotHeight))
+						- (int) ((((slotHeight * scrollBar.getProgress() * Math.ceil(content.size())) / xSlots))))
+						+ (int) (scrollBar.getProgress() * height * .92));
 				if ((slotPosY < (getY() + height)) && ((slotPosY + slotHeight) > getY())) {
-					if(!isUnderMouse(mouseX, mouseY)) {
+					if (!isUnderMouse(mouseX, mouseY)) {
 						entry.setDoesDrawHoverText(false);
 					} else {
 						entry.setDoesDrawHoverText(true);
@@ -123,7 +124,7 @@ public class ScrollableGrid extends Grid {
 	public GuiWidget setX(int x) {
 		super.setX(x);
 		if (scrollBar != null) {
-			scrollBar.setX(x + width - 10);
+			scrollBar.setX((x + width) - 10);
 		}
 		return this;
 	}

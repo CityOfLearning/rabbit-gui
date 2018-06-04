@@ -9,6 +9,7 @@ import org.lwjgl.input.Mouse;
 import com.rabbit.gui.component.GuiWidget;
 import com.rabbit.gui.render.Renderer;
 import com.rabbit.gui.render.TextRenderer;
+
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
@@ -58,19 +59,65 @@ public class MultiTextbox extends TextBox {
 				int maxWidth = scrollBar.isVisible() ? width - 14 : width - 4;
 				for (String wholeLine : lines) {
 					String line = "";
-					if (TextRenderer.getFontRenderer().getStringWidth(wholeLine) > maxWidth
-							|| (getCursorPosition() > charCount && getCursorPosition() < charCount + wholeLine.length())
-							|| (renderSelection && (from >= charCount && from <= charCount + wholeLine.length())
-									|| (to >= charCount && to <= charCount + wholeLine.length()))) {
-					for (char c :  wholeLine.toCharArray()) {
-						if (TextRenderer.getFontRenderer().getStringWidth(line + c) > maxWidth) {
-							if ((lineCount >= startLine) && (lineCount < maxLineAmount)) {
-								TextRenderer.getFontRenderer().drawString(line, getX() + 4, getY() + 4
-										+ ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT),
-										color);
+					if ((TextRenderer.getFontRenderer().getStringWidth(wholeLine) > maxWidth)
+							|| ((getCursorPosition() > charCount)
+									&& (getCursorPosition() < (charCount + wholeLine.length())))
+							|| ((renderSelection && ((from >= charCount) && (from <= (charCount + wholeLine.length()))))
+									|| ((to >= charCount) && (to <= (charCount + wholeLine.length()))))) {
+						for (char c : wholeLine.toCharArray()) {
+							if (TextRenderer.getFontRenderer().getStringWidth(line + c) > maxWidth) {
+								if ((lineCount >= startLine) && (lineCount < maxLineAmount)) {
+									TextRenderer.getFontRenderer().drawString(line, getX() + 4, getY() + 4
+											+ ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT),
+											color);
+								}
+								if (renderSelectionLine) {
+									if (from <= (charCount - line.length())) {
+										int startX = getX() + 3;
+										int lineY = getY()
+												+ ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT)
+												+ 4;
+										renderSelectionRect(startX, lineY,
+												startX + TextRenderer.getFontRenderer().getStringWidth(line) + 2,
+												lineY + TextRenderer.getFontRenderer().FONT_HEIGHT);
+									} else {
+										int startX = getX() + TextRenderer.getFontRenderer().getStringWidth(line) + 3;
+										int lineY = getY()
+												+ ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT)
+												+ 4;
+										renderSelectionRect(startX, lineY,
+												startX + TextRenderer.getFontRenderer()
+														.getStringWidth(line.substring(charCount - from)) + 2,
+												lineY + TextRenderer.getFontRenderer().FONT_HEIGHT);
+									}
+								}
+								line = "";
+								lineCount++;
 							}
-							if (renderSelectionLine) {
-								if (from <= charCount - line.length()) {
+							if (renderSelection) {
+								if (charCount == from) {
+									renderSelectionLine = true;
+									int startX = getX() + TextRenderer.getFontRenderer().getStringWidth(line) + 3;
+									int lineY = getY()
+											+ ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT)
+											+ 4;
+
+									if (TextRenderer.getFontRenderer().getStringWidth(wholeLine) > maxWidth) {
+
+									}
+
+									if (wholeLine.contains(getSelectedText())) {
+										renderSelectionLine = false;
+										renderSelection = false;
+										// the selection is only on this line
+										renderSelectionRect(startX, lineY,
+												startX + TextRenderer.getFontRenderer()
+														.getStringWidth(getSelectedText()) + 2,
+												lineY + TextRenderer.getFontRenderer().FONT_HEIGHT);
+									}
+								} else if (charCount == to) {
+									renderSelectionLine = false;
+									renderSelection = false;
 									int startX = getX() + 3;
 									int lineY = getY()
 											+ ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT)
@@ -78,70 +125,25 @@ public class MultiTextbox extends TextBox {
 									renderSelectionRect(startX, lineY,
 											startX + TextRenderer.getFontRenderer().getStringWidth(line) + 2,
 											lineY + TextRenderer.getFontRenderer().FONT_HEIGHT);
-								} else {
-									int startX = getX() + TextRenderer.getFontRenderer().getStringWidth(line) + 3;
-									int lineY = getY()
-											+ ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT)
-											+ 4;
-									renderSelectionRect(startX, lineY,
-											startX + TextRenderer.getFontRenderer()
-													.getStringWidth(line.substring(charCount - from)) + 2,
-											lineY + TextRenderer.getFontRenderer().FONT_HEIGHT);
-								}
-							}
-							line = "";
-							lineCount++;
-						}
-						if (renderSelection) {
-							if (charCount == from) {
-								renderSelectionLine = true;
-								int startX = getX() + TextRenderer.getFontRenderer().getStringWidth(line) + 3;
-								int lineY = getY()
-										+ ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT)
-										+ 4;
-
-								if (TextRenderer.getFontRenderer().getStringWidth(wholeLine) > maxWidth) {
-
-								}
-
-								if (wholeLine.contains(getSelectedText())) {
+								} else if (charCount > to) {
 									renderSelectionLine = false;
 									renderSelection = false;
-									// the selection is only on this line
-									renderSelectionRect(startX, lineY,
-											startX + TextRenderer.getFontRenderer()
-													.getStringWidth(getSelectedText()) + 2,
-											lineY + TextRenderer.getFontRenderer().FONT_HEIGHT);
 								}
-							} else if (charCount == to) {
-								renderSelectionLine = false;
-								renderSelection = false;
-								int startX = getX() + 3;
-								int lineY = getY()
-										+ ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT)
-										+ 4;
-								renderSelectionRect(startX, lineY,
-										startX + TextRenderer.getFontRenderer().getStringWidth(line) + 2,
-										lineY + TextRenderer.getFontRenderer().FONT_HEIGHT);
-							} else if (charCount > to) {
-								renderSelectionLine = false;
-								renderSelection = false;
 							}
-						}
-						if (renderCursor && (charCount == getCursorPosition()) && (lineCount >= startLine)
-								&& (lineCount < maxLineAmount)) {
-							int cursorX = getX() + TextRenderer.getFontRenderer().getStringWidth(line) + 3;
-							int cursorY = getY()
-									+ ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT) + 4;
-							if ((getText().length() == getCursorPosition()) || (c == '\n')) {
-								TextRenderer.getFontRenderer().drawString("_", cursorX, cursorY, 0xFFFFFFFF);
-							} else {
-								Renderer.drawRect(cursorX, cursorY, cursorX + 1, cursorY + 10, 0xFFFFFFFF);
+							if (renderCursor && (charCount == getCursorPosition()) && (lineCount >= startLine)
+									&& (lineCount < maxLineAmount)) {
+								int cursorX = getX() + TextRenderer.getFontRenderer().getStringWidth(line) + 3;
+								int cursorY = getY()
+										+ ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT) + 4;
+								if ((getText().length() == getCursorPosition()) || (c == '\n')) {
+									TextRenderer.getFontRenderer().drawString("_", cursorX, cursorY, 0xFFFFFFFF);
+								} else {
+									Renderer.drawRect(cursorX, cursorY, cursorX + 1, cursorY + 10, 0xFFFFFFFF);
+								}
 							}
+							charCount++;
+							line += c;
 						}
-						charCount++;
-						line += c;
-					}
 					}
 					if ((lineCount >= startLine) && (lineCount < maxLineAmount)) {
 						TextRenderer.getFontRenderer().drawString(line, getX() + 4,
@@ -161,7 +163,7 @@ public class MultiTextbox extends TextBox {
 						}
 					}
 					if (renderSelectionLine) {
-						if (from <= charCount - line.length()) {
+						if (from <= (charCount - line.length())) {
 							// render the whole line
 							int startX = getX() + 3;
 							int lineY = getY() + ((lineCount - startLine) * TextRenderer.getFontRenderer().FONT_HEIGHT)
@@ -180,11 +182,11 @@ public class MultiTextbox extends TextBox {
 									startX + TextRenderer.getFontRenderer().getStringWidth(substring) + 2,
 									lineY + TextRenderer.getFontRenderer().FONT_HEIGHT);
 						}
-						if (renderSelectionLine && charCount >= to) {
+						if (renderSelectionLine && (charCount >= to)) {
 							renderSelectionLine = false;
 							renderSelection = false;
 						}
-						
+
 					}
 					++lineCount;
 					++charCount;
@@ -227,7 +229,7 @@ public class MultiTextbox extends TextBox {
 	}
 
 	public int getStartLineY() {
-		if (scrollBar != null && scrollBar.isVisible()) {
+		if ((scrollBar != null) && scrollBar.isVisible()) {
 			float scrolled = scrollBar.getScrolledAmt();
 			return MathHelper.ceil((scrolled * getHeight()) / TextRenderer.getFontRenderer().FONT_HEIGHT);
 		}

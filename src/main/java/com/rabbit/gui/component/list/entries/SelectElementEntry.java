@@ -120,6 +120,12 @@ public class SelectElementEntry<T> extends SelectListEntry {
 		}
 	}
 
+	@Override
+	public void onUpdate() {
+		// TODO Auto-generated method stub
+
+	}
+
 	public SelectElementEntry<T> setAlignment(TextAlignment align) {
 		this.align = align;
 		return this;
@@ -129,11 +135,5 @@ public class SelectElementEntry<T> extends SelectListEntry {
 	public SelectElementEntry<T> setIsEnabled(boolean isEnabled) {
 		this.isEnabled = isEnabled;
 		return this;
-	}
-
-	@Override
-	public void onUpdate() {
-		// TODO Auto-generated method stub
-		
 	}
 }

@@ -26,6 +26,6 @@ public class HorizontalLine extends GuiWidget {
 	@Override
 	public void onDraw(int mouseX, int mouseY, float partialTicks) {
 		super.onDraw(mouseX, mouseY, partialTicks);
-		Renderer.drawLine(x, y, x+width, y, color, lineWidth);
+		Renderer.drawLine(x, y, x + width, y, color, lineWidth);
 	}
 }

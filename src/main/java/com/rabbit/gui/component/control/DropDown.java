@@ -400,24 +400,10 @@ public class DropDown<T> extends GuiWidget implements WidgetList<T>, Shiftable {
 	}
 
 	@Override
-	public void shiftX(int x) {
-		setX(getX() + x);
-	}
-
-	@Override
-	public void shiftY(int y) {
-		setY(getY() + y);
-	}
-
-	private boolean underMouse(int x, int y) {
-		return (x >= getX()) && (x <= (getX() + getWidth())) && (y >= getY()) && (y <= (getY() + getHeight()));
-	}
-	
-	@Override
 	public GuiWidget setX(int x) {
 		super.setX(x);
 		if (scrollBar != null) {
-			scrollBar.setX(x + width - 10);
+			scrollBar.setX((x + width) - 10);
 		}
 		return this;
 	}
@@ -429,5 +415,19 @@ public class DropDown<T> extends GuiWidget implements WidgetList<T>, Shiftable {
 			scrollBar.setY(y);
 		}
 		return this;
+	}
+
+	@Override
+	public void shiftX(int x) {
+		setX(getX() + x);
+	}
+
+	@Override
+	public void shiftY(int y) {
+		setY(getY() + y);
+	}
+
+	private boolean underMouse(int x, int y) {
+		return (x >= getX()) && (x <= (getX() + getWidth())) && (y >= getY()) && (y <= (getY() + getHeight()));
 	}
 }
