@@ -139,6 +139,11 @@ public class Panel extends GuiWidget {
 
 	@Override
 	public boolean onMouseClicked(int posX, int posY, int mouseButtonIndex, boolean overlap) {
+		if (isUnderMouse(posX, posY)) {
+			isFocused = true;
+		} else {
+			isFocused = false;
+		}
 		if (isVisible && isFocused) {
 			super.onMouseClicked(posX, posY, mouseButtonIndex, overlap);
 

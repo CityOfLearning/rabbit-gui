@@ -30,7 +30,7 @@ public class ScrollableGrid extends Grid {
 	 * Returns true if content height of list is not more that list actual height
 	 */
 	private boolean canFit() {
-		return ((content.size() / xSlots) * slotHeight) < height;
+		return (Math.ceil((content.size() / (float) xSlots)) * slotHeight) < height;
 	}
 
 	@Override
@@ -40,27 +40,31 @@ public class ScrollableGrid extends Grid {
 		scrollBar.setScrollerSize(getScrollerSize());
 		int scale = Geometry.computeScaleFactor();
 		for (int i = 0; i < content.size(); i++) {
-			GridEntry entry = content.get(i);
-			int slotPosX = getX() + ((i % xSlots) * slotWidth);
-			int slotPosY = ((getY() + ((i / xSlots) * slotHeight))
-					- (int) (((slotHeight * scrollBar.getProgress() * content.size()) / xSlots) * 0.925F));
-			int slotWidth = this.slotWidth;
-			int slotHeight = this.slotHeight;
-			if ((slotPosY < (getY() + height)) && ((slotPosY + slotHeight) > getY())) {
-				GlStateManager.pushMatrix();
-				{
-					GL11.glEnable(GL11.GL_SCISSOR_TEST);
-					Minecraft mc = Minecraft.getMinecraft();
-					GL11.glScissor(getX() * scale, mc.displayHeight - ((getY() + getHeight()) * scale),
-							getWidth() * scale, getHeight() * scale);
+			GlStateManager.pushMatrix();
+			{
+				GL11.glEnable(GL11.GL_SCISSOR_TEST);
+				Minecraft mc = Minecraft.getMinecraft();
+				GL11.glScissor(getX() * scale, mc.displayHeight - ((getY() + getHeight()) * scale), getWidth() * scale,
+						getHeight() * scale);
+				GridEntry entry = content.get(i);
+				int slotPosX = getX() + ((i % xSlots) * slotWidth);
+				int slotPosY = ((getY() + ((i / xSlots) * slotHeight))
+						- (int) (((slotHeight * scrollBar.getProgress() * Math.ceil(content.size()) / (float) xSlots))) + (int) (scrollBar.getProgress() * height * .92));
+				if ((slotPosY < (getY() + height)) && ((slotPosY + slotHeight) > getY())) {
+					if(!isUnderMouse(mouseX, mouseY)) {
+						entry.setDoesDrawHoverText(false);
+					} else {
+						entry.setDoesDrawHoverText(true);
+					}
 					entry.onDraw(this, slotPosX + 1, slotPosY + 1, slotWidth - 2, slotHeight - 2, mouseX, mouseY);
 					// entry.onDraw(this, slotPosX, slotPosY, slotWidth,
 					// slotHeight,
 					// mouseX, mouseY);
-					GL11.glDisable(GL11.GL_SCISSOR_TEST);
+
 				}
-				GlStateManager.popMatrix();
+				GL11.glDisable(GL11.GL_SCISSOR_TEST);
 			}
+			GlStateManager.popMatrix();
 		}
 	}
 
@@ -114,7 +118,7 @@ public class ScrollableGrid extends Grid {
 		scrollBar.setScrollWeight(((float) height / (float) (content.size() * slotHeight)) * .8F);
 		registerComponent(scrollBar);
 	}
-	
+
 	@Override
 	public GuiWidget setX(int x) {
 		super.setX(x);

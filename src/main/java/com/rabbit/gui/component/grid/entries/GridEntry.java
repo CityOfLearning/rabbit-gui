@@ -44,4 +44,9 @@ public interface GridEntry {
 	 */
 	public default void onDraw(Grid grid, int posX, int posY, int width, int height, int mouseX, int mouseY) {
 	}
+	
+	
+	public default GridEntry setDoesDrawHoverText(boolean state) {
+		return this;
+	}
 }
