@@ -9,7 +9,9 @@ import org.lwjgl.input.Mouse;
 import com.rabbit.gui.component.GuiWidget;
 import com.rabbit.gui.render.Renderer;
 import com.rabbit.gui.render.TextRenderer;
+import com.rabbit.gui.utils.Geometry;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
@@ -193,8 +195,9 @@ public class MultiTextbox extends TextBox {
 				}
 				textAreaHeight = lineCount * TextRenderer.getFontRenderer().FONT_HEIGHT;
 				scrollBar.setVisiblie(textAreaHeight > (height - 4));
-				scrollBar.setHandleMouseWheel(
-						(textAreaHeight > (height - 4)) && isUnderMouse(Mouse.getX(), Mouse.getY()));
+				int scale = Geometry.computeScaleFactor();
+				scrollBar.setHandleMouseWheel((textAreaHeight > (height - 4)) && isUnderMouse(Mouse.getX() / scale,
+						(Minecraft.getMinecraft().displayHeight - Mouse.getY()) / scale));
 				scrollBar.setScrollerSize((getScrollerSize()));
 				GlStateManager.resetColor();
 			}

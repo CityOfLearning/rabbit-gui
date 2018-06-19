@@ -41,9 +41,13 @@ public class ScrollTextLabel extends TextLabel {
 	@Override
 	protected void drawMultilined() {
 		scrollBar.setVisiblie(!canFit());
-		scrollBar.setHandleMouseWheel(!canFit() && isUnderMouse(Mouse.getX(), Mouse.getY()));
-		List<String> displayLines = getLines();
 		int scale = Geometry.computeScaleFactor();
+		scrollBar.setHandleMouseWheel(!canFit()
+				&& isUnderMouse(Mouse.getX() / scale, (Minecraft.getMinecraft().displayHeight - Mouse.getY()) / scale));
+		List<String> displayLines = getLines();
+		int scrollerSize = Math.min(Math.max(height / (1 + getLines().size()), 10), height - 4);
+		scrollBar.setScrollerSize(scrollerSize);
+
 		for (int i = 0; i < displayLines.size(); i++) {
 			String line = displayLines.get(i);
 			int lineY = ((getY() + (i * 10)) - (int) ((10 * scrollBar.getProgress() * displayLines.size())
@@ -67,11 +71,18 @@ public class ScrollTextLabel extends TextLabel {
 				&& (mouseY <= (getY() + getHeight()));
 	}
 
+	public GuiWidget setScrolledAmount(float amt) {
+		if (scrollBar != null) {
+			scrollBar.setScrolledAmt(amt);
+		}
+		return this;
+	}
+
 	@Override
 	public void setup() {
 		super.setup();
 		if (isMultilined()) {
-			int scrollerSize = Math.max(height / getLines().size(), 10);
+			int scrollerSize = Math.min(Math.max(height / (1 + getLines().size()), 10), height - 4);
 			scrollBar = new ScrollBar((getX() + width) - 10, getY(), 10, height, scrollerSize)
 					.setHandleMouseWheel(false);
 			registerComponent(scrollBar);
