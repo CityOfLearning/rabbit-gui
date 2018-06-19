@@ -1,6 +1,6 @@
 package com.rabbit.gui.show;
 
-import com.rabbit.gui.base.Stage;
+import com.rabbit.gui.base.IStage;
 import com.rabbit.gui.component.IBackground;
 import com.rabbit.gui.component.IGui;
 
@@ -14,7 +14,7 @@ public interface IShow extends IGui {
 
 	int getHeight();
 
-	Stage getStage();
+	IStage getStage();
 
 	String getTitle();
 
@@ -28,7 +28,7 @@ public interface IShow extends IGui {
 
 	void setSize(int width, int height);
 
-	void setStage(Stage stage);
+	void setStage(IStage stage);
 
 	void setTitle(String title);
 }

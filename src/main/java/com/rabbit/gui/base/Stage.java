@@ -14,7 +14,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class Stage extends GuiScreen {
+public class Stage extends GuiScreen implements IStage {
 
 	/**
 	 * Currently displayed show
@@ -43,6 +43,7 @@ public class Stage extends GuiScreen {
 		display(show);
 	}
 
+	@Override
 	public void close() {
 		Minecraft.getMinecraft().setIngameFocus();
 	}
@@ -53,6 +54,7 @@ public class Stage extends GuiScreen {
 	 * @param show
 	 *            - show to display
 	 */
+	@Override
 	public void display(IShow show) {
 		setShow(show);
 		show.setStage(this);
@@ -65,6 +67,7 @@ public class Stage extends GuiScreen {
 	 * If current show is the only opened show this stage will be closed <br>
 	 * If history is empty nothing will happen
 	 */
+	@Override
 	public void displayPrevious() {
 		if (getShowHistory().size() != 0) {
 			if (getShowHistory().size() == 1) {
@@ -98,6 +101,7 @@ public class Stage extends GuiScreen {
 	 *
 	 * @return currently display show
 	 */
+	@Override
 	public IShow getShow() {
 		return show;
 	}
@@ -105,6 +109,7 @@ public class Stage extends GuiScreen {
 	/**
 	 * @return This stage history
 	 */
+	@Override
 	public Stack<IShow> getShowHistory() {
 		return showHistory;
 	}
@@ -183,6 +188,7 @@ public class Stage extends GuiScreen {
 	/**
 	 * Shortcut for #reinitShow(false), provided for backward compatibility
 	 */
+	@Override
 	public void reinitShow() {
 		this.reinitShow(false);
 	}
@@ -197,6 +203,7 @@ public class Stage extends GuiScreen {
 	 *            - if <code>true</code> show#onInit() will be called event if it's
 	 *            been already initialized
 	 */
+	@Override
 	public void reinitShow(boolean forceInit) {
 		show.setSize(width, height);
 		if (show instanceof WidgetContainer) {
@@ -219,6 +226,7 @@ public class Stage extends GuiScreen {
 	 *            - new show
 	 * @return current instance of Stage
 	 */
+	@Override
 	public Stage setShow(IShow show) {
 		this.show = show;
 		return this;

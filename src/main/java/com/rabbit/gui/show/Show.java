@@ -7,11 +7,13 @@ import java.util.ListIterator;
 import org.apache.commons.lang3.Validate;
 import org.lwjgl.opengl.Display;
 
+import com.rabbit.gui.base.IStage;
 import com.rabbit.gui.base.Stage;
 import com.rabbit.gui.base.WidgetContainer;
 import com.rabbit.gui.component.IBackground;
 import com.rabbit.gui.component.IGui;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.StringUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -22,7 +24,7 @@ public abstract class Show implements IShow, WidgetContainer {
 	protected List<IGui> components = new ArrayList();
 	protected String id;
 	protected int width, height;
-	protected Stage stage;
+	protected IStage stage;
 	protected String title;
 	private IBackground background;
 	private boolean initialized = false;
@@ -53,7 +55,7 @@ public abstract class Show implements IShow, WidgetContainer {
 	}
 
 	@Override
-	public Stage getStage() {
+	public IStage getStage() {
 		return stage;
 	}
 
@@ -75,7 +77,7 @@ public abstract class Show implements IShow, WidgetContainer {
 	@Override
 	public void onClose() {
 		getComponentsList().forEach(com -> com.onClose());
-		Display.setTitle("Minecraft 1.8.9");
+		Display.setTitle("Minecraft " + Minecraft.getMinecraft().getVersion());
 	}
 
 	@Override
@@ -167,7 +169,7 @@ public abstract class Show implements IShow, WidgetContainer {
 	}
 
 	@Override
-	public void setStage(Stage stage) {
+	public void setStage(IStage stage) {
 		this.stage = stage;
 	}
 
@@ -183,7 +185,7 @@ public abstract class Show implements IShow, WidgetContainer {
 	}
 
 	private void updateDisplayTitle() {
-		Display.setTitle("Minecraft 1.8.9" + " - " + title);
+		Display.setTitle("Minecraft " + Minecraft.getMinecraft().getVersion() + " - " + title);
 	}
 
 }
