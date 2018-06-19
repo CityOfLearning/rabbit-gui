@@ -241,8 +241,8 @@ public class TextBox extends GuiWidget implements Shiftable {
 	}
 
 	public String getSelectedText() {
-		int from = Math.min(getCursorPosition(), selectionEnd);
-		int to = Math.max(getCursorPosition(), selectionEnd);
+		int from = Math.max(0, Math.min(getCursorPosition(), selectionEnd));
+		int to = Math.max(0, Math.max(getCursorPosition(), selectionEnd));
 		return getText().substring(from, to);
 	}
 
