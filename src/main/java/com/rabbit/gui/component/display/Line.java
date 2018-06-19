@@ -27,6 +27,8 @@ public class Line extends GuiWidget {
 		super(x, y, Math.abs(x - x2), Math.abs(y - y2));
 		this.lineWidth = lineWidth;
 		this.color = color;
+		this.x2 = x2;
+		this.y2 = y2;
 	}
 
 	@Override
