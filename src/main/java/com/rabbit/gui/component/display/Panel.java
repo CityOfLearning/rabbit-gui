@@ -9,6 +9,7 @@ import com.google.common.collect.Lists;
 import com.rabbit.gui.component.GuiWidget;
 import com.rabbit.gui.component.IGui;
 import com.rabbit.gui.component.control.Button;
+import com.rabbit.gui.component.display.tabs.Tab;
 import com.rabbit.gui.render.ShaderProgram;
 import com.rabbit.gui.utils.Geometry;
 
@@ -144,33 +145,43 @@ public class Panel extends GuiWidget {
 		} else {
 			isFocused = false;
 		}
-		if (isVisible && isFocused) {
-			super.onMouseClicked(posX, posY, mouseButtonIndex, overlap);
+		if (isVisible) {
+			if (isFocused) {
+				super.onMouseClicked(posX, posY, mouseButtonIndex, overlap);
 
-			if (canDrag) {
-				isDragging = !overlap && Geometry.isDotInArea(x, y + 10, 5, height - 10, posX, posY);
-			}
-			if (canResize) {
-				isResizing = !overlap && Geometry.isDotInArea((int) ((x + width) - (width * .1)), height - 10,
-						(int) (width * .1), 10, posX, posY);
-			}
-			if (isDragging) {
-				dragXDelta = posX - x;
-				dragYDelta = posY - y;
-			}
-			if (isResizing) {
-				resizeXPos = posX;
-				resizeYPos = posY;
-			}
-
-			panelComponents.forEach(com -> {
-				if (com.onMouseClicked(posX, posY, mouseButtonIndex, overlap)) {
-					isDragging = isResizing = false;
+				if (canDrag) {
+					isDragging = !overlap && Geometry.isDotInArea(x, y + 10, 5, height - 10, posX, posY);
 				}
-			});
+				if (canResize) {
+					isResizing = !overlap && Geometry.isDotInArea((int) ((x + width) - (width * .1)), height - 10,
+							(int) (width * .1), 10, posX, posY);
+				}
+				if (isDragging) {
+					dragXDelta = posX - x;
+					dragYDelta = posY - y;
+				}
+				if (isResizing) {
+					resizeXPos = posX;
+					resizeYPos = posY;
+				}
 
-			return isDragging | isResizing;
+				panelComponents.forEach(com -> {
+					if (com.onMouseClicked(posX, posY, mouseButtonIndex, overlap)) {
+						isDragging = isResizing = false;
+					}
+				});
+
+				return true;
+			} else {
+				// since tabs arent within the panel but we still need them to be clickable
+				panelComponents.forEach(com -> {
+					if (com instanceof Tab) {
+						com.onMouseClicked(posX, posY, mouseButtonIndex, overlap);
+					}
+				});
+			}
 		}
+
 		return super.onMouseClicked(posX, posY, mouseButtonIndex, overlap);
 	}
 
